@@ -103,8 +103,6 @@
 }
 
 .post-card--review .score-badge{
-  --rate-color: hsl(var(--h, 0) 100% 62%);
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -115,16 +113,16 @@
   z-index: 3;
 
   padding: 8px 12px;     /* slightly bigger */
-  border-radius: 999px;
+  border-radius: 22px;   /* matches .post-card */
 
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 
-  color: var(--rate-color);
+  color: #fff;
   background: rgba(0, 0, 0, 0.35);
-  border: 1px solid color-mix(in oklab, var(--rate-color) 70%, rgba(255,255,255,0.12));
+  border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow: 0 10px 22px rgba(0,0,0,0.35);
 }
 

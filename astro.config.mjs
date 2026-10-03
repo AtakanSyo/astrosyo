@@ -13,6 +13,9 @@ import forceUtf8ForHtml from "./src/plugins/vite-plugin-force-utf8.js";
 
 export default defineConfig({
   site: 'https://astrosyo.com',
+  redirects: {
+    '/cosmic-stories': '/stories',
+  },
   integrations: [
     mdx({
       remarkPlugins: [

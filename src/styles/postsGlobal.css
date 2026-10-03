@@ -410,12 +410,8 @@ p {
   font-weight: 700;
   letter-spacing: .2px;
   backdrop-filter: blur(3px);
-  border: 1px solid transparent;
-
-  /* red family tint, same style as badges */
-  background: var(--brand-red-bg);
-  color: color-mix(in oklab, rgb(var(--brand-color)) 92%, white);
-  border-color: var(--brand-red-bg);
+  border: 1px solid #fff;
+  color: #fff;
 
   text-transform: uppercase;
   width: fit-content;

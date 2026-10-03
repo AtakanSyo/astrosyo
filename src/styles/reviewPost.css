@@ -28,7 +28,7 @@
 /* Highlighted callout paragraphs */
 .highlight {
   background: rgba(255,255,255,0.06);
-  border-left: 4px solid rgb(var(--brand-color));
+  border-left: 4px solid #fff;
   padding: 0.75rem 1rem;
   margin: 1.5rem 0;
   width: 100%;
@@ -64,15 +64,10 @@ h1 .review-tag {
   background: #1a1a1a;
 }
 
-.review-tag.hands-on {
-  color: rgb(var(--brand-color));
-  border-color: rgb(var(--brand-color));
-  background: #121212;
-}
-
+.review-tag.hands-on,
 .review-tag.research {
-  color: rgb(var(--brand-color));
-  border-color: rgb(var(--brand-color));
+  color: #fff;
+  border-color: #fff;
   background: #121212;
 }
 
@@ -116,7 +111,7 @@ h1 .review-tag {
   height: 2px;
   width: 72px;
   margin-top: .45rem;
-  background: linear-gradient(90deg, rgb(var(--brand-color)), transparent);
+  background: linear-gradient(90deg, #fff, transparent);
   opacity: .8;
 }
 
@@ -148,7 +143,7 @@ h1 .review-tag {
   width: .4rem;
   height: .4rem;
   border-radius: 50%;
-  background: rgb(var(--brand-color));
+  background: #fff;
   box-shadow: 0 0 10px rgba(169,180,255,.6);
   margin-right: .5rem;
   display: inline-block;
@@ -178,12 +173,12 @@ h1 .review-tag {
   margin-left: 0.85rem;
   padding: 0.32rem 0.8rem;
   border-radius: 999px;
-  border: 1px solid rgb(var(--brand-color));
+  border: 1px solid #fff;
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: rgb(var(--brand-color));
+  color: #fff;
 }
 :root{
   --text-primary: rgba(255,255,255,0.92);
@@ -316,8 +311,8 @@ h1 .review-tag {
   box-shadow: 0 0 0 2px rgba(169,180,255,0.15);
 }
 
-.pros-cons .pros-block li::before { background: rgb(var(--brand-color)); box-shadow: 0 0 0 2px rgba(60,214,128,0.18); }
-.pros-cons .cons-block li::before { background: rgb(var(--brand-color)); box-shadow: 0 0 0 2px rgba(255,107,107,0.18); }
+.pros-cons .pros-block li::before { background: #fff; box-shadow: 0 0 0 2px rgba(60,214,128,0.18); }
+.pros-cons .cons-block li::before { background: #fff; box-shadow: 0 0 0 2px rgba(255,107,107,0.18); }
 
 .includes {
   margin: 2em 0;

@@ -36,9 +36,9 @@ const calculatorUrls = new Set(calculatorSlugs.map(slug => `/posts/${slug}`));
 
 // category config
 const CATS = [
-  { key: 'calculators', label: 'Calculators', cta: 'Open calculator →', link: '/calculators' },
-  { key: 'simulation',    label: 'Cosmic Stories',    cta: 'Go to the story →', link: '/cosmic-stories' },
+  { key: 'simulation',    label: 'Stories',   cta: 'Go to the story →', link: '/stories' },
   { key: 'reviews',        label: 'Reviews',        cta: 'Read the review →' , link: '/telescopes'},
+  { key: 'calculators', label: 'Calculators', cta: 'Open calculator →', link: '/calculators' },
   // { key: 'informational', label: 'Informational Posts',         cta: 'Read the guide →' },
   // { key: 'nasa',          label: 'NASA Posts',           cta: 'See the article →' },
 ];
@@ -63,7 +63,7 @@ const CATS = [
                 <span class="cta-arrow">→</span>
               </a>
 
-              <a href="/cosmic-stories" class="cta" onclick="window.umami?.track?.('cosmic-stories-cta')">
+              <a href="/stories" class="cta" onclick="window.umami?.track?.('cosmic-stories-cta')">
                 <span class="cta-label">Cosmic Stories</span>
                 <span class="cta-arrow">→</span>
               </a>

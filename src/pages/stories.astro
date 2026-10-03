@@ -1,10 +1,9 @@
 ---
 import { calculatorSlugs } from '../config/calculatorSlugs.js';
 import Layout from '../layouts/Layout.astro';
-import '../styles/index.css';
+import '../styles/aprilIndex.css';
 import '../styles/simGlobal.css';
-import '../styles/cards.css';
-import '../styles/interactives.css';
+import '../styles/cosmicStories.css';
 import PostCard from "../components/AprilPostCard.astro";
 
 const calculatorUrls = new Set(calculatorSlugs.map(slug => `/posts/${slug}`));
@@ -12,10 +11,6 @@ const calculatorUrls = new Set(calculatorSlugs.map(slug => `/posts/${slug}`));
 const allPosts = Object.values(
   import.meta.glob('./posts/*.{md,mdx}', { eager: true })
 ) as any[];
-
-// Put URLs or slugs here to feature specific posts at the top of the list.
-// Example values: '/posts/jupiter' or 'jupiter'
-const featuredOrder = ['/posts/jupiter', '/posts/neptune', '/posts/uranus'];
 
 function normalizeCat(cat: unknown): string[] {
   if (!cat) return [];
@@ -27,31 +22,15 @@ function hasCat(frontmatter: any, needle: string) {
   return normalizeCat(frontmatter.category ?? frontmatter.categories).includes(needle);
 }
 
-const simPostsAll = allPosts
-  .filter(({ frontmatter, url }) => !frontmatter?.hidden && calculatorUrls.has(url))
+const simPosts = allPosts
+  .filter(({ frontmatter, url }) => !frontmatter?.hidden && hasCat(frontmatter, 'simulation') && !calculatorUrls.has(url))
   .sort((a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime());
-
-const matchesFeatured = (post: any, ref: string) => {
-  if (!ref) return false;
-  const slug = post.frontmatter?.slug;
-  return post.url === ref || slug === ref || `/posts/${slug}` === ref;
-};
-
-const featuredPosts = featuredOrder
-  .map((ref) => simPostsAll.find((p) => matchesFeatured(p, ref)))
-  .filter(Boolean) as any[];
-
-const featuredUrls = new Set(featuredPosts.map((p) => p.url));
-const remaining = simPostsAll.filter((p) => !featuredUrls.has(p.url));
-
-const simPosts = [...featuredPosts, ...remaining];
 ---
 
-<Layout title="Calculators">
+<Layout title="Stories">
   <section class="sim-list">
     <div class="intro">
-      <h1>Calculators</h1>
-      <p class="lead">Interactive calculators and tools for astronomy and astrophysics.</p>
+      <h1>Stories</h1>
     </div>
 
     {simPosts.length === 0 ? (
@@ -59,7 +38,7 @@ const simPosts = [...featuredPosts, ...remaining];
     ) : (
       <div class="april-post-grid">
         {simPosts.map(({ frontmatter, url }) => (
-          <PostCard url={url} frontmatter={frontmatter} />
+          <PostCard url={url} frontmatter={frontmatter} isP5={true} />
         ))}
       </div>
     )}

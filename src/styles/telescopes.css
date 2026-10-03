@@ -33,6 +33,14 @@
   }
 }
 
+/* Wider than 720px → inset the grid from the screen edges */
+@media (min-width: 721px) {
+  .post-group .post-grid {
+    margin-left: 4rem;
+    margin-right: 4rem;
+  }
+}
+
 /* Large screens → 3 columns */
 @media (min-width: 1024px) {
   .post-group .post-grid {
@@ -143,9 +151,9 @@
 
 .toggle-buttons button:hover,
 .toggle-buttons button.active {
-  background: var(--brand-color-darker-v2);
+  background: #444;
   color: white;
-  border-color: var(--brand-color-darker-v2);
+  border-color: #444;
 }
 
 /*─────────────────────────────────────────────────
