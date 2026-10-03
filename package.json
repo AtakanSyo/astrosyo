@@ -38,6 +38,7 @@
     "remark-autolink-headings": "^7.0.1",
     "remark-math": "^6.0.0",
     "remark-slug": "^7.0.1",
+    "sharp": "0.34.5",
     "slugify": "^1.6.6",
     "stats.js": "^0.17.0",
     "three": "^0.179.1",
