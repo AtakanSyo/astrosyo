@@ -74,7 +74,7 @@ const CATS = [
     <!-- Latest by category (stacked sections) -->
     <section class="latest-section">
       {CATS.map((cat) => {
-        const items = latestByCategory(cat.key, 4);
+        const items = latestByCategory(cat.key, 10);
         if (items.length === 0) return null;
 
         return (

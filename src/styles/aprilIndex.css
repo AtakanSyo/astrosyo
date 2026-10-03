@@ -266,56 +266,64 @@
   gap: 1rem;
 }
 
-/* Homepage post rows: fixed column counts so a row of four never leaves
-   an orphan. Four across on desktop, two on tablets, one on phones. */
+/* Homepage post rows: each row is a single horizontally scrolling line of
+   cards at every screen size. Card width is set so a whole number of cards
+   shows plus part of the next one, as a cue that the row continues. The
+   row bleeds past the section's side spacing to the screen edges (--bleed). */
+.latest-section {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.latest-section .category-section {
+  min-width: 0;
+}
+
 .latest-section .april-post-grid {
-  grid-template-columns: 1fr;
+  --gap: clamp(14px, 2.2vw, 22px);
+  --bleed: 1rem;
+
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: 72%;
+  gap: var(--gap);
+
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  margin-inline: calc(var(--bleed) * -1);
+  padding: 4px var(--bleed);
+  scroll-padding-inline: var(--bleed);
+  scrollbar-width: none;
 }
 
-/* Phones: each row is a horizontal swipe. Cards are narrower than the
-   screen so the next one peeks in, and the row runs to the screen edges. */
-@media (max-width: 599px) {
-  .latest-section {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .latest-section .category-section {
-    min-width: 0;
-  }
-
-  .latest-section .april-post-grid {
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: 72%;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    /* bleed past the section's 1rem side padding to the screen edges */
-    margin-inline: -1rem;
-    padding: 4px 1rem;
-    scroll-padding-inline: 1rem;
-    scrollbar-width: none;
-  }
-
-  .latest-section .april-post-grid::-webkit-scrollbar {
-    display: none;
-  }
-
-  .latest-section .april-post-card {
-    scroll-snap-align: start;
-  }
+.latest-section .april-post-grid::-webkit-scrollbar {
+  display: none;
 }
 
+.latest-section .april-post-card {
+  scroll-snap-align: start;
+}
+
+/* Tablets: two cards and a bit */
 @media (min-width: 600px) {
   .latest-section .april-post-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-columns: 42%;
   }
 }
 
+/* The rows gain 2rem side margins above 720px (see below) */
+@media (min-width: 721px) {
+  .latest-section .april-post-grid {
+    --bleed: 3rem;
+  }
+}
+
+/* Desktop: four cards and a bit */
 @media (min-width: 900px) {
   .latest-section .april-post-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-columns: calc((100% - 3 * var(--gap)) / 4.3);
   }
 
   /* image cards are square at this size instead of a fixed 280px tall */
