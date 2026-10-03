@@ -489,7 +489,7 @@ h1 .review-tag {
 .main-rating-card{
   --rate-color: #fff;
 
-  border: 1px solid var(--rate-color);
+  border: 2px solid var(--rate-color);
   background: rgba(255,255,255,0.03);
 
   border-radius: 18px;
@@ -509,7 +509,7 @@ h1 .review-tag {
 .main-rating-card .score{
   color: var(--rate-color);
   font-size: 2.2rem;
-  font-weight: 300;
+  font-weight: 700;
   line-height: 1;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;

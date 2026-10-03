@@ -113,7 +113,7 @@ const overallHue = scoreToHue(overallNum);
     
       <div class="main-rating-card rating-card centered_flex" style={`--h:${overallHue}`}>
         <span class="category">Overall</span>
-        <span class="score">{overallText}/10</span>
+        <span class="score" aria-label={overallNum !== null ? `Rated ${overallText} out of 10` : undefined}>{overallText}</span>
       </div>
       <p class="post-starter-description">{Astro.props.frontmatter.description}</p>
     </div>
