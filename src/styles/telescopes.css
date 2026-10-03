@@ -157,6 +157,13 @@
   padding: 0 1rem;
   font-size: 0.95rem;
   line-height: 1.4;
+  /* always reserve two lines, so switching between one- and two-line
+     descriptions doesn't move the grid below */
+  min-height: 2.8em;
+  /* a one-line description sits in the middle of the reserved space */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #aaa; /* muted on dark */
 }
 
