@@ -119,7 +119,14 @@
   display: grid;
   gap: 0.65rem;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  margin-bottom: 0.85rem;
+  margin: 0 2rem 0.85rem;
+}
+
+@media (max-width: 720px) {
+  .toggle-buttons {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 .toggle-buttons button {

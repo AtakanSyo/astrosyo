@@ -13,7 +13,6 @@ const {
 } = Astro.props;
 
 const title = frontmatter.title ?? "";
-const description = frontmatter.description ?? "";
 const thumbnail = frontmatter.thumbnail ?? "";
 const hasThumb = Boolean(thumbnail);
 const rawPostColor = typeof frontmatter.postColor === "string" ? frontmatter.postColor.trim() : "";
@@ -72,10 +71,6 @@ import '../styles/cards.css';
 
     <div class="post-card-info centered_flex">
       <div class="post-card-title">{title}</div>
-
-      {description && (
-        <p class="post-card-desc">{description}</p>
-      )}
     </div>
 
     {row && (

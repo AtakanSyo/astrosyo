@@ -20,7 +20,6 @@ const {
 } = Astro.props;
 
 const title = frontmatter.title ?? "";
-const description = frontmatter.description ?? "";
 const thumbnail = frontmatter.thumbnail ?? "";
 const pubDate = frontmatter.pubDate;
 const hasThumb = Boolean(thumbnail);
@@ -69,10 +68,6 @@ import '../styles/aprilCards.css';
       <!-- {computedDateText && (
         <div class="april-post-card-meta">{computedDateText}</div>
       )} -->
-
-      {description && (
-        <p class="april-post-card-desc">{description}</p>
-      )}
 
       <!-- <div class={`april-post-card-footer ${hasBadge ? "has-badge" : ""}`}>
         <div class="april-post-card-badges">
