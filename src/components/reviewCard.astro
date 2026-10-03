@@ -38,8 +38,8 @@ import '../styles/reviewCard.css';
 <div class="post-card post-card--review">
   <a href={url} class={linkClass}>
     {scoreText !== undefined && scoreText !== null && scoreText !== "" && (
-      <span class="score-badge" style={`--h:${hue}`}>
-        {scoreText}/10
+      <span class="score-badge" style={`--h:${hue}`} aria-label={`Rated ${scoreText} out of 10`}>
+        {scoreText}
       </span>
     )}
 

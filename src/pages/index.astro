@@ -97,10 +97,20 @@ const CATS = [
                   : isInfo ? 'Read the guide →'
                   : isNasa ? 'See the article →'
                   : 'Read full post →';
+                  // Review cards drop the trailing " Review" / " Overview" from the
+                  // title, as the telescopes page does. Display only: the post's own
+                  // title is untouched.
+                  const cardFrontmatter = isReview && typeof frontmatter.title === 'string'
+                    ? { ...frontmatter, title: frontmatter.title.replace(/ (Review|Overview)$/, '') }
+                    : frontmatter;
+                  // Review cards also show the overall rating, as on the telescopes page.
+                  const overall = Number(frontmatter.rating?.overall);
+                  const scoreText = isReview && Number.isFinite(overall) ? overall.toFixed(1) : undefined;
                   return (
                     <PostCard
                       url={url}
-                      frontmatter={frontmatter}
+                      frontmatter={cardFrontmatter}
+                      scoreText={scoreText}
                       isP5={isP5}
                       isReview={isReview}
                       isInfo={isInfo}
@@ -111,7 +121,6 @@ const CATS = [
                 })
               }
             </div>
-          <span class="divider"></span>
           </section>
         );
       })}

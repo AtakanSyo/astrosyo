@@ -17,6 +17,8 @@ const {
   class: extraClass = "",
   // optional: provide precomputed date string if you want
   dateText,
+  // optional: review score (e.g. "9.5"), shown as the same pill used on the telescopes page
+  scoreText,
 } = Astro.props;
 
 const title = frontmatter.title ?? "";
@@ -48,10 +50,15 @@ const linkClass = ["april-post-card-link", hasThumb && "april-post-card-link--ov
 
 import '@fontsource/poiret-one';
 import '../styles/aprilCards.css';
+import '../styles/reviewCard.css';
 ---
 
 <div class={cardClass}>
   <a href={url} class={linkClass}>
+    {scoreText !== undefined && scoreText !== null && scoreText !== "" && (
+      <span class="score-badge" aria-label={`Rated ${scoreText} out of 10`}>{scoreText}</span>
+    )}
+
     {thumbnail && (
       <div class="april-post-card-thumb">
         <img

@@ -102,7 +102,9 @@
   margin-top: 0.5rem;
 }
 
-.post-card--review .score-badge{
+/* Shared by the telescopes page cards and the homepage review cards */
+.post-card--review .score-badge,
+.april-post-card .score-badge{
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -127,7 +129,8 @@
 }
 
 @supports ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
-  .post-card--review .score-badge {
+  .post-card--review .score-badge,
+  .april-post-card .score-badge {
     background: rgba(10, 12, 20, 0.38);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
