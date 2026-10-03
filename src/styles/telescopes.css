@@ -5,6 +5,8 @@
 .telescope-rankings-page-title {
   text-align: center;
   margin-top: 2rem;
+  font-family: "Poiret One", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
 }
 /* Rankings / All Telescopes layout */
 .post-group .post-grid {

@@ -25,6 +25,13 @@ h1.review-title {
   font-weight: 100;
 }
 
+/* Main post title: Poiret One (loaded by each post layout) */
+article.post h1,
+h1.review-title {
+  font-family: "Poiret One", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+}
+
 .post h2,
 .post h3,
 .post h4,

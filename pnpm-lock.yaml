@@ -20,6 +20,9 @@ importers:
       '@astrojs/sitemap':
         specifier: ^3.6.0
         version: 3.7.3
+      '@fontsource/poiret-one':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@iconify-json/bi':
         specifier: ^1.2.4
         version: 1.2.7
@@ -623,6 +626,9 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@fontsource/poiret-one@5.3.0':
+    resolution: {integrity: sha512-nCAUIB6f5805lUG7t0ES0W0YhJHcKa2EPlafb7/0AU1W/V4tQvmoSbwNNUnt6nVIagvyStxLG5nzqMptQ3FCgQ==}
 
   '@iconify-json/bi@1.2.7':
     resolution: {integrity: sha512-IPz8WNxmLkH1I9msl+0Q4OnmjjvP4uU0Z61a4i4sqonB6vKSbMGUWuGn8/YuuszlReVj8rf+3gNv5JU8Xoljyg==}
@@ -3831,6 +3837,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.7':
     optional: true
+
+  '@fontsource/poiret-one@5.3.0': {}
 
   '@iconify-json/bi@1.2.7':
     dependencies:

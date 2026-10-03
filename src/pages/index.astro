@@ -2,6 +2,7 @@
 import { calculatorSlugs } from '../config/calculatorSlugs.js';
 // imports stay the same
 import Layout from '../layouts/Layout.astro';
+import '@fontsource/poiret-one';
 import '../styles/aprilIndex.css';
 import '../styles/aprilCards.css';
 import '../styles/search.css';
@@ -64,12 +65,7 @@ const CATS = [
               </a>
 
               <a href="/stories" class="cta" onclick="window.umami?.track?.('cosmic-stories-cta')">
-                <span class="cta-label">Cosmic Stories</span>
-                <span class="cta-arrow">→</span>
-              </a>
-
-              <a href="/about" class="cta" onclick="window.umami?.track?.('about-cta')">
-                <span class="cta-label">About Us</span>
+                <span class="cta-label">Stories</span>
                 <span class="cta-arrow">→</span>
               </a>
             </div>
