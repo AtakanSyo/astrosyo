@@ -52,14 +52,6 @@ function isCurrent(href: string) {
       <a href="/" class="nav-item" aria-current={isCurrent('/') ? 'page' : undefined}>
         {labels.home}
       </a>
-      <a href="/calculators" class="nav-item" aria-current={isCurrent('/calculators') ? 'page' : undefined}>Calculators</a>
-      <a
-        href="/cosmic-stories"
-        class="nav-item"
-        aria-current={isCurrent('/cosmic-stories') ? 'page' : undefined}
-      >
-        {labels.cosmicStories}
-      </a>
       <a
         href="/telescopes"
         class="nav-item"
@@ -67,6 +59,14 @@ function isCurrent(href: string) {
       >
         {labels.telescopes}
       </a>
+      <a
+        href="/cosmic-stories"
+        class="nav-item"
+        aria-current={isCurrent('/cosmic-stories') ? 'page' : undefined}
+      >
+        {labels.cosmicStories}
+      </a>
+      <a href="/calculators" class="nav-item" aria-current={isCurrent('/calculators') ? 'page' : undefined}>Calculators</a>
       <a
         href="/about"
         class="nav-item"
