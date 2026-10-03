@@ -30,7 +30,8 @@
 .about-card h2 {
   margin: 0;
   font-size: 1.35rem;
-  font-weight: 800;
+  font-family: var(--font-secondary);
+  font-weight: 400;
   color: #f3f4f6;
 }
 
@@ -91,4 +92,11 @@
   .about-hero {
     margin-bottom: 2.25rem;
   }
+}
+
+/* Page headings use the secondary (display) font */
+.about-page h1,
+.about-page h2 {
+  font-family: var(--font-secondary);
+  font-weight: 400;
 }

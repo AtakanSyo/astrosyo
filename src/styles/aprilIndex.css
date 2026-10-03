@@ -266,7 +266,7 @@ body.page-home::before {
 
   /* Text stays premium-white */
   color: #f1f3f8;
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255,255,255,0.05);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   border-radius: 22px;

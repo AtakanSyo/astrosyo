@@ -29,6 +29,8 @@
 }
 
 .footer-links a {
+  font-family: var(--font-secondary);
+  font-weight: 400;
   font-size: 0.95rem;
   padding: 0.2rem 0;
   color: #d6d6d6;

@@ -40,7 +40,7 @@ body::-webkit-scrollbar {
 
   --off-white-bone: #EDE6D8;
   --off-white: #e4e4e4;
-  --nav-bg: rgb(18,18,18,0,8);  
+  --nav-bg: rgba(0, 0, 0, 0.6);  
 
   --bg: rgb(0,0,0);
   --card-bg: #1f1f1f; 
