@@ -1,0 +1,42 @@
+---
+/**
+ * InfoCardGrid.astro
+ *
+ * Props:
+ * - cards: Array<{
+ *     title: string;
+ *     body: string;
+ *     tone?: 'default' | 'bright' | 'muted';
+ *   }>
+ * - columns?: number (minimum columns, default handled via CSS)
+ * - class?: string (additional class names)
+ */
+
+type Tone = 'default' | 'bright' | 'muted';
+
+interface Card {
+  title: string;
+  body: string;
+  tone?: Tone;
+}
+
+const { cards = [], class: extraClass = '' } = Astro.props as {
+  cards?: Card[];
+  class?: string;
+};
+
+const toneClass: Record<Tone, string> = {
+  default: '',
+  bright: 'info-card--bright',
+  muted: 'info-card--muted',
+};
+---
+
+<div class={['info-card-grid', extraClass].filter(Boolean).join(' ')}>
+  {cards.map(({ title, body, tone = 'default' }) => (
+    <article class={['info-card', toneClass[tone] ?? ''].filter(Boolean).join(' ')}>
+      <h4>{title}</h4>
+      <p>{body}</p>
+    </article>
+  ))}
+</div>

@@ -1,0 +1,76 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Pluto"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-11'
+description: "The planet that never quite was."
+slug: pluto
+imageDir: /images/pluto
+thumbnail: /images/pluto/thumbnail.webp
+keywords:
+  - pluto
+  - dwarf planet
+  - kuiper belt
+  - astronomy
+  - webgl
+lang: en
+---
+
+import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SinglePlanetSim planet="Pluto" client:visible cameraPosition={{ x: 0, y: 0, z: 3.5 }} />
+
+<h2>What you’re seeing</h2>
+<p>This simulation shows Pluto as a spherical world. The texture used here is <strong>not a scientifically accurate dataset from NASA</strong>. Instead, it is a <strong>mock artistic texture</strong> sourced from <a href="https://planetpixelemporium.com/pluto.html" target="_blank" rel="noopener noreferrer">here</a>. It is intended to represent Pluto’s general appearance for visualization purposes only.</p>
+<h2>Discovery</h2>
+<p>Pluto was discovered in 1930 by Clyde Tombaugh at Lowell Observatory after a systematic search for a predicted trans-Neptunian planet. The discovery confirmed that the Solar System extended beyond Neptune.</p>
+
+<h2>Distance from the Sun</h2>
+<p>Pluto is classified as a <strong>dwarf planet</strong> and is the <strong>9th major body</strong> traditionally listed when counting outward from the Sun. It orbits at an average distance of 5.9 billion km (39.5 AU), completing one orbit every 248 Earth years. Its orbit is eccentric, meaning Pluto periodically comes closer to the Sun than Neptune.</p>
+
+<h2>Special qualities</h2>
+<p>Pluto has a surprisingly varied surface: nitrogen ice plains, water-ice mountains taller than the Rockies, and regions coated in reddish organic molecules called tholins. It has a thin nitrogen atmosphere that collapses and freezes to the surface as Pluto moves farther from the Sun.</p>
+
+<h2>Moons</h2>
+<p>Pluto has five known moons: Charon, Styx, Nix, Kerberos, and Hydra. Pluto and Charon form a binary system — they orbit a point of balance outside Pluto’s surface, making them more like a double dwarf planet than planet and moon.</p>
+
+<h2>Size and mass</h2>
+<p>Pluto has a diameter of 2,376 km, smaller than Earth’s Moon. Its mass is only about 0.2% of Earth’s, and surface gravity is roughly 6% of Earth’s.</p>
+
+<h2>Chemistry and surface</h2>
+<p>The surface is composed of nitrogen ice, methane ice, and patches of water ice acting as bedrock. Cryovolcanic processes and nitrogen glacial flow shape large-scale features such as Sputnik Planitia.</p>
+
+<h2>Name and meaning</h2>
+<p>The name Pluto was suggested by 11-year-old Venetia Burney in England and chosen partly because the initials P.L. honored Percival Lowell, who initiated the search that led to Pluto’s discovery.</p>
+
+<SimPostSchema
+  title="Pluto"
+  description="A planetary sphere of Pluto with mock texture, plus details about its discovery, distance from the Sun, special qualities, moons, and name."
+  url="https://astrosyo.com/posts/pluto"
+  datePublished="2025-11-11"
+  authorName="Astrosyo"
+  keywords={[
+    "pluto",
+    "dwarf planet",
+    "kuiper belt",
+    "astronomy",
+    "webgl",
+    "education"
+  ]}
+  image="/images/pluto/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Pluto Sphere",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/pluto#simulation",
+    "description": "Interactive planetary sphere of Pluto rendered with a mock artistic texture."
+  }}
+/>

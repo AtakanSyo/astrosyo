@@ -1,0 +1,121 @@
+---
+category: reviews
+subcategory: telescopes
+reviewType: research
+layout: ../../layouts/ReviewPostLayout.astro
+title: Zhumell Z100 Review
+telescopeType: Tabletop Dobsonian
+writer: Astrosyo
+brand: Zhumell
+rating:
+  overall: 8.6
+  optics: 8.2
+  mount: 9.2
+  accessories: 8.3
+  value: 9.1
+affiliate:
+  amazon: ''
+  highpointscientific: ''
+  astroshop: ''
+cover_image: /images/zhumell-z100-review/cover.webp
+thumbnail: /images/zhumell-z100-review/cover.webp
+imageDir: /images/zhumell-z100-review
+specs:
+  aperture: 100 mm
+  focalLength: 400 mm
+  focalRatio: f/4
+pubDate: '2026-03-03'
+description: >-
+  The Zhumell Z100 is a compact 100mm tabletop Dobsonian with decent optics,
+  surprisingly solid build quality, and an easy-to-use mount—an excellent
+  low-cost entry point for beginners and a convenient grab-and-go scope.
+slug: zhumell-z100-portable-altazimuth-reflector-telescope-review
+keywords:
+  - Zhumell Z100
+  - Z100 telescope review
+  - 100mm tabletop Dobsonian
+  - portable reflector telescope
+prosCons:
+  pros:
+    - "Compact and portable grab-and-go design"
+    - "Stable tabletop Dobsonian mount with smooth motion and built-in carry handle"
+    - "Wide field of view is forgiving for finding targets"
+    - "Good value for the price, with usable included eyepieces"
+  cons:
+    - "Fast f/4 optics are less forgiving, and precise collimation matters"
+    - "Primary mirror is not adjustable, limiting collimation options"
+    - "Small aperture struggles on dim deep-sky objects, especially under light pollution"
+    - "You’ll likely want a shorter focal length eyepiece (or a Barlow) for higher power"
+quickSpecs:
+  - "100mm (4 in) aperture"
+  - "400mm focal length"
+  - "f/4 Newtonian reflector"
+  - "Tabletop Dobsonian mount (manual alt-az)"
+  - "1.25 in rack-and-pinion focuser"
+  - "17mm (24x) + 10mm (40x) Kellner eyepieces"
+  - "Red dot finder"
+  - "6.2 lb (2.8 kg) total weight"
+lang: en
+---
+
+import Affiliates from '../../components/Affiliates.astro'
+import Ratings from '../../components/Ratings.astro'
+import ProsCons from '../../components/ProsCons.astro'
+import QuickSpecs from '../../components/QuickSpecs.astro'
+import GenericTable from '../../components/GenericTable.astro'
+
+<p class="highlight">Zhumell has a reputation for compact beginner tabletop telescopes (like the Z114 and Z130), and the Z100 follows the same theme: portable, simple, and surprisingly well-built for the price.</p>
+
+<QuickSpecs items={frontmatter.quickSpecs} />
+
+<ProsCons pros={frontmatter.prosCons?.pros} cons={frontmatter.prosCons?.cons} />
+
+<Ratings rating={frontmatter.rating} />
+
+<Affiliates affiliate={frontmatter.affiliate} />
+
+<h2>Introduction</h2>
+<p>The Zhumell Z100 is a small, portable tabletop Dobsonian with a 100mm (4-inch) primary mirror and a 400mm focal length. That combination makes it light, fast to set up, and easy to use—ideal qualities for a first telescope or a grab-and-go companion for more experienced observers.</p>
+<p>With 100mm of aperture, the Z100 gathers enough light for satisfying views of the Moon, planets, and many brighter deep-sky objects. It will not replace a larger Dobsonian, but it can absolutely deliver “real astronomy” for a beginner.</p>
+
+<h2>Optics and Eyepieces</h2>
+<p>The Z100 is an f/4 Newtonian reflector. The benefit is a wide field of view, which makes finding objects much easier and makes the telescope feel more forgiving in day-to-day use. The tradeoff is that f/4 is less tolerant of miscollimation and can show more off-axis aberrations near the edge of the field.</p>
+<p>One important caveat: the primary mirror is not adjustable, so you do not have the same collimation flexibility you’d get with many larger Newtonians. In normal use this is not a dealbreaker, but it does mean you should treat the telescope carefully and avoid impacts or drops.</p>
+<img class="post-image post-image-lg" src={frontmatter.imageDir + '/optics.webp'} alt="Zhumell Z100 optics"></img>
+<p>The included eyepieces are a solid starting point: a 17mm Kellner (about 24x) and a 10mm Kellner (about 40x). They’re perfectly usable for beginners. To take fuller advantage of the optics on planets and the Moon, you’ll likely want a shorter focal length eyepiece (around 6mm) and/or a 2x Barlow, which effectively doubles the magnification of any eyepiece you use.</p>
+<img class="post-image post-image-lg" src={frontmatter.imageDir + '/focuser.webp'} alt="Zhumell Z100 focuser"></img>
+
+<h2>What can you see?</h2>
+<p>The Z100 can show a lot within its limits. Planets are clearly recognizable, and under good seeing you can pick out meaningful detail—especially with a higher-power eyepiece than what is included.</p>
+
+<GenericTable
+  title="Moon and Solar System Performance"
+  headers={['Object', 'What to Expect']}
+  rows={[
+    ['Moon', 'Sharp views of craters, ridges, and mountain relief with plenty of detail.'],
+    ['Jupiter', 'Cloud belts and moon transits are visible; the Great Red Spot can be detectable in good conditions.'],
+    ['Saturn', 'Rings are obvious; Cassini Division becomes possible with good seeing and higher magnification.'],
+    ['Mars', 'Polar cap and darker markings are possible near favorable oppositions.'],
+    ['Venus', 'Phases are easy; surface detail is not visible.'],
+    ['Uranus & Neptune', 'Tiny disk-like points in steady conditions; not much detail beyond that.'],
+  ]}
+/>
+
+<p>Deep-sky objects like brighter star clusters and nebulae are also within reach. Under dark skies you can enjoy open clusters, the Orion Nebula (M42), and other bright targets. Under heavy light pollution, dim galaxies and faint nebular structure will be challenging—this is simply a small-aperture telescope.</p>
+
+<h2>Mount</h2>
+<p>The Z100 uses a tabletop Dobsonian mount, which is one of the best beginner-friendly mount styles available. It moves up/down/left/right with simple hand pushes, and the stability is far better than most budget tripods.</p>
+<p>In practice the mechanics feel smooth and predictable, and the built-in carry handle is a genuinely useful touch for quick sessions.</p>
+<img class="post-image post-image-lg" src={frontmatter.imageDir + '/mount.webp'} alt="Zhumell Z100 tabletop mount"></img>
+<p>The one thing to keep in mind is that you need a stable surface: a sturdy table, a car trunk, or a solid platform. If the surface wobbles, the experience will suffer.</p>
+
+<h2>Accessories</h2>
+<p>The included red dot finder is a standard beginner accessory, and it pairs well with the Z100’s wide-field nature: even if the finder is not as precise as an optical finder, it is generally easy to sweep into the right area and land on targets.</p>
+<p>The focuser is a 1.25-inch rack-and-pinion design. It is plastic, but it is smooth enough for visual use and should not cause issues for beginners.</p>
+<p>Small touches like the included lens cap and a helpful manual matter more than most people expect—especially on a compact scope where the optics can be more exposed during storage.</p>
+
+<h2>Drawbacks</h2>
+<p>The Z100’s biggest limitation is not build quality—it’s physics. A 100mm mirror cannot pull in faint deep-sky detail like a larger Dobsonian can. The fast f/4 design also means you should be a little more careful about handling and alignment than with a slower beginner Newtonian.</p>
+
+<h2>Conclusion</h2>
+<p>If you’re on a tight budget and want something reliable, portable, and simple, the Zhumell Z100 is a strong choice. It is a great “first telescope” that can show meaningful planetary detail and bright deep-sky objects, and it also makes a convenient grab-and-go scope for quick observing sessions.</p>

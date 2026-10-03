@@ -1,0 +1,76 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "The Moon"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-11'
+description: "Earth's cosmic companion."
+slug: moon
+imageDir: /images/moon
+thumbnail: /images/moon/thumbnail.webp
+keywords:
+lang: en
+---
+
+import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SinglePlanetSim
+  planet="Moon"
+  client:visible
+  cameraPosition={{ x: 0, y: 0, z: 3.2 }}
+  textureContrast={0.9}
+  initialSpinDeg={120}
+  tiltDeg={[0, 80, 0]}
+  ambientIntensity="0.1"
+  lightIntensity="1.5"
+/>
+<h2>What you’re seeing</h2>
+<p>This simulation shows the Moon as a sphere with an accurate global texture. Features such as maria, highlands, impact craters, and the far side differences are visible. No atmosphere is rendered, reflecting the Moon’s exposed rocky surface.</p>
+
+<h2>Discovery</h2>
+<p>The Moon is the only celestial body visible in such detail from Earth without instruments. It has been observed since prehistory and served as humanity’s first astronomical reference. Telescopic observations in the 1600s revealed cratered terrain and mountains, leading to the first scientific maps.</p>
+
+<h2>Distance from Earth</h2>
+<p>The Moon is Earth’s <strong>only natural satellite</strong>. It orbits at an average distance of about 384,400 km. Because its orbit is elliptical, this distance varies between perigee (closest) and apogee (farthest), producing “supermoons” and “micromoons” as seen from Earth.</p>
+
+<h2>Special qualities</h2>
+<p>The Moon keeps the same face toward Earth due to tidal locking; one hemisphere is permanently turned toward us, while the far side remained unseen until spacecraft imagery. The Moon stabilizes Earth’s axial tilt, moderates climate, and drives ocean tides.</p>
+
+<h2>Size and mass</h2>
+<p>The Moon has a diameter of 3,474 km, making it the fifth-largest moon in the Solar System. Its mass is about 1.2% of Earth’s, and gravity at the surface is roughly one-sixth that of Earth, influencing dust transport and human movement during Apollo missions.</p>
+
+<h2>Chemistry and surface</h2>
+<p>The Moon’s surface is composed of silicate rock and volcanic basalt plains. The upper layer, called regolith, is fragmented by billions of years of impacts. There is no stable atmosphere, only a tenuous exosphere composed of trace gases.</p>
+
+<h2>Name and meaning</h2>
+<p>The word “Moon” derives from Old English mōna and Proto-Germanic *mēnô. In mythology, the Moon has been linked to timekeeping, calendars, and cycles in nearly every culture. “Luna” (Latin) and “Selene” (Greek) appear in scientific terms such as “lunar” and “selenology.”</p>
+
+<SimPostSchema
+  title="Moon"
+  description="A realistic sphere of Earth’s Moon with accurate texture, plus details about its history, distance, geology, and name."
+  url="https://astrosyo.com/posts/moon"
+  datePublished="2025-11-11"
+  authorName="Astrosyo"
+  keywords={[
+    "moon",
+    "natural satellite",
+    "astronomy",
+    "webgl",
+    "education"
+  ]}
+  image="/images/moon/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Moon Sphere",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/moon#simulation",
+    "description": "Interactive sphere of the Moon rendered with accurate texture."
+  }}
+/>

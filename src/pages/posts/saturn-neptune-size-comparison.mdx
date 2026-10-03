@@ -1,0 +1,93 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Saturn and Neptune Size Comparison"
+category: simulation
+writer: Astrosyo
+pubPubDate: '2025-09-12'
+description: "The true scale difference between Saturn and Neptune."
+slug: saturn-neptune-size-comparison
+imageDir: /images/saturn-neptune-size-comparison
+thumbnail: /images/saturn-neptune-size-comparison/thumbnail.webp
+keywords:
+  - saturn
+  - neptune
+  - planet size comparison
+  - astronomy
+  - webgl
+  - simulation
+lang: en
+---
+
+import SaturnComparison from "../../components/simulations/saturn-size-comparison/SaturnComparison.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SaturnComparison
+  client:load
+  saturnTexture="/textures/saturn_texture.webp"
+  saturnRingTexture="/textures/saturns_rings_texture.webp"
+  secondaryTexture="/textures/neptune_texture.webp"
+  saturnRadius={58232}
+  secondaryRadius={24622}
+  planetDistance={2.4}
+  saturnContrast={1.05}
+  secondaryContrast={0.95}
+  saturnTiltDeg={[0, 25, 26.7]}
+  orthoExtent={1.2}
+/>
+
+<figcaption class="sim-caption">Saturn and Neptune rendered at true relative diameters, textured and rotating.</figcaption>
+
+<h2>What the simulation shows</h2>
+<p>This visualization places Neptune next to Saturn using their real physical diameters and full 3D geometry. Saturn appears as a huge, banded gas giant with subtle cloud layering, while Neptune shows up as a deep cobalt-blue world with active storms. The rings are intentionally excluded from Saturn’s diameter measurement, so the comparison reflects only the planetary sphere. Seeing the two planets rotate side by side makes the size difference intuitive without needing to reference diagrams or numbers.</p>
+
+<h2>The numbers behind the scale</h2>
+<p>Neptune’s diameter is approximately 49,244 km. Saturn’s diameter is about 120,536 km. The ratio of their diameters is:</p>
+
+$$
+\frac{D_S}{D_N} = \frac{120{,}536}{49{,}244} \approx 2.45
+$$
+
+<p>Volume scales with the cube of the diameter:</p>
+
+$$
+(2.45)^3 \approx 14.7
+$$
+
+<p>This means Saturn could contain almost fifteen Neptune-sized volumes. Surface area, which determines how large each planet’s visible disk appears, scales with the square of the diameter:</p>
+
+$$
+(2.45)^2 \approx 6.00
+$$
+
+<p>So Saturn’s visible disk is about six times larger than Neptune’s. The simulation preserves these ratios exactly using their true diameters, allowing you to feel the scale difference visually while rotating the planets freely in 3D space.</p>
+
+<SimPostSchema
+  title="Saturn and Neptune Size Comparison"
+  description="An interactive browser-based simulation that shows the true scale difference between Saturn and Neptune."
+  url="https://astrosyo.com/posts/saturn-neptune-size-comparison"
+  datePublished="2025-09-12"
+  authorName="Astrosyo"
+  keywords={[
+    "saturn",
+    "neptune",
+    "planet size comparison",
+    "astronomy",
+    "three.js",
+    "webgl",
+    "education"
+  ]}
+  image="/images/saturn-neptune-size-comparison/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Planet Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/saturn-neptune-size-comparison#simulation",
+    "description": "Interactive visualization comparing Saturn and Neptune with accurate scale."
+  }}
+/>

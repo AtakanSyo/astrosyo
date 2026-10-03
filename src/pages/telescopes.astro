@@ -1,0 +1,208 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/telescopes.css';
+import ReviewCard from '../components/reviewCard.astro';
+
+const allPosts = Object.values(
+  import.meta.glob('./posts/*.{md,mdx}', { eager: true })
+) as any[];
+const telescopePosts = allPosts.filter(p => p.frontmatter.subcategory === 'telescopes');
+const telescopeCount = telescopePosts.length;
+
+// ── SORTED “All” POSTS ──
+const sortedAll = [...telescopePosts].sort(
+  (a, b) => (b.frontmatter.rating?.overall ?? 0) - (a.frontmatter.rating?.overall ?? 0)
+);
+
+// ── GROUP & SORT BY TYPE ──
+const grouped = telescopePosts.reduce((acc, post) => {
+  const type = post.frontmatter.telescopeType || 'Other';
+  (acc[type] ??= []).push(post);
+  return acc;
+}, {});
+const types = Object.keys(grouped).sort();
+const sortedGrouped = Object.fromEntries(
+  types.map(type => [
+    type,
+    [...grouped[type]].sort(
+      (a, b) => (b.frontmatter.rating?.overall ?? 0) - (a.frontmatter.rating?.overall ?? 0)
+    ),
+  ])
+);
+
+function parseScore(v: number | string | undefined): number | null {
+  if (v === undefined || v === null || v === '') return null;
+  if (typeof v === 'number') return Math.max(0, Math.min(10, v));
+
+  const s = String(v).trim().toLowerCase();
+  const m = s.match(/^(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+(?:\.\d+)?))?$/);
+  if (m) {
+    const num = parseFloat(m[1]);
+    const den = m[2] ? parseFloat(m[2]) : 10;
+    if (!isNaN(num) && !isNaN(den) && den > 0) {
+      return Math.max(0, Math.min(10, (num / den) * 10));
+    }
+  }
+
+  const map: Record<string, number> = {
+    a: 9.5, 'a-': 9, 'b+': 8.5, b: 8, 'b-': 7.5, c: 7, 'c-': 6.5,
+  };
+  return map[s] ?? null;
+}
+
+function scoreToHue(score: number | null): number {
+  // 0→120 (red→green). Default to neutral hue if missing.
+  if (score === null) return 210;
+  return Math.round((score / 10) * 120);
+}
+---
+
+<Layout title="Telescope Reviews">
+
+    <h1 class="telescope-rankings-page-title fade-up">
+      Telescope Rankings
+    </h1>
+
+  <div class="telescopes-toggle-container">
+    <!-- toggle buttons -->
+    <div class="toggle-buttons" role="tablist" aria-label="Telescope categories">
+      <!-- "All" button -->
+      <button data-type="all" class="icon-button active" role="tab" aria-selected="true">
+        <svg class="icon" width="28" height="28" aria-hidden="true">
+          <use href="/icons/telescope-icons.svg#all"></use>
+        </svg>
+        <span class="label">All</span>
+      </button>
+
+      <!-- Dynamically render buttons for each telescope type -->
+      {types.map(t => {
+        const slug = t.toLowerCase().replace(/\s+/g, '-'); // e.g. "Tabletop Dobsonian" → "tabletop-dobsonian"
+        return (
+          <button data-type={t} class="icon-button" role="tab" aria-selected="false">
+            <svg class="icon" width="28" height="28" aria-hidden="true">
+              <use href={`/icons/telescope-icons.svg#${slug}`}></use>
+            </svg>
+            <span class="label">{t}</span>
+          </button>
+        );
+      })}
+    </div>
+
+    <!-- description placeholder -->
+    <div id="type-description" class="type-description" data-count={telescopeCount}></div>
+
+    <!-- “All” group -->
+    <div class="post-group" data-type="all">
+      <h2>All Telescopes</h2>
+      <div class="post-grid">
+	        {sortedAll.map(({ frontmatter, url }) => {
+	          const { title, description, rating, writer, pubDate, affiliate = {}, thumbnail } = frontmatter;
+	          const cleanTitle = title.replace(/ (Review|Overview)$/, '');
+	          const scoreRaw = rating?.overall;
+	          const scoreNum = parseScore(scoreRaw);
+	          const scoreText = scoreNum !== null ? scoreNum.toFixed(1) : 'N/A';
+	          const hue = scoreToHue(scoreNum);
+          const affs = [
+            ['Amazon', affiliate.amazon],
+            ['HighPoint', affiliate.highpointscientific],
+            ['Astroshop', affiliate.astroshop],
+          ].filter(([, link]) => link);
+
+	          return (
+	            <ReviewCard
+	              url={url}
+	              title={cleanTitle}
+	              description={description}
+	              scoreText={scoreText}
+	              hue={hue}
+	              thumbnail={thumbnail}
+	              affiliates={affs}
+	            />
+	          );
+	        })}
+      </div>
+    </div>
+
+    {/* one group per type */}
+    {types.map(type => (
+      <div class="post-group" data-type={type} style="display:none;">
+        <h2>{type} Telescopes</h2>
+	        <div class="post-grid">
+	          {sortedGrouped[type].map(({ frontmatter, url }) => {
+	            const { title, description, rating, writer, pubDate, affiliate = {}, thumbnail } = frontmatter;
+	            const cleanTitle = title.replace(/ (Review|Overview)$/, '');
+	            const scoreRaw = rating?.overall;
+	            const scoreNum = parseScore(scoreRaw);
+	            const scoreText = scoreNum !== null ? scoreNum.toFixed(1) : 'N/A';
+	            const hue = scoreToHue(scoreNum);
+            const affs = [
+              ['Amazon', affiliate.amazon],
+              ['HighPoint', affiliate.highpointscientific],
+              ['Astroshop', affiliate.astroshop],
+            ].filter(([, link]) => link);
+
+	            return (
+	              <ReviewCard
+	                url={url}
+	                title={cleanTitle}
+	                description={description}
+	                scoreText={scoreText}
+	                hue={hue}
+	                thumbnail={thumbnail}
+	                affiliates={affs}
+	              />
+	            );
+	          })}
+	        </div>
+      </div>
+    ))}
+  </div>
+
+  <script type="module">
+    // define everything in here
+
+    const descEl  = document.getElementById('type-description');
+    const TELESCOPE_COUNT = Number(descEl.dataset.count);
+    const formattedCount = new Intl.NumberFormat().format(TELESCOPE_COUNT);
+
+    const typeDescriptions = {
+      all: `We have reviews of ${formattedCount} telescopes.`,
+      "Astrograph": "Telescopes designed specifically for astrophotography.",
+      "Bird-Jones Reflector": "Telescopes with low quality and complex optics. Usually not recommended.",
+      "Dobsonian": "Dobsonians are large aperture Newtonian reflectors on simple altazimuth mounts, ideal for sweeping deep sky views. They are the best bang for your buck.",
+      "Tabletop Dobsonian": "A compact Dobsonian you can set on any table. Perfect for quick setup and on-the-go observing. Recommended for beginners.",
+      "Refractor": "Telescopes with optical designs that use lenses rather than mirrors. Prefered for their ability to view Solar System objects in detail.",
+      "Reflector": "Telescopes with open optical tube and mirror optics. They can be considered a Dobsonian with a tripod. Usually not recommended, but might be preferable for their portability.",
+      "Maksutov-Cassegrain": "Maksutovs pack long focal lengths into small tubes for sharp planetary and lunar views. If done well, provides very sharp and high contrast visuals.",
+      "Schmidt-Cassegrain": "Schmidts combine mirrors and lenses in a compact, versatile package for both planets and deep sky objects. More versatile compared to Maksutov-Cassegrains.",
+      "Smart Telescope": "App controlled scopes that automate alignment and tracking. Preferred for hands free stargazing.",
+      Other: "Types of telescopes that we can't properly define.",
+    };
+
+    const buttons = document.querySelectorAll('.toggle-buttons button');
+    const groups  = document.querySelectorAll('.post-group');
+
+    function showGroup(type) {
+      groups.forEach(g => {
+        g.style.display = type === 'all'
+          ? (g.dataset.type == 'all' ? '' : 'none')
+          : (g.dataset.type == type ? '' : 'none');
+      });
+      descEl.textContent = typeDescriptions[type] || '';
+    }
+
+    buttons.forEach(btn =>
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        showGroup(btn.dataset.type);
+      })
+    );
+
+    showGroup('all');
+  </script>
+</Layout>

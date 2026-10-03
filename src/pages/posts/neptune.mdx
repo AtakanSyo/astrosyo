@@ -1,0 +1,88 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Neptune"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-08-09'
+description: "The deep blue giant."
+slug: neptune
+imageDir: /images/neptune
+thumbnail: /images/neptune/thumbnail.webp
+keywords:
+  - neptune
+  - ice giant
+  - planet
+  - astronomy
+  - webgl
+lang: en
+---
+
+import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SinglePlanetSim 
+planet="Neptune" 
+client:visible 
+cameraPosition={{ x: 0, y: 0, z: 2.5 }} 
+ambientIntensity={0.0}
+/>
+<h2>What you’re seeing</h2>
+<p>This simulation shows Neptune as a planetary sphere with its true high-resolution atmospheric texture. Unlike gas giants with prominent bands, Neptune’s appearance is deep blue with occasional bright storms and methane clouds.</p>
+
+<h2>Discovery</h2>
+<p>Neptune is the first planet discovered through mathematics rather than direct observation. In 1846, Urbain Le Verrier and John Couch Adams predicted its location based on disturbances in Uranus’s orbit. Johann Galle then observed Neptune precisely where the calculations indicated.</p>
+
+<h2>Distance from the Sun</h2>
+<p>Neptune is the <strong>8th planet from the Sun</strong>. It orbits at an average distance of about 4.5 billion km (30.1 AU). A Neptunian year lasts 165 Earth years, meaning the planet has completed less than one full orbit since its discovery.</p>
+
+<h2>Special qualities</h2>
+<p>Neptune is an ice giant with dynamic weather and the fastest sustained winds in the Solar System, reaching speeds over 2,000 km/h. The planet generates more internal heat than it receives from the Sun, driving massive storms and cloud formations.</p>
+
+<SinglePlanetSim
+  planet="Neptune"
+  client:visible
+  cameraPosition={{ x: 0, y: 0, z: 4 }}
+  textureContrast={1.0}
+  tiltDeg={[45, 0, 0]}
+/>
+
+<h2>Moons</h2>
+<p>Neptune has 14 known moons. The largest, Triton, orbits in the opposite direction of Neptune’s rotation — a retrograde orbit — suggesting it was captured from the Kuiper Belt. Triton also features nitrogen geysers, making it one of the most intriguing bodies in planetary science.</p>
+
+<h2>Size and mass</h2>
+<p>Neptune has a diameter of about 49,244 km and a mass roughly 17 times that of Earth. It is slightly smaller than Uranus but denser, with a more compressed mantle and deeper internal heating.</p>
+
+<h2>Chemistry and atmosphere</h2>
+<p>Neptune’s blue color comes from methane in the upper atmosphere absorbing red light, but its deeper hue compared to Uranus suggests additional chromophores or atmospheric processes. Beneath the clouds may exist a super-pressurized water–ammonia ocean capable of forming exotic “hot ice” phases.</p>
+
+<h2>Name and meaning</h2>
+<p>Neptune is named after the Roman god of the sea, reflecting its deep blue color. In Greek mythology, the equivalent deity is Poseidon.</p>
+
+<SimPostSchema
+  title="Neptune"
+  description="A planetary sphere of Neptune with accurate texture, plus details about its discovery, distance from the Sun, atmosphere, moons, and name."
+  url="https://astrosyo.com/posts/neptune"
+  datePublished="2025-11-11"
+  authorName="Astrosyo"
+  keywords={[
+    "neptune",
+    "ice giant",
+    "astronomy",
+    "webgl",
+    "education"
+  ]}
+  image="/images/neptune/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Neptune Sphere",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/neptune#simulation",
+    "description": "Interactive planetary sphere of Neptune rendered with accurate texture."
+  }}
+/>

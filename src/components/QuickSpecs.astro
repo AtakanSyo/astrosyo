@@ -1,0 +1,18 @@
+---
+interface Props {
+  items?: Array<string | number>;
+}
+
+const { items } = Astro.props;
+const specs = (items ?? []).filter((value) => value !== null && value !== undefined && `${value}`.trim() !== '');
+---
+{specs.length > 0 && (
+  <section class="info-tags">
+    <h3>Specs</h3>
+    <ul>
+      {specs.map((item) => (
+        <li>{item}</li>
+      ))}
+    </ul>
+  </section>
+)}

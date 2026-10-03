@@ -1,0 +1,83 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Mercury"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-08-14'
+description: "The smallest Solar System planet."
+slug: mercury
+imageDir: /images/mercury
+thumbnail: /images/mercury/thumbnail.webp
+keywords:
+  - mercury
+  - terrestrial planet
+  - planet
+  - astronomy
+  - webgl
+lang: en
+---
+
+import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SinglePlanetSim 
+  planet="Mercury" 
+  client:visible 
+  cameraPosition={{ x: 0, y: 0, z: 2.5 }} 
+  ambientIntensity={0.0}
+/>
+
+<figcaption class="sim-caption">Mercury rendered with a realistic planetary texture.</figcaption>
+
+<h2>What you’re seeing</h2>
+<p>This is a simple sphere of Mercury with its real planetary texture applied. The surface is heavily cratered, resembling a larger version of Earth’s Moon. The goal of this simulation is to show Mercury as it actually looks: gray, battered, and airless.</p>
+
+<h2>Discovery</h2>
+<p>Mercury has been known since ancient times and was observed by civilizations including the Sumerians and the ancient Greeks. Because of its proximity to the Sun, it is visible only shortly after sunset or shortly before sunrise, leading early astronomers to believe that the evening and morning appearances were two different objects.</p>
+
+<h2>Distance from the Sun</h2>
+<p>Mercury is the <strong>1st planet from the Sun</strong>. Its average distance is about 57.9 million km (0.39 AU). Due to this proximity, Mercury receives more than six times the solar radiation Earth does, and its year lasts only 88 Earth days — the shortest orbit of any planet.</p>
+
+<h2>Special qualities</h2>
+<p>Mercury’s surface temperature swings are the most extreme in the Solar System. Because it has almost no atmosphere to retain heat, the illuminated side can reach temperatures of 430°C, while the night side drops to –180°C. Mercury also has a surprisingly large iron core that occupies most of the planet’s interior, making it unusually dense for its size.</p>
+
+<h2>Moons</h2>
+<p>Mercury has no moons. Its proximity to the Sun prevents stable long-term satellite orbits.</p>
+
+<h2>Size and mass</h2>
+<p>Mercury has a diameter of 4,880 km, making it the smallest planet. Although tiny, it is extremely dense due to its iron-rich core. Mercury’s mass is about 5.5% of Earth’s, yet its density rivals that of much larger planets.</p>
+
+<h2>Chemistry and surface</h2>
+<p>The surface is composed mostly of silicate rock overlying a massive metal core. Mercury lacks a substantial atmosphere; instead it has a thin exosphere made of atoms blasted from the surface by solar wind. This weak envelope is constantly being stripped away and replenished.</p>
+
+<h2>Name and meaning</h2>
+<p>Mercury is named after the Roman messenger god Mercurius — fast, agile, and swift. The name reflects its rapid movement across the sky and its short orbital period around the Sun.</p>
+
+<SimPostSchema
+  title="Mercury"
+  description="A planetary sphere of Mercury with accurate texture, plus details about its discovery, distance from the Sun, special qualities, and name."
+  url="https://astrosyo.com/posts/mercury"
+  datePublished="2025-11-11"
+  authorName="Astrosyo"
+  keywords={[
+    "mercury",
+    "terrestrial planet",
+    "astronomy",
+    "webgl",
+    "education"
+  ]}
+  image="/images/mercury/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Mercury Sphere",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/mercury#simulation",
+    "description": "Interactive planetary sphere of Mercury rendered with accurate texture."
+  }}
+/>

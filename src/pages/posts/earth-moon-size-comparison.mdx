@@ -1,0 +1,108 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Earth and Moon Size Comparison"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-09-15'
+description: "The true scale difference between Earth and the Moon."
+slug: earth-moon-size-comparison
+imageDir: /images/earth-moon-size-comparison
+thumbnail: /images/earth-moon-size-comparison/thumbnail.webp
+keywords:
+  - earth
+  - moon
+  - planet size comparison
+  - astronomy
+  - webgl
+  - simulation
+lang: en
+---
+
+import PlanetSizeComparison from "../../components/simulations/planet-size-comparison/PlanetSizeComparison.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/earth-texture-nasa.webp"
+  secondaryTexture="/interactive/moon/moon_texture.jpg"
+  primaryRadius={6371}
+  secondaryRadius={1737}
+  planetDistance={2.2}
+  primaryContrast={0.9}
+  secondaryContrast={0.9}
+  orthoExtent={1.4}
+/>
+
+<figcaption class="sim-caption">Earth and the Moon shown at accurate relative size.</figcaption>
+
+<h2>What the simulation shows</h2>
+<p>This visualization places Earth and the Moon next to each other at their real physical diameters and true 3D geometry. The Moon appears as a cratered, airless world, while Earth shows its oceans, continents, and atmospheric clouds. In illustrations and diagrams, the Moon is often drawn much larger than reality, making it easy to underestimate how small it actually is. When the two bodies rotate side by side, the true scale becomes visually obvious.</p>
+
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/earth-texture-nasa.webp"
+  secondaryTexture="/interactive/moon/moon_texture.jpg"
+  options={{
+    rotationHours: 30,  // slower base spin (default ~16.11)
+    axialTiltDeg: 0,
+  }}
+  primaryRadius={6371}
+  secondaryRadius={1737}
+  planetDistance={1.1}
+  primaryContrast={0.9}
+  secondaryContrast={0.9}
+  orthoExtent={0.4}
+/>
+
+<h2>The numbers behind the scale</h2>
+<p>Earth’s diameter is approximately 12,742 km. The Moon has a diameter of about 3,474 km. The ratio of their diameters is:</p>
+
+$$
+\frac{D_E}{D_M} = \frac{12{,}742}{3{,}474} \approx 3.67
+$$
+
+<p>Volume scales with the cube of the diameter:</p>
+
+$$
+(3.67)^3 \approx 49.4
+$$
+
+<p>This means Earth’s volume is almost fifty times greater than the Moon’s. Surface area, which determines how large each object appears visually, scales with the square of the diameter:</p>
+
+$$
+(3.67)^2 \approx 13.5
+$$
+
+<p>So Earth’s visible disk is more than thirteen times larger than the Moon’s. The simulation preserves these exact proportions, letting you experience the scale difference directly instead of imagining it from numbers.</p>
+
+<SimPostSchema
+  title="Earth and Moon Size Comparison"
+  description="An interactive browser-based simulation that shows the true scale difference between Earth and the Moon."
+  url="https://astrosyo.com/posts/earth-moon-size-comparison"
+  datePublished="2025-09-15"
+  authorName="Astrosyo"
+  keywords={[
+    "earth",
+    "moon",
+    "planet size comparison",
+    "astronomy",
+    "three.js",
+    "webgl",
+    "education"
+  ]}
+  image="/images/earth-moon-size-comparison/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Planet Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/earth-moon-size-comparison#simulation",
+    "description": "Interactive visualization comparing Earth and the Moon with accurate scale."
+  }}
+/>

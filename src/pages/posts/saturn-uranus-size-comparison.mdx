@@ -1,0 +1,91 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Saturn and Uranus Size Comparison"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-11'
+description: "The true scale difference between Saturn and Uranus."
+slug: saturn-uranus-size-comparison
+imageDir: /images/saturn-uranus-size-comparison
+thumbnail: /images/saturn-uranus-size-comparison/thumbnail.webp
+keywords:
+  - saturn
+  - uranus
+  - planet sizes
+  - astronomy
+  - three.js
+lang: en
+---
+
+import SaturnComparison from "../../components/simulations/saturn-size-comparison/SaturnComparison.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SaturnComparison
+  client:load
+  saturnTexture="/textures/saturn_texture.webp"
+  saturnRingTexture="/textures/saturns_rings_texture.webp"
+  secondaryTexture="/textures/uranus_texture.webp"
+  saturnRadius={58232}
+  secondaryRadius={25362}
+  planetDistance={2.3}
+  saturnContrast={1.65}
+  secondaryContrast={1.2}
+  saturnTiltDeg={[0, 25, 26]}
+  orthoExtent={1.2}
+/>
+
+<figcaption class="sim-caption">Saturn and Uranus shown at their true relative diameters.</figcaption>
+
+<p>This visualization places Saturn and Uranus side by side using their exact physical diameters and real 3D geometry. Saturn appears as a huge golden world with banded cloud structures and subtle storms, while Uranus shows up as a smooth pale-blue sphere with almost no visible atmospheric contrast. The rings are not used to exaggerate Saturn’s size here—only the planet’s sphere is considered. When the two planets rotate next to each other, the scale difference becomes immediately obvious.</p>
+
+<h2>The numbers behind the scale</h2>
+<p>Uranus has a diameter of approximately 50,724 km. Saturn’s diameter is about 120,536 km. The ratio of their diameters is:</p>
+
+$$
+\frac{D_S}{D_U} = \frac{120{,}536}{50{,}724} \approx 2.38
+$$
+
+<p>Volume scales with the cube of the diameter:</p>
+
+$$
+(2.38)^3 \approx 13.5
+$$
+
+<p>This means Saturn could contain more than thirteen Uranus-sized volumes. Surface area, which determines how large each planet’s visible disk appears, scales with the square of the diameter:</p>
+
+$$
+(2.38)^2 \approx 5.66
+$$
+
+<p>So Saturn’s visible face is more than five and a half times larger than Uranus’s. The simulation preserves these exact proportions, letting the scale difference be felt visually rather than evaluated numerically.</p>
+
+<SimPostSchema
+  title="Saturn and Uranus Size Comparison"
+  description="An interactive browser-based simulation that shows the true scale difference between Saturn and Uranus."
+  url="https://astrosyo.com/posts/saturn-uranus-size-comparison"
+  datePublished="2025-09-10"
+  authorName="Astrosyo"
+  keywords={[
+    "saturn",
+    "uranus",
+    "planet size comparison",
+    "astronomy",
+    "three.js",
+    "webgl",
+    "education"
+  ]}
+  image="/images/saturn-uranus-size-comparison/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Planet Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/saturn-uranus-size-comparison#simulation",
+    "description": "Interactive visualization comparing Saturn and Uranus with accurate scale."
+  }}
+/>

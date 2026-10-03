@@ -1,0 +1,382 @@
+/* =========================================================
+   Astrosyo — Cards (Same design, color-only variants)
+   - No CSS variables
+   - Primary accent: var(--brand-color)
+   - Class names unchanged: .april-post-grid, .april-post-card, .april-post-card-link,
+     variants: .april-post-card--nasa, --review, --info, --p5
+========================================================= */
+
+/* -------- Grid -------- */
+.april-post-grid {
+  display: grid;
+  gap: clamp(14px, 2.2vw, 22px);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+/* -------- Card base (shared design) -------- */
+.april-post-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: pointer;
+  /* glassy neutral surface (same for all) */
+  /* background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.018)); */
+  /*background: var(--bg);*/
+  /*border: 1px solid rgba(255,255,255,0.20);*/
+
+  /* shared depth */
+  /* box-shadow: 0 0px 1px 1px rgba(255,255,255,0.20); */
+  /* border: 1px solid rgba(255,255,255,0.1); */
+  box-shadow: 0px 0px 2px 2px rgba(255,255,255,0.1);
+  border-radius: 14px;
+  /* shared motion */
+  transition:
+    transform .22s ease,
+    box-shadow .22s ease,
+    border-color .22s ease,
+    background .22s ease,
+    filter .22s ease;
+  isolation: isolate;
+}
+
+.april-post-card--no-thumb {
+  position: relative;
+  min-height: unset;
+
+  background:
+    radial-gradient(
+      120% 120% at 15% 0%,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0)
+    ),
+    linear-gradient(
+      145deg,
+      #141414,
+      #0a0a0a
+    );
+
+  border-radius: 16px;
+  padding: 18px 20px;
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.april-post-card--no-thumb a{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* subtle star speckles (same for all) */
+.april-post-card::after {
+  content: "";
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    radial-gradient(1px 1px at 14% 22%, rgba(255,255,255,.06) 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 44%, rgba(255,255,255,.05) 50%, transparent 51%),
+    radial-gradient(1px 1px at 36% 76%, rgba(255,255,255,.05) 50%, transparent 51%);
+  background-repeat: no-repeat;
+}
+
+.april-post-card:hover {
+  box-shadow: 0px 0px 2px 2px rgba(255,255,255,0.3);
+}
+
+/* keyboard focus (shared) */
+.april-post-card:focus-within {
+  outline: none;
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, rgb(var(--brand-color)) 55%, transparent),
+    0 20px 44px rgba(0,0,0,0.5);
+}
+
+/* -------- Clickable area (shared) -------- */
+.april-post-card-link {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  z-index: 1;
+}
+
+/* -------- Optional thumbnail (shared) -------- */
+.april-post-card-thumb {
+  overflow: hidden;
+  aspect-ratio: 1.5 / 1;
+  border-radius: 8px;
+  background: #0b0e15;
+  object-fit: cover;
+  object-position: center 0%;
+  overflow: hidden;
+}
+
+.april-post-card-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .5s ease;
+}
+
+.april-post-card:hover .april-post-card-thumb img { 
+  transform: scale(1.04); 
+}
+
+/* -------- Overlay variant (PostCard.astro) -------- */
+.april-post-card-link--overlay {
+  position: relative;
+  display: block;
+  min-height: 280px;
+}
+
+.april-post-card-link--overlay .april-post-card-thumb {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  aspect-ratio: auto;
+}
+
+.april-post-card-link--overlay .april-post-card-thumb img {
+  width: 100%;
+  height: 100%;
+}
+
+.april-post-card-link--overlay .april-post-card-info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+
+  margin: 0;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  border-radius: 0 0 14px 14px;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.1) 15%,  
+    rgba(0, 0, 0, 0.3) 30%,    
+    rgba(0, 0, 0, 0.4) 60%,
+    rgba(0, 0, 0, 0.5) 75%
+  );
+}
+
+.april-post-card-link--overlay .april-post-card-title {
+  margin-top: 0;
+  text-align: left;
+  justify-content: flex-start;
+  min-height: 2rem; /* always 2 lines tall */
+}
+
+.april-post-card-link--overlay .april-post-card-meta {
+  text-align: left;
+}
+
+.april-post-card-link--overlay .april-post-card-desc {
+  text-indent: 0;
+}
+/* -------- Typography (shared) -------- */
+
+.april-post-card-title {
+  font-size: clamp(1.08rem, .6vw + 1rem, 1.24rem);
+  font-weight: 900;
+  margin: 0 0 .25rem;
+  color: #f3f4f6;
+  height: 3.2em;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.4rem;
+}
+
+.april-post-card-meta {
+  font-size: clamp(.88rem, .4vw + .8rem, .96rem);
+  color: #8a90a0;
+  margin: 0 0 .55rem;
+  text-align: center;
+}
+
+.april-post-card-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  font-size: clamp(.80rem, .3vw + .75rem, .93rem);
+  line-height: 1.55;
+  min-height: calc(1.55em * 2); /* 👈 reserve 3 lines */
+
+  color: #b7bdc9;
+  margin: 0 0 .5rem;
+  text-indent: 1.25rem;
+}
+
+/* -------- Text CTA (shared) -------- */
+.read-post {
+  margin-top: auto;
+  font-size: .92rem;
+  font-weight: 800;
+  text-align: right;
+  color: color-mix(in oklab, rgb(var(--brand-color)) 86%, white); /* variants override with different red tint only */
+  opacity: .85;
+  letter-spacing: .01em;
+  transition: opacity .18s ease, letter-spacing .18s ease;
+}
+.april-post-card:hover .read-post {
+  opacity: 1;
+  letter-spacing: .02em;
+}
+
+/* -------- Footer / badges (shared) -------- */
+.april-post-card-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .75rem;
+  padding: 1rem;
+}
+.april-post-card-footer.has-badge { justify-content: space-between; }
+.april-post-card-badges { display: flex; gap: .4rem; align-items: center; }
+
+@media (max-width: 640px) {
+  .april-post-card-footer.has-badge .april-post-card-badges {
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+    margin-right: -0.25rem;
+    scroll-snap-type: x mandatory;
+  }
+
+  .april-post-card-footer.has-badge .april-post-card-badges::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .april-post-card-footer.has-badge .april-post-card-badges::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .april-post-card-footer.has-badge .april-post-card-badges::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 2px;
+  }
+
+  .april-post-card-footer.has-badge .april-post-card-badges > * {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+}
+
+/* -------- Button row (shared design) -------- */
+.card-buttons { display: flex; gap: .5rem; padding: 0 .95rem .95rem; }
+.card-btn {
+  flex: 1;
+  padding: .58rem .8rem;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 12px;
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,.28);
+  transition: transform .14s ease, background .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.card-btn:hover { transform: translateY(-1px); box-shadow: 0 16px 32px rgba(0,0,0,.34); }
+
+/* =========================================================
+   COLOR-ONLY VARIANTS
+   (Everything else stays identical)
+========================================================= */
+
+/* Base (no modifier): core red */
+
+.april-post-card .read-post { 
+  /*color: color-mix(in oklab, var(--brand-color) 86%, white);*/ 
+  color: rgb(var(--brand-color));
+  font-weight: 700;
+}
+.card-btn { background: linear-gradient(180deg, rgb(var(--brand-color)), color-mix(in oklab, rgb(var(--brand-color)) 85%, #6c0a18)); }
+.card-btn:hover { background: linear-gradient(180deg, color-mix(in oklab, rgb(var(--brand-color)) 98%, #ff5a5a 2%), color-mix(in oklab, rgb(var(--brand-color)) 90%, #6c0a18)); }
+
+/* -------- Badges (same style, red family tints per variant) -------- */
+.p5-badge,
+.review-badge,
+.info-badge,
+.nasa-badge,
+.latest-reel-badge {
+  padding: .25rem .55rem;
+  border-radius: .4rem;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .2px;
+  backdrop-filter: blur(3px);
+  border: 1px solid transparent;
+}
+
+/* red family for all content badges (same structure) */
+.p5-badge,
+.review-badge,
+.info-badge,
+.nasa-badge {
+  /*color: color-mix(in oklab, var(--brand-color) 92%, white);*/
+  color: rgb(var(--brand-color));
+  border-color: rgb(var(--brand-color));
+}
+
+/* IG badge keeps the gradient text but matches structure */
+.latest-reel-badge {
+  background: rgba(40,40,40,0.7);
+  background-image:
+    linear-gradient(rgba(40,40,40,0), rgba(40,40,40,0)),
+    linear-gradient(90deg,#feda75 0%,#fa7e1e 25%,#d62976 50%,#962fbf 75%,#4f5bd5 100%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Inline flow in footer (shared) */
+.april-post-card .april-post-card-badges .nasa-badge,
+.april-post-card .april-post-card-badges .latest-reel-badge,
+.april-post-card .april-post-card-badges .p5-badge,
+.april-post-card .april-post-card-badges .review-badge,
+.april-post-card .april-post-card-badges .info-badge { position: static; }
+
+/* -------- Accessibility / Motion (shared) -------- */
+.april-post-card-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, rgb(var(--brand-color)) 55%, transparent);
+  border-radius: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .april-post-card,
+  .april-post-card-link::after,
+  .card-btn,
+  .april-post-card .thumb img { transition: none !important; }
+  .april-post-card:hover { transform: none !important; }
+}
+
+/* -------- Light mode friendliness (shared) -------- */
+@media (prefers-color-scheme: light) {
+  .april-post-card {
+    background: linear-gradient(180deg, rgba(10,12,30,0.04), rgba(10,12,30,0.028));
+    border-color: rgba(10,12,30,0.10);
+    box-shadow: 0 10px 22px rgba(8, 12, 40, 0.12);
+  }
+  .april-post-card:hover {
+    box-shadow: 0 30px 50px rgba(8, 12, 40, 0.18);
+    background: rgba(10,12,30,0.06);
+  }
+  .april-post-card-title { color: #0f1320; }
+  .april-post-card-meta { color: #4a536b; }
+  .april-post-card-desc { color: #69738c; }
+}

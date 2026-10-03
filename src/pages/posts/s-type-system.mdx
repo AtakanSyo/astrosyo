@@ -1,0 +1,80 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "S-Type Star System"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-10'
+description: "A binary star where one planet orbits only the primary while a companion sun loops nearby."
+slug: s-type-system
+imageDir: /images/s-type-system
+thumbnail: /images/s-type-system/thumbnail.webp
+keywords:
+  - s-type
+  - binary star
+  - exoplanet
+  - three.js
+  - astronomy visualization
+lang: en
+---
+
+import STypeSystem from "../../components/simulations/s-type-system/s-type-system.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<STypeSystem client:load showPause={true} />
+
+<figcaption class="sim-caption">
+  Two suns orbit the system barycenter on offset loops—one shifted left, the other right—while a lone planet clings to the golden primary.
+</figcaption>
+
+<div class="sim-article">
+  <h2 id="about-this-simulation">About this simulation</h2>
+  <p>
+    S-type systems keep their planets bound to just one star even though a stellar companion is nearby. Here, both stars orbit a shared barycenter:
+    the golden primary traces a loop nudged to the right, the blue companion mirrors it on the left, and a single planet rides along with the primary
+    on a slightly eccentric ellipse. Use the pause control to inspect alignments or resume to watch the binary dance unfold.
+  </p>
+  <p>
+    Point lights tied to each star produce the shading you see on the planet and stars, while a faint ambient fill keeps the nightside visible without
+    overpowering the binary lighting. Dashed orbital guides make it easy to track which body orbits which.
+  </p>
+
+  <h3 id="what-to-look-for">What to look for</h3>
+  <p>
+    Notice how each stellar orbit is shifted to opposite sides of the origin, making the barycenter easy to read. The planet’s dashed path stays glued
+    to the moving primary, so you always know which star it truly orbits. Pause when the companion sweeps behind the primary to imagine dramatic
+    double-sunset skies.
+  </p>
+  <p>
+    Since the component exposes radii, intensities, and orbital periods through props, you can recreate specific discoveries like Kepler-444 or craft your
+    own story-driven binary with custom colors.
+  </p>
+</div>
+
+<SimPostSchema
+  title="S-Type Star System Simulation"
+  description="Explore a binary star where the planet orbits only one sun while the companion sweeps past on a wider track."
+  url="https://astrosyo.com/posts/s-type-system"
+  datePublished="2025-11-10"
+  authorName="Astrosyo"
+  keywords={[
+    "s-type",
+    "binary star",
+    "exoplanet",
+    "three.js",
+    "astronomy visualization"
+  ]}
+  image="/images/s-type-system/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "S-Type Star System Simulation",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/s-type-system#simulation",
+    "description": "Interactive binary star demo where a single planet orbits the primary sun."
+  }}
+/>

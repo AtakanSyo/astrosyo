@@ -1,0 +1,107 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Earth"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-11'
+description: "An overview of Earth, our home planet."
+slug: earth
+imageDir: /images/earth
+thumbnail: /images/earth/thumbnail.webp
+keywords:
+  - earth
+  - terrestrial planet
+  - blue marble
+  - astronomy
+  - webgl
+lang: en
+---
+
+import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SinglePlanetSim
+  planet="Earth"
+  client:visible
+  cameraPosition={{ x: 0, y: 0, z: 3 }}
+  cameraLookAt={{ x: 0, y: 0, z: 0 }}
+  lightIntensity="5.0"
+/>
+
+<h2>Distance from the Sun</h2>
+<p>Earth is the <strong>3rd planet from the Sun</strong>. Its average orbital distance is about 149.6 million km (1 AU by definition). Earth completes one orbit in 365.25 days, giving rise to the calendar year and leap-year cycle.</p>
+
+<h2>Special qualities</h2>
+<p>Earth is the only known world with stable liquid water on the surface and a biosphere that supports complex life. Its magnetic field shields the surface from charged particles, and the atmosphere keeps temperatures suitable for habitability. Tectonic activity recycles carbon and regulates climate over geologic time.</p>
+
+<SinglePlanetSim
+  planet="Earth"
+  client:visible
+  cameraPosition={{ x: 0, y: 3, z: 0 }}
+  cameraLookAt={{ x: 0, y: 0, z: 0 }}
+  lightIntensity="5.0"
+/>
+<h2>The North Pole</h2>
+<p>The North Pole is the point where Earth’s axis of rotation meets the surface in the Arctic Ocean. 
+  It is not on solid land but sits on constantly moving sea ice, which means there is no permanent 
+  ground beneath it. At the North Pole, all directions point south, and the Sun behaves in an 
+  extreme way: it rises once in March, circles the sky without setting during the summer months, 
+  and then sets in September, followed by months of continuous darkness known as the polar night. 
+  The region is characterized by very low temperatures, shifting ice, and unique ecosystems adapted to 
+  these harsh conditions.</p>
+
+<SinglePlanetSim
+  planet="Earth"
+  client:visible
+  cameraPosition={{ x: 0, y: -3, z: 0 }}
+  cameraLookAt={{ x: 0, y: 0, z: 0 }}
+  lightIntensity="5.0"
+/>
+
+<h2>The South Pole</h2>
+<p>The South Pole, by contrast, lies on the continent of Antarctica, making it a fixed point on 
+  solid land covered by a thick ice sheet. It is the coldest, driest, and windiest place on Earth, 
+  with average temperatures far lower than those at the North Pole due to its high elevation and 
+  continental location. Like its northern counterpart, the South Pole experiences six months of 
+  continuous daylight followed by six months of darkness, but the Sun’s apparent motion is reversed 
+  in direction. Today, the South Pole is best known as a center for scientific research, 
+  hosting stations that study climate, glaciology, astronomy, and fundamental physics.</p>
+<h2>Size and mass</h2>
+<p>Earth has a diameter of 12,742 km. Its mass is approximately 5.97 × 10^24 kg, 
+  giving Earth the strongest gravity among terrestrial planets and allowing it to retain a 
+  dense atmosphere.</p>
+
+<h2>Chemistry and atmosphere</h2>
+<p>Earth’s atmosphere is dominated by nitrogen (78%) and oxygen (21%), with trace gases such as carbon dioxide regulating greenhouse effects. The surface is a mixture of oceans (71%) and continents shaped by erosion, volcanism, and plate tectonics.</p>
+
+<h2>Name and meaning</h2>
+<p>“Earth” comes from Old English eorþe and Germanic erde, meaning “ground” or “soil.” It is the only planet not named after a Greek or Roman god. In Latin-based scientific contexts, Earth is sometimes called Terra, giving us terms like “terrestrial.”</p>
+
+<SimPostSchema
+  title="Earth"
+  description="A planetary sphere of Earth with accurate texture, plus details about its discovery, distance from the Sun, special qualities, moons, and name."
+  url="https://astrosyo.com/posts/earth"
+  datePublished="2025-11-11"
+  authorName="Astrosyo"
+  keywords={[
+    "earth",
+    "terrestrial planet",
+    "astronomy",
+    "webgl",
+    "education"
+  ]}
+  image="/images/earth/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Earth Sphere",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/earth#simulation",
+    "description": "Interactive planetary sphere of Earth rendered with accurate texture."
+  }}
+/>

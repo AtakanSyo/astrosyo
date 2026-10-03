@@ -1,0 +1,52 @@
+---
+layout: '../../layouts/InfoPostLayout.astro'
+title: "Find Your Pluto Time"
+category: "informational"
+subcategory: "tools"
+writer: "Astrosyo"
+cover_image: "/images/pluto-time/cover.webp"
+pubDate: "2025-11-01"
+description: "Find the exact time today when outdoor light at your location matches noon on Pluto."
+slug: pluto-time-calculator
+imageDir: /images/pluto-time
+keywords:
+  - Pluto Time
+lang: en
+---
+
+
+<p class="highlight">If you allow location sharing, this page will show you 
+  the exact moment in your day when the sky above you reaches the same brightness as high noon on Pluto.</p>
+
+<div id="pluto-time" style="font-size: 1.8rem; margin: 12px 0; font-weight: 600;">
+  Calculating your Pluto Time…
+</div>
+
+<div id="pluto-status" style="opacity: .7;"></div>
+
+<br/>
+
+<div class="info-input-group">
+  <label class="info-input-group-label">
+    Enter coordinates manually (if you don't allow your location to be shared):
+  </label>
+
+  <div class="info-input-row">
+    <input id="lat-input" placeholder="Latitude (e.g., 41.0082)" class="info-input-field" />
+    <input id="lon-input" placeholder="Longitude (e.g., 28.9784)" class="info-input-field" />
+    <button id="coord-btn" class="info-primary-btn">Compute</button>
+  </div>
+</div>
+
+<p>In 2006, NASA launched its New Horizons mission — the first spacecraft ever sent to explore Pluto up close. 
+Its goal was to fly past Pluto, photograph its surface in detail, and study its atmosphere and composition. 
+As the spacecraft approached Pluto in 2015, NASA wanted to spark excitement, curiosity, and a bit of fun, 
+so they created a website called “Pluto Time.”</p>
+
+<p>On that website, if you enter your location (or allowed the browser to detect it), it would calculate a precise 
+moment during your day when the brightness of the sky — right where you were standing — matched the brightness 
+of high noon on Pluto.</p>
+
+<p>We wanted to honor that mission with a similar tool of our own — a slightly more modern version. 🙂</p>
+
+<script type="module" src="/interactive/pluto-time/pluto-time.js"></script>

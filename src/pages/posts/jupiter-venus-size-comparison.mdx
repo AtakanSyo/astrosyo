@@ -1,0 +1,130 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Jupiter and Venus Size Comparison"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-09-25'
+description: "The immense scale difference between Jupiter and Venus."
+slug: jupiter-venus-size-comparison
+imageDir: /images/jupiter-venus-size-comparison
+thumbnail: /images/jupiter-venus-size-comparison/thumbnail.webp
+keywords:
+  - jupiter
+  - venus
+  - planet sizes
+  - astronomy
+  - three.js
+lang: en
+---
+
+import PlanetSizeComparison from "../../components/simulations/planet-size-comparison/PlanetSizeComparison.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/jupiter_texture.webp"
+  secondaryTexture="/textures/2k_venus_atmosphere.webp"
+  primaryRadius={69911}
+  secondaryRadius={6052}
+  planetDistance={1.2}
+  primaryContrast={1.05}
+  secondaryContrast={0.95}
+  orthoExtent={1.1}
+/>
+
+<figcaption class="sim-caption">Jupiter and Venus shown at accurate relative scale.</figcaption>
+
+<h2>What the simulation shows</h2>
+<p>This visualization 
+  renders both planets using their exact physical diameters and true 3D geometry. 
+  Jupiter’s massive storm bands and swirling atmosphere dominate nearly the entire frame, 
+  while Venus appears as a small, smooth world with a cloud layer. The contrast 
+  illustrates how Jupiter belongs to a completely different category of planet—one where 
+  sheer scale defines its gravitational influence and role in shaping the Solar System.</p>
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/jupiter_texture.webp"
+  secondaryTexture="/textures/2k_venus_atmosphere.webp"
+  options={{
+    axialTiltDeg: 0,
+    cameraPosition: [0, 12, 0],
+  }}
+  primaryRadius={69911}
+  secondaryRadius={6052}
+  planetDistance={1.2}
+  primaryContrast={1.05}
+  secondaryContrast={0.95}
+  orthoExtent={1.1}
+/>
+
+<h2>The numbers behind the scale</h2>
+<p>Venus has a diameter of approximately 12,104 km. Jupiter’s diameter is about 139,820 km. 
+  The ratio of their diameters is:</p>
+
+$$
+\frac{D_J}{D_V} = \frac{139{,}820}{12{,}104} \approx 11.56
+$$
+
+<p>Volume scales with the cube of the diameter:</p>
+
+$$
+(11.56)^3 \approx 1.54 \times 10^3
+$$
+
+<p>This means Jupiter could contain more than 1,500 Venus-sized volumes. Surface area, which defines how large the planet’s visible face appears, scales with the square of the diameter:</p>
+
+$$
+(11.56)^2 \approx 133.6
+$$
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/jupiter_texture.webp"
+  secondaryTexture="/textures/2k_venus_atmosphere.webp"
+  options={{
+    rotationHours: 60,  // slower base spin (default ~16.11)
+    axialTiltDeg: 0,
+  }}
+  primaryRadius={69911}
+  secondaryRadius={6052}
+  planetDistance={0.5}
+  primaryContrast={1.1}
+  secondaryContrast={0.95}
+  orthoExtent={0.4}
+/>
+
+<p>So Jupiter’s visible disk covers more than one hundred thirty times the area of Venus’s. 
+  These exact proportions are preserved in the simulation, allowing scale to 
+  tell the story. When the planets rotate side by side, the size difference becomes undeniable.</p>
+
+<SimPostSchema
+  title="Jupiter and Venus Size Comparison"
+  description="An interactive browser-based simulation that shows the true scale difference between Jupiter and Venus."
+  url="https://astrosyo.com/posts/jupiter-venus-size-comparison"
+  datePublished="2025-09-05"
+  authorName="Astrosyo"
+  keywords={[
+    "jupiter",
+    "venus",
+    "planet size comparison",
+    "astronomy",
+    "three.js",
+    "webgl",
+    "education"
+  ]}
+  image="/images/jupiter-venus-size-comparison/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Planet Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/jupiter-venus-size-comparison#simulation",
+    "description": "Interactive visualization comparing Jupiter and Venus with accurate scale."
+  }}
+/>

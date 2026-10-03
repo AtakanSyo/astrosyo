@@ -1,0 +1,43 @@
+---
+interface Props {
+  pros?: Array<string | number>;
+  cons?: Array<string | number>;
+}
+
+const { pros, cons } = Astro.props;
+
+const prosList = (pros ?? [])
+  .map((value) => (value ?? '').toString().trim())
+  .filter((value) => value.length > 0);
+
+const consList = (cons ?? [])
+  .map((value) => (value ?? '').toString().trim())
+  .filter((value) => value.length > 0);
+
+const shouldRender = prosList.length > 0 || consList.length > 0;
+---
+{shouldRender && (
+  <section class="pros-cons">
+    {prosList.length > 0 && (
+      <div class="pros-block">
+        <h3>Pros</h3>
+        <ul>
+          {prosList.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    {consList.length > 0 && (
+      <div class="cons-block">
+        <h3>Cons</h3>
+        <ul>
+          {consList.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </section>
+)}

@@ -38,6 +38,8 @@ export default defineConfig({
         'three',
         'three/addons/misc/GPUComputationRenderer.js',
         'lucide-react',
+        'katex',
+        '@supabase/supabase-js',
       ],
     },
     resolve: {

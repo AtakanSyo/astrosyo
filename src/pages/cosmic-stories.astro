@@ -1,0 +1,89 @@
+---
+import { calculatorSlugs } from '../config/calculatorSlugs.js';
+import Layout from '../layouts/Layout.astro';
+import '../styles/aprilIndex.css';
+import '../styles/simGlobal.css';
+import '../styles/cosmicStories.css';
+
+const calculatorUrls = new Set(calculatorSlugs.map(slug => `/posts/${slug}`));
+
+const allPosts = Object.values(
+  import.meta.glob('./posts/*.{md,mdx}', { eager: true })
+) as any[];
+
+// Put URLs or slugs here to feature specific posts at the top of the list.
+// Example values: '/posts/jupiter' or 'jupiter'
+const featuredOrder = ['/posts/jupiter', '/posts/neptune', '/posts/uranus'];
+
+function normalizeCat(cat: unknown): string[] {
+  if (!cat) return [];
+  if (Array.isArray(cat)) return cat.filter(Boolean).map((c) => String(c).toLowerCase());
+  return [String(cat).toLowerCase()];
+}
+
+function hasCat(frontmatter: any, needle: string) {
+  return normalizeCat(frontmatter.category ?? frontmatter.categories).includes(needle);
+}
+
+const simPostsAll = allPosts
+  .filter(({ frontmatter, url }) => !frontmatter?.hidden && hasCat(frontmatter, 'simulation') && !calculatorUrls.has(url))
+  .sort((a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime());
+
+const matchesFeatured = (post: any, ref: string) => {
+  if (!ref) return false;
+  const slug = post.frontmatter?.slug;
+  return post.url === ref || slug === ref || `/posts/${slug}` === ref;
+};
+
+const featuredPosts = featuredOrder
+  .map((ref) => simPostsAll.find((p) => matchesFeatured(p, ref)))
+  .filter(Boolean) as any[];
+
+const featuredUrls = new Set(featuredPosts.map((p) => p.url));
+const remaining = simPostsAll.filter((p) => !featuredUrls.has(p.url));
+
+const simPosts = [...featuredPosts, ...remaining];
+
+const formatDate = (value: string) =>
+  new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+---
+
+<Layout title="Cosmic Stories">
+  <section class="sim-list">
+    <div class="intro">
+      <p class="eyebrow">Fresh Science Stories</p>
+      <h1>Cosmic Stories</h1>
+      <p class="lead">Hand picked cosmic stories and explorations.</p>
+    </div>
+
+    <div class="rows">
+      {simPosts.length === 0 ? (
+        <p class="empty">No simulation posts found.</p>
+      ) : (
+        simPosts.map(({ frontmatter, url }) => {
+          const thumb = frontmatter.thumbnail ?? `${frontmatter.imageDir}/thumbnail.webp`;
+          const desc = frontmatter.description ?? 'Interactive astronomy simulation.';
+
+          return (
+            <article class="sim-row">
+              <a class="thumb" href={url} aria-label={`Open ${frontmatter.title}`}>
+                <img src={thumb} alt={`${frontmatter.title} thumbnail`} loading="lazy" decoding="async" />
+              </a>
+
+              <div class="meta">
+                <p class="eyebrow">{formatDate(frontmatter.pubDate)}</p>
+                <h2><a href={url}>{frontmatter.title}</a></h2>
+                <p class="desc">{desc}</p>
+              </div>
+
+              <a class="cta" href={url} aria-label={`Open ${frontmatter.title}`}>
+                <span>Go to the story</span>
+                <span class="arrow" aria-hidden="true">→</span>
+              </a>
+            </article>
+          );
+        })
+      )}
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,102 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Earth and Neptune Size Comparison"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-11'
+description: "The true scale difference between Neptune and Earth."
+slug: earth-neptune-size-comparison
+imageDir: /images/earth-neptune-size-comparison
+thumbnail: /images/earth-neptune-size-comparison/thumbnail.webp
+keywords:
+  - earth
+  - neptune
+  - planet sizes
+  - astronomy
+  - three.js
+lang: en
+---
+
+import PlanetSizeComparison from "../../components/simulations/planet-size-comparison/PlanetSizeComparison.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/neptune_texture.webp"
+  secondaryTexture="/textures/earth-texture-nasa.webp"
+  primaryRadius={24.622}
+  secondaryRadius={6.371}
+  planetDistance={2.0}
+  primaryContrast={1.0}
+  secondaryContrast={0.9}
+  orthoExtent={1.4}
+/>
+
+<figcaption class="sim-caption">Neptune and Earth at their true scale.</figcaption>
+
+<p>This visualization places Earth and Neptune next to each other using their exact physical diameters and true 3D geometry. Earth shows its familiar dynamic surface with oceans, continents, and clouds, while Neptune appears as a cold, deep-blue world with high-altitude methane ice clouds. Textbook diagrams rarely capture the true size difference between the two. Earth looks small and compact, while Neptune feels like a massive, layered sphere of atmosphere and fluid interior. Seeing both planets rotating in the same frame makes the physical scale intuitive rather than abstract.</p>
+
+<h2>The numbers behind the scale</h2>
+<p>Earth’s diameter is approximately 12,742 km, while Neptune’s is about 49,244 km. The diameter ratio between them is:</p>
+
+$$
+\frac{D_N}{D_E} = \frac{49{,}244}{12{,}742} \approx 3.86
+$$
+
+<p>Volume scales with the cube of the diameter:</p>
+
+$$
+(3.86)^3 \approx 57.5
+$$
+
+<p>This means Neptune could contain more than fifty-seven Earth-sized volumes. Surface area, which determines how large each planet’s visible disk appears, scales with the square of the diameter:</p>
+
+$$
+(3.86)^2 \approx 14.9
+$$
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/neptune_texture.webp"
+  secondaryTexture="/textures/earth-texture-nasa.webp"
+  options={{ cameraPosition: [0, 6, 0] }}
+  primaryRadius={24.622}
+  secondaryRadius={6.371}
+  planetDistance={2.0}
+  primaryContrast={1.0}
+  secondaryContrast={0.9}
+  orthoExtent={2.0}
+/>
+
+<p>So Neptune’s visible face is nearly fifteen times larger than Earth's. These exact proportions are preserved in the simulation, allowing the scale difference to be experienced visually rather than interpreted numerically.</p>
+
+<SimPostSchema
+  title="Neptune and Earth Size Comparison"
+  description="An interactive browser-based simulation that shows the true scale difference between Neptune and Earth."
+  url="https://astrosyo.com/posts/neptune-earth-size-comparison"
+  datePublished="2025-09-08"
+  authorName="Astrosyo"
+  keywords={[
+    "neptune",
+    "earth",
+    "planet size comparison",
+    "astronomy",
+    "three.js",
+    "webgl",
+    "education"
+  ]}
+  image="/images/neptune-earth-size-comparison/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Planet Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/neptune-earth-size-comparison#simulation",
+    "description": "Interactive visualization comparing Neptune and Earth with accurate scale."
+  }}
+/>

@@ -1,0 +1,46 @@
+---
+import '../styles/simGlobal.css'; // keep existing styles so SimCanvas works
+const { title = 'Simulation', description = '' } = Astro.props.frontmatter ?? {};
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{title}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content={description} />
+    <style is:global>
+      html, body { height: 100%; margin: 0; padding: 0; }
+      body { overflow: hidden; background: #000; }
+
+      /* OVERRIDES: make sim-stage truly fullscreen */
+      .sim-stage {
+        position: fixed;
+        inset: 0;                 /* top/right/bottom/left: 0 */
+        width: 100vw;
+        height: 100vh;
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: none !important;
+        max-height: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background: #000;         /* or your gradient if you prefer */
+      }
+
+      /* remove baseline gap & ensure canvas fills parent */
+      .sim-stage canvas {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      .pill {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,517 @@
+.category-reviews h2,
+.category-reviews h3,
+.category-reviews h4,
+.category-reviews h5 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 1rem;
+  padding-bottom: 0.8rem;
+  max-width: 700px;
+  margin: auto;
+  text-align: left;
+  width: 100%;
+  display: inline-block;
+}
+
+.review-title {
+  padding: 0px;
+  text-align: center;
+  max-width: 1000px;
+}
+
+.category-reviews h1 {
+  margin: auto;
+  margin-top: 10vh;
+  margin-bottom: 6vh;
+}
+
+/* Highlighted callout paragraphs */
+.highlight {
+  background: rgba(255,255,255,0.06);
+  border-left: 4px solid rgb(var(--brand-color));
+  padding: 0.75rem 1rem;
+  margin: 1.5rem 0;
+  width: 100%;
+  color: #e4e4e4;
+}
+
+/* Tip-style italic notes */
+.tip {
+  font-style: italic;
+  color: #8ab4ff;
+  margin: 1rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid #8ab4ff;
+}
+
+.writer{
+  text-align: center;
+}
+
+h1 .review-tag {
+  margin-left: 0.6rem;
+  font-size: 0.55em;   /* scales with h1 */
+  vertical-align: middle;
+}
+
+.review-tag {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 0.6rem;
+  border: 2px solid;
+  background: #1a1a1a;
+}
+
+.review-tag.hands-on {
+  color: rgb(var(--brand-color));
+  border-color: rgb(var(--brand-color));
+  background: #121212;
+}
+
+.review-tag.research {
+  color: rgb(var(--brand-color));
+  border-color: rgb(var(--brand-color));
+  background: #121212;
+}
+
+/* ===============================
+   Shared local tokens (scoped)
+   =============================== */
+.info-tags,
+.ratings,
+.pros-cons {
+  --accent: #a9b4ff;
+  --accent-2: #c0c8ff;
+  --text: #e4e4e4;
+  --muted: #aab1bd;
+  --card: #1b1d22;
+  --card-2: #17191e;
+  --line: rgba(255,255,255,0.08);
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  --glow: 0 0 0 1px rgba(169,180,255,0.18), 0 0 24px rgba(169,180,255,0.12);
+}
+
+/* ===============================
+   INFO TAGS (chips)
+   =============================== */
+.info-tags {
+  margin: 1.5em 0;
+  max-width: 800px;
+  color: var(--text);
+}
+
+.info-tags h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  letter-spacing: .2px;
+  position: relative;
+}
+
+.info-tags h3::after, .affiliates-header::after {
+  content: "";
+  display: block;
+  height: 2px;
+  width: 72px;
+  margin-top: .45rem;
+  background: linear-gradient(90deg, rgb(var(--brand-color)), transparent);
+  opacity: .8;
+}
+
+.info-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem .75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.info-tags ul li {
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: .5rem 0.95rem;
+  border-radius: 999px;
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.04);
+  font-size: .94rem;
+  letter-spacing: .1px;
+  position: relative;
+  isolation: isolate;
+  background: rgb(12,12,12);
+  max-width: 90vw;
+}
+
+.info-tags ul li::before {
+  content: "";
+  width: .4rem;
+  height: .4rem;
+  border-radius: 50%;
+  background: rgb(var(--brand-color));
+  box-shadow: 0 0 10px rgba(169,180,255,.6);
+  margin-right: .5rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* ===============================
+   RATINGS (cards + static ring)
+   =============================== */
+.ratings {
+  margin: 2em 0;
+  text-align: center;
+  color: var(--text);
+}
+
+.ratings h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #fff;
+  letter-spacing: .2px;
+}
+
+.ratings-descriptor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.85rem;
+  padding: 0.32rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--brand-color));
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgb(var(--brand-color));
+}
+:root{
+  --text-primary: rgba(255,255,255,0.92);
+  --text-muted: rgba(255,255,255,0.62);
+
+  --tile-radius: 14px;
+  --tile-bg: rgba(255,255,255,0.03);
+  --tile-border: rgba(255,255,255,0.10);
+
+  /* Vibrant color tuning */
+  --rate-sat: 100%;
+  --rate-lit: 62%;   /* higher = more vibrant on dark bg */
+}
+
+.ratings-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+
+/* Optional: only allow horizontal scroll on larger screens */
+@media (min-width: 640px) {
+  .ratings-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.rating-tile{
+  min-width: 108px;
+  padding: 16px 14px 14px;   /* more breathing room */
+  border-radius: var(--tile-radius);
+
+  background: var(--tile-bg);
+  border: 1px solid var(--tile-border);
+}
+
+/* apply the rating hue only to border + score */
+.rating-tile{
+  --rate-color: hsl(var(--h, 0) var(--rate-sat) var(--rate-lit));
+  border-color: color-mix(in oklab, var(--rate-color) 70%, rgba(255,255,255,0.10));
+}
+
+.rating-score{
+  color: var(--rate-color);
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.rating-label{
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+/* Subtle emphasis on Overall (not changing bar color) */
+/* .vbar-card[data-key="overall"] {
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  padding: 6px;
+} */
+
+/* ===============================
+   PROS & CONS (split cards)
+   =============================== */
+.pros-cons {
+  display: flex;
+  gap: 2rem;
+  margin: 2em 0;
+  flex-wrap: wrap;
+  max-width: min(90vw, 800px);
+  color: var(--text);
+}
+
+@media (max-width: 600px) {
+  .pros-cons{
+    flex-direction: column;
+  }
+}
+
+
+.pros-cons > div {
+  flex: 1;
+  min-width: 200px;
+  border: 1px solid var(--line);
+  border-radius: .75rem;
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  background: rgb(12,12,12);
+}
+
+.pros-cons h3 {
+  font-size: 1.25rem;
+  margin-bottom: .75rem;
+  text-align: center;
+  color: #ffffff;
+  letter-spacing: .2px;
+}
+
+/* Lists */
+.pros-cons ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.pros-cons li {
+  margin: .5em 0;
+  line-height: 1.4;
+  color: var(--text);
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+/* Bullet dots */
+.pros-cons li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: .55em;
+  width: .5rem; height: .5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px rgba(169,180,255,0.15);
+}
+
+.pros-cons .pros-block li::before { background: rgb(var(--brand-color)); box-shadow: 0 0 0 2px rgba(60,214,128,0.18); }
+.pros-cons .cons-block li::before { background: rgb(var(--brand-color)); box-shadow: 0 0 0 2px rgba(255,107,107,0.18); }
+
+.includes {
+  margin: 2em 0;
+}
+
+.includes h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #a9b4ff;
+  text-align: center;
+}
+
+.includes ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0;
+  margin: 0 auto;
+  list-style: none;
+  justify-content: center;
+}
+
+.includes ul li {
+  background-color: rgba(169,180,255,0.10);
+  border: 1px solid rgba(169,180,255,0.28);
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  font-size: 1rem;
+  color: #e4e4e4;
+  white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.includes ul li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+}
+
+.affiliate-section {
+  max-width: min(90vw, 780px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  justify-content: center;
+}
+
+.affiliate-section-title {
+  margin-bottom: 0.4rem;
+  font-size: 1.3rem;
+}
+
+.accessory-box {
+  background: rgba(255,255,255,0.04);
+  border-left: 4px solid #a9b4ff;
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  color: #e4e4e4;
+}
+
+.accessory-box h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+.accessory-box ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.accessory-box li {
+  padding-left: 1.2rem;
+  margin: 0.5rem 0;
+  position: relative;
+  font-size: 0.95rem;
+  color: #e4e4e4;
+}
+
+
+
+.review-disclaimer {
+  background-color: var(--bg);
+  border-left: 4px solid rgb(var(--brand-color));
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  color: rgb(var(--brand-color));
+  border-radius: 4px;
+}
+
+.review-disclaimer strong {
+  color: rgb(var(--brand-color));
+}
+
+/* =============================
+   Review Post Starter Layout
+   ============================= */
+.review-post-starter {
+  margin: 1vh auto 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Title on top */
+.review-post-starter h1 {
+  font-size: clamp(1.8rem, 2vw + 1rem, 2.6rem);
+  line-height: 1.2;
+  margin: 0;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* =============================
+   Row Layout (meta left, image right)
+   ============================= */
+.review-post-starter-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+
+
+/* Meta column (fixed/narrow, left) */
+.review-meta {
+  flex: 0 0 360px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.post-starter-image {
+  width: 100%;
+  max-width: 100%;
+  align-self: center;
+}
+/* =============================
+   Responsive Adjustments
+   ============================= */
+@media (max-width: 920px) {
+  .review-post-starter-content {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .review-meta {
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
+
+  .post-starter-image {
+    width: 100%;
+    max-width: 100%;
+    align-self: center;
+  }
+}
+
+.main-rating-card{
+  --rate-color: hsl(var(--h, 0) 100% 62%);
+
+  border: 1px solid
+    color-mix(in oklab, var(--rate-color) 70%, rgba(255,255,255,0.12));
+  background: rgba(255,255,255,0.03);
+
+  border-radius: 18px;          /* was 16px */
+  padding: 20px 22px 18px;      /* more presence */
+  gap: 6px;                     /* nicer vertical rhythm */
+}
+
+/* Category label */
+.main-rating-card .category{
+  font-size: 0.85rem;           /* was smaller */
+  letter-spacing: 0.02em;
+  opacity: 0.65;
+}
+
+/* The score itself */
+.main-rating-card .score{
+  color: var(--rate-color);
+  font-size: 2.2rem;            /* ⭐ main upgrade (was ~1.6–1.8) */
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}

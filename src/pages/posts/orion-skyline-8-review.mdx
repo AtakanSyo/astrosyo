@@ -1,0 +1,104 @@
+---
+category: reviews
+subcategory: telescopes
+reviewType: hands-on
+layout: ../../layouts/ReviewPostLayout.astro
+title: Orion Skyline 8 Review
+telescopeType: Dobsonian
+writer: Zane Landers
+brand: Orion
+rating:
+  overall: 9.5
+  optics: 10
+  mount: 9
+  accessories: 9.5
+affiliate:
+  amazon: 'https://amzn.to/3TT7iXM'
+  highpointscientific: ''
+cover_image: /images/orion-skyline-8-review/cover.webp
+thumbnail: /images/orion-skyline-8-review/thumbnail.webp
+specs:
+  aperture: 203mm (8")
+  focalLength: 1200mm
+pubDate: '2025-07-21'
+description: >-
+  The SkyLine 8 is a great scope, and comes with more features and accessories
+  out of the box compared to the more basic 8” scopes sold at lower price tags.
+slug: orion-skyline-8-review
+imageDir: /images/orion-skyline-8-review
+keywords:
+  - Orion Skyline 8
+prosCons:
+  pros:
+    - "Great optics"
+    - "Dual-speed focuser"
+    - "Plenty of aperture"
+    - "Decent included accessory set"
+  cons:
+    - "Finderscope is somewhat difficult to use"
+    - "Expensive compared to similar and identical models from other brands"
+    - "Unusual bearings can be a little too smooth"
+quickSpecs:
+  - "203mm (8”) Aperture"
+  - "1200mm Focal Length"
+  - "f/5.9"
+  - "2 included eyepieces"
+  - "9x50 right-angle finderscope"
+  - "Dobsonian"
+lang: en
+---
+import Affiliates from '../../components/Affiliates.astro'
+import Ratings from '../../components/Ratings.astro'
+import ProsCons from '../../components/ProsCons.astro'
+import QuickSpecs from '../../components/QuickSpecs.astro'
+import GenericTable from '../../components/GenericTable.astro'
+
+<h2>Introduction</h2>
+
+<p>Orion’s SkyLine 8, the bigger sibling of the Orion Skyline 6, is another one of their imported scopes made by GSO - identical to the AD telescopes sold by Apertura, and the Z series deluxe Dobsonians sold by Zhumell, along with many others. The SkyLine 8 is a great scope, and comes with more features and accessories out of the box compared to the more basic 8” scopes sold at lower price tags. An 8” Dobsonian is considered by many to be the sweet spot for portability and aperture for beginners; a 6” or 10” is similarly sized physically but lighter/heavier respectively.</p>
+<QuickSpecs items={frontmatter.quickSpecs} />
+
+<ProsCons pros={frontmatter.prosCons?.pros} cons={frontmatter.prosCons?.cons} />
+
+<Ratings rating={frontmatter.rating} />
+
+<Affiliates affiliate={frontmatter.affiliate} />
+
+<img class="post-image post-image-lg" src={frontmatter.imageDir + '/focuser.webp'} alt="Focuser"></img>
+
+<h2>Optics</h2>
+<p>The Orion SkyLine 8 is an 8” (203mm) f/5.9 Newtonian reflector with a focal length of 1200mm. At f/6, the amount of coma visible in low-power eyepieces is negligible to nonexistent. Collimating the SkyLine 8 isn’t particularly challenging; the primary mirror requires no tools to adjust while the secondary mirror is easy to tip and tilt with a screwdriver. The back of the scope has a battery-powered cooling fan to quickly bring the primary mirror to ambient temperature if you take it outside on a cold night.</p>
+<p>The SkyLine 8’s focuser is a 2” dual-speed Crayford. You use the larger knob to coarsely focus and the finer 10:1 reduction knob to dial in focus exactly, which is particularly useful at higher magnifications where it’s harder to get the telescope to “snap” to focus. The focuser uses a brass compression ring to hold your eyepieces. You have to use a provided 35mm extension tube to reach focus with most eyepieces; the focuser is too short by default so as to make it easy to use a coma corrector or binoviewer without having to modify the telescope, as well as keep the tube shorter.</p>
+<p>The tube of the SkyLine 8 is short enough to fit across the back of most vehicles and easy to carry around. You can buy lifting straps or handles to make moving the tube easier if need be, but for most people simply wrapping your arms around it should suffice.</p>
+<h2>Mount</h2>
+
+<p>The SkyLine 8 is a Dobsonian telescope, pivoting up/down in altitude and swiveling sideways without any gears or motors. The base is made out of thick-walled, dense particle board as with most commercial Dobsonians. Unusually, the SkyLine 8 doesn’t use the normal Teflon-on-laminate system for its bearings. Instead, it pivots up and down on ball bearings and swivels on rollers from a “lazy Susan”. The altitude bearings can be moved along the tube to balance with different accessories and have clutches to lock them in place and adjust their smoothness. The azimuth bearing is considered by many to be too loose and easy to spin; many users replace the rollers with Teflon pads to glide against the smooth laminate covering the bottom of the base and aftermarket kits are available to do so. A carrying handle and eyepiece rack are installed on the sides of the mount for convenience.</p>
+<img class="post-image post-image-lg" src={frontmatter.imageDir + '/accessories.webp'} alt="Accessories"></img>
+<GenericTable
+  title="Included Accessories"
+  headers={['Accessory', 'Notes']}
+  rows={[
+    ['30mm 2” Erfle eyepiece', 'Provides 40x'],
+    ['9mm 1.25” Plössl eyepiece', 'Provides 133x'],
+    ['9x50 right-angle correct-image finderscope', 'For aiming'],
+    ['1.25” laser collimator', 'For collimation'],
+    ['35mm extension tube', 'Helps reach focus'],
+    ['2” to 1.25” eyepiece adapter', 'Use 1.25” eyepieces'],
+  ]}
+/>
+<p>The 30mm Erfle or “SuperView” included with the SkyLine 8 makes for an excellent low-power eyepiece; its apparent field of view of about 70 degrees makes for an immersive view and a massive true field of 1.75 degrees, or the angular size of 3.5 full Moons. It does have some astigmatism towards the edge of the field of view which can be easily confused for coma; the Erfle design doesn’t work perfectly in telescopes faster than f/8-f/10 or so. However, this issue is easy enough to ignore.</p>
+<p>The included 9mm Plossl is a little uncomfortable to look through due to its lack of eye relief, and the apparent field of view is narrow at a bit under 50 degrees. However, the views through it are remarkably sharp. A higher-magnification eyepiece in the 4-6mm range as well as one or two oculars to bridge the gap between the included 30mm and 9mm are essential future purchases.</p>
+<p>The 9x50 right-angle, correct-image finder provided with the SkyLine 8 shows stars a few magnitudes fainter than what you can see with your naked eye alone, but is a little hard to get used to. It matches the orientation of star charts with its correct left-right view but aiming it requires first sighting along the tube and then looking through the finder, which can be a little confusing. Adding a reflex sight such as a Telrad or Rigel Quikfinder might be a good idea.</p>
+<p>The included laser collimator is, unfortunately, largely useless; it rarely has a laser aligned with the barrel and needs to be adjusted while in some kind of V-block to be of any help in collimating the scope, and a collimation cap or Cheshire is fundamentally easier to use anyway.</p>
+<img class="post-image post-image-lg" src={frontmatter.imageDir + '/garden.webp'} alt="Garden"></img>
+<h2>What can you see?</h2>
+<p>The SkyLine 8 can easily show you the polar ice caps and dark markings on Mars when it’s close to Earth, the phases of Mercury and Venus, and the rings of Saturn. Jupiter shows numerous cloud belts and features along with the Great Red Spot and its moons, which appear as tiny disks along with their shadows when they transit in front of Jupiter. The SkyLine 8 can show up to 8 of Saturn’s moons and the Cassini Division within the rings too. You’ll also be able to see a few moons of Uranus and Neptune’s moon Triton. Our own Moon looks fabulous too.</p>
+<p>Under dark skies, the SkyLine 8 can start to resolve the spiral arms in bright galaxies like M51 and M81 while showing you the dust lanes in dozens like M64 and M104 and revealing thousands more galaxies as dim smudges - though under light-polluted conditions it’s hard to make any of them out at all. Regardless of your skies, you should be able to resolve globular star clusters’ outer individual stars and view dozens of beautiful and bright open star clusters. The SkyLine 8 can also resolve the tiny details in planetary nebulae like the Ghost of Jupiter, and under decent skies, large nebulae like the Orion Nebula and the Swan look great too.</p>
+<img class="post-image post-image-lg" src={frontmatter.imageDir + '/cooler.webp'} alt="Cooler"></img>
+
+<h2>Drawbacks</h2>
+<p>Some of the SkyLine 8’s accessories - namely the laser collimator - don’t really work as they should and are almost detrimental to the overall package. The price is also higher than the identical Apertura AD8 and Zhumell Z8, so we would recommend you get either of those instead if they are available to you.</p>
+<p>As previously mentioned, the roller azimuth bearing is not ideal for a Dobsonian telescope such as the SkyLine 8, though it’s easily fixed/replaced for a minimal amount of effort or cost.</p>
+<h2>Conclusion</h2>
+
+<p>The Orion SkyLine 8 is a great scope and one we highly recommend as with pretty much any 8” Dob; which one is best really depends on what combinations of features, pricing, and availability work for you. A 6” Dob (including the SkyLine model Orion offers) is great if you need to lower your budget, while the 10” SkyLine has the same basic features in a similar form factor to the Skyline 8 with minimal increases in weight and difficulty of use.</p>

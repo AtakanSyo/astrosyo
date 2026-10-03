@@ -1,0 +1,88 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Jupiter and Neptune Size Comparison"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-08-27'
+description: "The true scale difference between Jupiter and Neptune."
+slug: jupiter-neptune-size-comparison
+imageDir: /images/jupiter-neptune-size-comparison
+thumbnail: /images/jupiter-neptune-size-comparison/thumbnail.webp
+keywords:
+  - jupiter
+  - neptune
+  - outer planets
+  - planet size comparison
+  - astronomy
+  - webgl
+  - simulation
+lang: en
+---
+
+import PlanetSizeComparison from "../../components/simulations/planet-size-comparison/PlanetSizeComparison.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/jupiter_texture.webp"
+  secondaryTexture="/textures/neptune_texture.webp"
+  primaryRadius={69911}
+  secondaryRadius={24622}
+  planetDistance={1.8}
+  primaryContrast={1.05}
+  secondaryContrast={0.95}
+  orthoExtent={1.2}
+/>
+<p>This visualization places Neptune next to Jupiter using their real physical diameters and true 3D geometry. Both planets rotate on their axes, and no scaling is applied beyond their real sizes. Neptune is the smallest of the giant planets, while Jupiter is the largest planetary object in the Solar System. Seeing them side by side immediately communicates the difference—Neptune feels compact and delicate, while Jupiter appears overwhelmingly dominant.</p>
+
+<h2>The numbers behind the scale</h2>
+<p>Neptune’s diameter is approximately 49,244 km, while Jupiter’s is about 139,820 km. The diameter ratio between them is:</p>
+
+$$
+\frac{D_J}{D_N} = \frac{139{,}820}{49{,}244} \approx 2.84
+$$
+
+<p>Volume scales with the cube of the diameter. When we apply that:</p>
+
+$$
+(2.84)^3 \approx 22.9
+$$
+
+<p>Meaning Jupiter could contain nearly twenty-three Neptune-sized volumes. Surface area scales with the square of the diameter:</p>
+
+$$
+(2.84)^2 \approx 8.1
+$$
+
+<p>So Jupiter’s visible disk is over eight times larger than Neptune’s. This simulation preserves those proportions exactly, letting your eyes absorb the magnitude of the difference without any exaggeration or diagram distortion.</p>
+
+<SimPostSchema
+  title="Jupiter and Neptune Size Comparison"
+  description="An interactive browser-based simulation that shows the true scale difference between Jupiter and Neptune."
+  url="https://astrosyo.com/posts/jupiter-neptune-size-comparison"
+  datePublished="2025-08-27"
+  authorName="Astrosyo"
+  keywords={[
+    "jupiter",
+    "neptune",
+    "planet size comparison",
+    "astronomy",
+    "three.js",
+    "webgl",
+    "education"
+  ]}
+  image="/images/jupiter-neptune-size-comparison/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Planet Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/jupiter-neptune-size-comparison#simulation",
+    "description": "Interactive visualization comparing Jupiter and Neptune with accurate scale."
+  }}
+/>

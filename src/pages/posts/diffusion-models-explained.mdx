@@ -1,0 +1,169 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "How Diffusion Models Work"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-02-07'
+description: "A step-by-step, visual explainer of forward noise and reverse denoising in modern diffusion models."
+slug: diffusion-models-explained
+imageDir: /images/diffusion-models-explained
+thumbnail: /images/diffusion-models-explained/thumbnail.png
+keywords:
+  - diffusion models
+  - denoising diffusion
+  - AI
+  - generative models
+  - machine learning
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import DiffusionExplainer from "../../components/simulations/diffusion-suite/DiffusionExplainer.jsx";
+import NeuralNetExplainer from "../../components/simulations/diffusion-suite/NeuralNetExplainer.jsx";
+import GateExplainer from "../../components/simulations/diffusion-suite/GateExplainer.jsx";
+import SelfPixelAttentionExplainer from "../../components/simulations/diffusion-suite/SelfPixelAttentionExplainer.jsx";
+import UNetExplainer from "../../components/simulations/diffusion-suite/UNetExplainer.jsx";
+import GradientDescentExplainer from "../../components/simulations/diffusion-suite/GradientDescentExplainer.jsx";
+import "../../styles/diffusion-suite/diffusionExplainer.css";
+import "../../styles/diffusion-suite/neuralNetExplainer.css";
+
+<h2>Diffusion Models</h2>
+<p>Diffusion models were introduced as generative probabilistic frameworks that gradually add and then remove noise. By learning to reverse the diffusion, they synthesize new samples that follow the data distribution.</p>
+
+<figure class="post-figure post-figure-md">
+  <DiffusionExplainer client:load steps={1000} />
+</figure>
+
+<h3>Forward Process</h3>
+The forward process applies Gaussian noise over a schedule of discrete time steps:
+
+$$
+q(x_t \mid x_{t-1}) = \mathcal{N}\!\left(x_t;\,\sqrt{1-\beta_t}\,x_{t-1},\,\beta_t I\right).
+$$
+
+Sampling uses the reparameterization trick:
+
+$$
+x = \mu + \sigma\,\varepsilon, \qquad \varepsilon \sim \mathcal{N}(0, I),
+$$
+
+so a single diffusion step is
+
+$$
+x_t = \sqrt{1-\beta_t}\,x_{t-1} + \sqrt{\beta_t}\,\epsilon_t,\qquad \epsilon_t \sim \mathcal{N}(0, I).
+$$
+
+With the definitions
+
+$$
+\alpha_t = 1 - \beta_t
+$$
+
+$$
+\bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s
+$$
+
+we get the closed form:
+
+$$
+x_t = \sqrt{\bar{\alpha}_t}\,x_0 + \sqrt{1-\bar{\alpha}_t}\,\epsilon_t,\qquad \epsilon_t \sim \mathcal{N}(0, I).
+$$
+
+<h3>Reverse Process</h3>
+The learned model predicts the reverse transition:
+
+$$
+p_\theta(x_{t-1} \mid x_t) = \mathcal{N}\!\bigl(x_{t-1};\,\mu_\theta(x_t,t),\,\tilde{\beta}_t I\bigr),
+$$
+
+Predicting the model mean is equivalent to predicting the noise:
+
+$$
+\mu_\theta(x_t, t)=\frac{1}{\sqrt{\alpha_t}}\!\left(x_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\,\hat{\epsilon}\right).
+$$
+
+$$
+\hat{x}_0 = \frac{x_t - \sqrt{1 - \bar{\alpha}_t}\,\hat{\epsilon}}{\sqrt{\bar{\alpha}_t}}
+$$
+
+Using this estimate, the posterior mean is:
+
+$$
+\mu_\theta(x_t, t)=
+\frac{\sqrt{\bar{\alpha}_{t-1}}\,\beta_t}{1-\bar{\alpha}_t}\,\hat{x}_0+
+\frac{\sqrt{\alpha_t}(1-\bar{\alpha}_{t-1})}{1-\bar{\alpha}_t}\,x_t.
+$$
+
+$$
+\tilde{\beta}_t = \frac{1 - \bar{\alpha}_{t-1}}{1 - \bar{\alpha}_t}\,\beta_t
+$$
+
+The reverse step samples:
+
+$$
+x_{t-1} = \mu_\theta(x_t, t) + \sqrt{\tilde{\beta}_t}\,z_t,\qquad z_t \sim \mathcal{N}(0, I),
+$$
+
+$$
+x_T \sim \mathcal{N}(0, I)
+$$
+
+starting from pure noise.
+
+<h3>Neural network view</h3>
+<p>Under the hood, a neural network predicts the noise at each timestep. The animation below shows a dense network with signals pulsing from input to output.</p>
+
+<figure class="post-figure post-figure-md">
+  <NeuralNetExplainer client:load layers={[4, 8, 8, 3]} />
+</figure>
+
+<h3>Self-attention over pixels</h3>
+<p>Modern diffusion U-Nets often mix convolutions with self-attention so distant pixels can influence each other. Click any pixel below to make it the query; the white lines show attention weights fading with distance, controlled by the σ slider.</p>
+
+<figure class="post-figure post-figure-md">
+  <SelfPixelAttentionExplainer client:load gridSize={7} />
+</figure>
+
+<h3>U-Net backbone</h3>
+<p>Diffusion models commonly use a U-Net: an encoder that downsamples to a bottleneck, then a decoder that upsamples while fusing skip connections. Slide to see the forward (left) and reverse (right) halves light up.</p>
+
+<figure class="post-figure post-figure-md">
+  <UNetExplainer client:load depth={4} />
+</figure>
+
+<h3>Training dynamics</h3>
+<p>Diffusion models are optimized with gradient descent. The plot below shows steps on a simple quadratic: small learning rates creep toward the minimum; larger rates move faster but can overshoot.</p>
+
+<figure class="post-figure post-figure-md">
+  <GradientDescentExplainer client:load steps={18} />
+</figure>
+
+<h3>Single gate intuition</h3>
+<p>A neural network is built from simple gates. Here is one ReLU-style gate with two inputs and one output—signals flow left to right in monochrome.</p>
+
+<figure class="post-figure post-figure-md">
+  <GateExplainer client:load gate="ReLU" inputs={[1, 0]} />
+</figure>
+
+<SimPostSchema
+  title="How Diffusion Models Work"
+  description="Interactive slider that shows forward noise addition and reverse denoising in diffusion models."
+  url="https://astrosyo.com/posts/diffusion-models-explained"
+  datePublished="2026-02-07"
+  authorName="Astrosyo"
+  keywords={["diffusion models", "denoising", "AI", "generative models"]}
+  image="/images/diffusion-models-explained/thumbnail.webp"
+  articleSection="AI"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Diffusion Explainer",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires Canvas",
+    "url": "https://astrosyo.com/posts/diffusion-models-explained#simulation",
+    "description": "Interactive slider showing forward noise and reverse denoising steps."
+  }}
+/>

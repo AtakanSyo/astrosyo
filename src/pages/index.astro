@@ -1,22 +1,27 @@
 ---
+import { calculatorSlugs } from '../config/calculatorSlugs.js';
 // imports stay the same
 import Layout from '../layouts/Layout.astro';
-import '../styles/index.css';
-import '../styles/cards.css';
+import '../styles/aprilIndex.css';
+import '../styles/aprilCards.css';
 import '../styles/search.css';
+import '../styles/category.css';
 import '../styles/simGlobal.css';
 import { site } from '../config/site.js';
-import PostCard from "../components/postCard.astro";
+import { Instagram, Youtube } from "lucide-react";
+import PostCard from "../components/AprilPostCard.astro"; // ✅ new
+import SinglePlanetSim from "../components/simulations/single-planet/SinglePlanetSim.jsx";
 
 
 // 1) load and sort all posts
-const allPosts = Object.values(
+const loadedPosts = Object.values(
   import.meta.glob('./posts/*.{md,mdx}', { eager: true })
 ) as any[];
-const visiblePosts = allPosts.filter(({ frontmatter }) => !frontmatter?.hidden);
-visiblePosts.sort(
+loadedPosts.sort(
   (a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime()
 );
+
+const allPosts = loadedPosts.filter(({ frontmatter }) => !frontmatter?.hidden);
 
 // helpers
 function normalizeCat(cat: unknown): string[] {
@@ -27,127 +32,142 @@ function normalizeCat(cat: unknown): string[] {
 function hasCat(frontmatter: any, needle: string) {
   return normalizeCat(frontmatter.category ?? frontmatter.categories).includes(needle);
 }
-function alphabetizedByCategory(key: string) {
-  return visiblePosts
-    .filter(({ frontmatter }) => hasCat(frontmatter, key))
-    .sort((a, b) =>
-      String(a.frontmatter.title ?? '').localeCompare(
-        String(b.frontmatter.title ?? ''),
-        'en',
-        { sensitivity: 'base' }
-      )
-    );
+function latestByCategory(key: string, n = 6) {
+  return allPosts.filter(({ frontmatter, url }) => key === 'calculators' ? calculatorUrls.has(url) : hasCat(frontmatter, key) && (key !== 'simulation' || !calculatorUrls.has(url))).slice(0, n);
 }
 
-function groupByInitial(posts: any[]) {
-  const groups = new Map<string, any[]>();
-
-  for (const post of posts) {
-    const initial = String(post.frontmatter.title ?? '').trim().charAt(0).toUpperCase();
-    if (!/^[A-Z]$/.test(initial)) continue;
-    const group = groups.get(initial) ?? [];
-    group.push(post);
-    groups.set(initial, group);
-  }
-
-  return Array.from(groups, ([letter, items]) => ({ letter, items }));
-}
+const calculatorUrls = new Set(calculatorSlugs.map(slug => `/posts/${slug}`));
 
 // category config
 const CATS = [
-  { key: 'simulation',    label: 'Interactives',    cta: 'Go to the story →', link: '/interactives' },
+  { key: 'calculators', label: 'Calculators', cta: 'Open calculator →', link: '/calculators' },
+  { key: 'simulation',    label: 'Cosmic Stories',    cta: 'Go to the story →', link: '/cosmic-stories' },
+  { key: 'reviews',        label: 'Reviews',        cta: 'Read the review →' , link: '/telescopes'},
   // { key: 'informational', label: 'Informational Posts',         cta: 'Read the guide →' },
   // { key: 'nasa',          label: 'NASA Posts',           cta: 'See the article →' },
 ];
 
-// Page-wide A–Z jump index: only letters that actually have posts, in order,
-// pointing at the first matching letter header on the page.
-function anchorId(catKey: string, letter: string) {
-  return `letter-${catKey}-${letter}`;
-}
-
-const letterIndex = new Map<string, string>();
-for (const cat of CATS) {
-  const groups = groupByInitial(alphabetizedByCategory(cat.key));
-  for (const { letter } of groups) {
-    if (!letterIndex.has(letter)) {
-      letterIndex.set(letter, anchorId(cat.key, letter));
-    }
-  }
-}
-const alphabetLinks = Array.from(letterIndex.entries()).sort(([a], [b]) => a.localeCompare(b));
-
 ---
 
 <Layout title="Home">
-  {alphabetLinks.length > 0 && (
-    <nav class="az-nav" aria-label="Jump to letter">
-      <ul>
-        {alphabetLinks.map(([letter, id]) => (
-          <li>
-            <a href={`#${id}`}>{letter}</a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  )}
-
   <section class="centered_flex home-main-section">
     <div class="home-hero-sim">
       <div class="hero-sim-wrap">
-<section class="hero centered_flex fade-up">
-          <span class="hero-title">{site.name}</span>
-          <h1 class="home-kicker">{site.description}</h1>
-          <h2 class="home-kicker-2">{site.secondDescription}</h1>
+        <div class="hero-sim-bg" aria-hidden="true">
+          <SinglePlanetSim
+            client:load
+            showPause={false}
+            showStarBackground={true}
+            planet="Mars"
+            cameraPosition={{ x: 0, y: 0, z: 3 }}
+            textureContrast={0.7}
+            tiltDeg={[20, -20, -25]}
+            spinDegPerSec={4}
+            ambientIntensity={0.0}
+          />
+        </div>
+
+        <section class="hero centered_flex fade-up">
+          <span class="hero-kicker">{site.name}</span>
+          <h1 class="home-title">{site.description}</h1>
+          <p class="home-description">Science stories, telescope reviews, and interactive calculators.</p>
         </section>
 
+	        <a class="home-sim-link" href="/posts/mars">
+	          Go to the latest story <span class="home-sim-arrow" aria-hidden="true">→</span>
+	        </a>
       </div>
+
+          <!-- CTA ROW -->
+          <div class="cta-row-wrapper">
+            <div class="cta-row">
+              <a href="/calculators" class="cta"><span class="cta-label">Calculators</span><span class="cta-arrow">→</span></a>
+              <a href="/telescopes" class="cta" onclick="window.umami?.track?.('explore-telescopes-cta')">
+                <span class="cta-label">🪐 Explore Telescopes</span>
+                <span class="cta-arrow">→</span>
+              </a>
+
+              <a href="/top-telescopes" class="cta" onclick="window.umami?.track?.('top-ten-cta')">
+                <span class="cta-label">⭐ Top 10 Telescope Picks</span>
+                <span class="cta-arrow">→</span>
+              </a>
+
+              <a href="/cosmic-stories" class="cta" onclick="window.umami?.track?.('cosmic-stories-cta')">
+                <span class="cta-label">🌀 Cosmic Stories</span>
+                <span class="cta-arrow">→</span>
+              </a>
+
+              <a href="/about" class="cta" onclick="window.umami?.track?.('about-cta')">
+                <span class="cta-label">ℹ️ About Us</span>
+                <span class="cta-arrow">→</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- SOCIALS -->
+          <div class="global-socials">
+            <div class="global-socials-links">
+              <a href="https://www.instagram.com/astrosyo_" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+                <Instagram size={36} />
+              </a>
+
+              <a href="https://www.youtube.com/@atakansaracyakupoglu9930" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="YouTube">
+                <Youtube size={36} />
+              </a>
+
+              <a href="https://www.tiktok.com/@astrosyo?_r=1&_t=ZS-917RKCaEM" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="TikTok">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M14.25 4.5c.45.87 1.23 1.59 2.19 2.04.46.22.97.35 1.48.38V9.4c-1.17-.05-2.3-.43-3.3-1.08v5.47c0 3.02-2.45 5.46-5.47 5.46S3.68 16.81 3.68 13.79c0-2.51 1.71-4.65 4.12-5.24.66-.16 1.34-.16 1.99-.04v2.51a2.7 2.7 0 0 0-.99-.19c-1.5 0-2.72 1.22-2.72 2.72s1.22 2.72 2.72 2.72 2.72-1.22 2.72-2.72V3h3.01c.08.52.26 1.02.52 1.5z" />
+                </svg>
+              </a>
+            </div>
+          </div>
 	    </div>
 
     <!-- Latest by category (stacked sections) -->
     <section class="latest-section">
       {CATS.map((cat) => {
-        const items = alphabetizedByCategory(cat.key);
-        const groups = groupByInitial(items);
+        const items = latestByCategory(cat.key, 4);
         if (items.length === 0) return null;
 
         return (
-          <div class="post-grid flex_centered">
-            {groups.map(({ letter, items: groupedItems }) => (
-              <>
-                <h3 id={anchorId(cat.key, letter)} class="home-category-title home-letter-title">
-                  <span class="latest-title">{letter}</span>
-                </h3>
-                {groupedItems.map(({ frontmatter, url }) => (
-                  <PostCard
-                    url={url}
-                    frontmatter={frontmatter}
-                    row
-                    compact
-                  />
-                ))}
-              </>
-            ))}
+          <section class="category-section">
+            <h2 class="home-category-title">
+              <a href={cat.link ?? `/category/${cat.key.toLowerCase()}`} class="latest-title">{cat.label} →</a>
+            </h2>
+            <div class="april-post-grid">
+              {
+                items.map(({ frontmatter, url }) => {
+                  const isP5     = hasCat(frontmatter, 'simulation');
+                  const isReview = hasCat(frontmatter, 'reviews');
+                  const isInfo   = hasCat(frontmatter, 'informational');
+                  const isNasa   = hasCat(frontmatter, 'nasa');
+                  const thumb = frontmatter.thumbnail;
+
+                  const ctaText =
+                    isP5 ? (cat.cta ?? 'Go to the story →')
+                  : isReview ? 'Read the review →'
+                  : isInfo ? 'Read the guide →'
+                  : isNasa ? 'See the article →'
+                  : 'Read full post →';
+                  return (
+                    <PostCard
+                      url={url}
+                      frontmatter={frontmatter}
+                      isP5={isP5}
+                      isReview={isReview}
+                      isInfo={isInfo}
+                      isNasa={isNasa}
+                      ctaText={ctaText}
+                    />
+                  );
+                })
+              }
             </div>
           <span class="divider"></span>
+          </section>
         );
       })}
     </section>
     </section>
-
-  <script>
-    // Smooth-scroll the A–Z jump nav to its target letter header, landing it
-    // just under the fixed site header. Falls back to a plain anchor jump
-    // (still positioned correctly via scroll-margin-top) without JS.
-    document.querySelectorAll('.az-nav a').forEach((link) => {
-      link.addEventListener('click', (event) => {
-        const id = link.getAttribute('href')?.slice(1);
-        const target = id ? document.getElementById(id) : null;
-        if (!target) return;
-        event.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        history.pushState(null, '', `#${id}`);
-      });
-    });
-  </script>
 </Layout>

@@ -1,0 +1,148 @@
+/* Review cards follow their grid tracks instead of the calculator card width. */
+.post-card.post-card--review {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.review-link-heading {
+  margin-block: 1.5rem 1rem;
+  font-size: clamp(1.4rem, 1vw + 1.2rem, 1.8rem);
+}
+
+.review-link-empty {
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.15);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.review-link-grid {
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.review-link-single {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.review-link-card {
+  width: 100%;
+}
+
+
+/*─────────────────────────────────────────────────
+  Affiliate Buttons
+─────────────────────────────────────────────────*/
+.affiliate-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+
+.affiliate-placeholder {
+  display: block;
+  height: 3.8rem;   /* matches a single button row */
+  width: 100%;
+  opacity: 0;       /* keeps it invisible but preserves height */
+  pointer-events: none;
+}
+
+.affiliate-btn {
+  flex: 1;
+  text-align: center;
+  padding: 0.6rem;
+  background: #1f1f1f;
+  border: 1px solid #1f1f1f; /* subtle accent color border from the start */
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.5); /* faint always-on glow */
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+  max-width: 33%;
+}
+
+
+
+.affiliate-btn:hover {
+  background-color: #2d2d2d;
+  border-color: rgb(var(--brand-color)); /* slightly brighter accent */
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(93, 98, 210, 0.4);
+  transform: translateY(-1px);
+}
+
+.affiliate-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 0 4px rgba(93, 98, 210, 0.3);
+}
+
+
+
+/* Optional: align affiliate row with card spacing */
+.post-card + .affiliate-links {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.post-card--review .score-badge{
+  --rate-color: hsl(var(--h, 0) 100% 62%);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+
+  padding: 8px 12px;     /* slightly bigger */
+  border-radius: 999px;
+
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+
+  color: var(--rate-color);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid color-mix(in oklab, var(--rate-color) 70%, rgba(255,255,255,0.12));
+  box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+}
+
+@supports ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
+  .post-card--review .score-badge {
+    background: rgba(10, 12, 20, 0.38);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+}
+
+.post-card--review .post-card-thumb-spacer {
+  display: block;
+  height: 3.8rem;
+}
+
+
+.post-card--review .post-card-desc {
+  text-align: center;
+  width: 90%;
+}

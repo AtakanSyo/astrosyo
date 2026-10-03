@@ -1,9 +1,17 @@
 ---
+interface Props {
+  currentPath?: string;
+}
+
 import logoUrl from '../assets/images/shared/logo.svg?url';
-import { Search, X } from 'lucide-react';
+
+const { currentPath = '' } = Astro.props as Props;
 
 const labels = {
   home: 'Home',
+  cosmicStories: 'Stories',
+  telescopes: 'Telescopes',
+  about: 'About',
   searchPlaceholder: 'Search…',
   searchAria: 'Search posts',
   menuToggleAria: 'Toggle menu',
@@ -12,6 +20,16 @@ const labels = {
 };
 
 const siteName = Astro.site?.hostname ?? 'Astrosyo';
+
+function normalizePath(path: string) {
+  if (!path) return '/';
+  const withoutQuery = path.split('?')[0]?.split('#')[0] ?? path;
+  return withoutQuery.length > 1 ? withoutQuery.replace(/\/+$/, '') : withoutQuery;
+}
+
+function isCurrent(href: string) {
+  return normalizePath(currentPath) === normalizePath(href);
+}
 ---
 
 <header>
@@ -31,12 +49,37 @@ const siteName = Astro.site?.hostname ?? 'Astrosyo';
     </button>
 
     <nav class="site-nav" id="site-nav">
+      <a href="/" class="nav-item" aria-current={isCurrent('/') ? 'page' : undefined}>
+        {labels.home}
+      </a>
+      <a href="/calculators" class="nav-item" aria-current={isCurrent('/calculators') ? 'page' : undefined}>Calculators</a>
+      <a
+        href="/cosmic-stories"
+        class="nav-item"
+        aria-current={isCurrent('/cosmic-stories') ? 'page' : undefined}
+      >
+        {labels.cosmicStories}
+      </a>
+      <a
+        href="/telescopes"
+        class="nav-item"
+        aria-current={isCurrent('/telescopes') ? 'page' : undefined}
+      >
+        {labels.telescopes}
+      </a>
+      <a
+        href="/about"
+        class="nav-item"
+        aria-current={isCurrent('/about') ? 'page' : undefined}
+      >
+        {labels.about}
+      </a>
+
       <button class="nav-search-toggle" aria-label={labels.searchToggleAria} type="button">
-        <Search size={18} strokeWidth={1.75} aria-hidden="true" />
+        🔎
       </button>
 
       <form action="/search" method="get" class="nav-search-form">
-        <Search size={16} strokeWidth={1.75} className="nav-search-icon" aria-hidden="true" />
         <input
           type="search"
           name="q"
@@ -45,7 +88,7 @@ const siteName = Astro.site?.hostname ?? 'Astrosyo';
           aria-label={labels.searchAria}
         />
         <button type="button" class="nav-search-close" aria-label={labels.searchCloseAria}>
-          <X size={14} strokeWidth={2} aria-hidden="true" />
+          ✕
         </button>
       </form>
     </nav>

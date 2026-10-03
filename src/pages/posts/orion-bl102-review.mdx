@@ -1,0 +1,106 @@
+---
+category: reviews
+subcategory: telescopes
+reviewType: hands-on
+layout: ../../layouts/ReviewPostLayout.astro
+title: Orion BL102 Review
+telescopeType: Tabletop Dobsonian
+writer: Zane Landers
+brand: Orion
+rating:
+  overall: 6
+  optics: 5
+  mount: 9
+  accessories: 3
+affiliate:
+  amazon: 'https://amzn.to/3GZVnV9'
+  highpointscientific: ''
+  astroshop: ''
+cover_image: /images/orion-bl102-review/cover.webp
+thumbnail: /images/orion-bl102-review/thumbnail.webp
+specs:
+  aperture: '102'
+  focalLength: '640'
+pubDate: '2025-07-23'
+description: >-
+  Orion’s SkyScanner BL102 takes advantage of brand and product line name
+  confusion, poor availability of alternatives, and the assumption that most
+  Dobsonians are good telescopes to sell.
+slug: orion-bl102-review
+imageDir: /images/orion-bl102-review
+keywords:
+  - Orion BL102
+prosCons:
+  pros:
+    - "Decent amount of aperture"
+    - "Easy to aim"
+    - "Stable"
+    - "Wide field of view"
+  cons:
+    - "Low-quality, albeit usable, optics"
+    - "Bad included eyepieces"
+    - "Unusable focuser"
+quickSpecs:
+  - "102mm (4″) Aperture"
+  - "640mm Focal Length"
+  - "f/6"
+  - "2 included eyepieces"
+  - "Red dot finder"
+  - "Dobsonian"
+  - "Adjustable bearing friction for altitude axis"
+lang: en
+---
+import Affiliates from '../../components/Affiliates.astro'
+import Ratings from '../../components/Ratings.astro'
+import ProsCons from '../../components/ProsCons.astro'
+import QuickSpecs from '../../components/QuickSpecs.astro'
+import GenericTable from '../../components/GenericTable.astro'
+
+<h2>Introduction</h2>
+
+<p class="highlight">Orion’s SkyScanner BL102 takes advantage of brand and product line name confusion, poor availability of alternatives, and the assumption that most Dobsonians are good telescopes to sell a shoddy, generic telescope with low-quality optics, poor accessories, poor design, and a rather high price for what you get.</p>
+<p>The BL102 shares little with the high-quality and similarly named SkyScanner 100 besides a similar aperture and Dobsonian mount design. Orion is importing it, along with its BL135 Dobsonian and Observer reflectors, from a generic, low-quality manufacturer known as KSON. This seems to be a temporary measure as Orion sorts out its supply chain issues from the COVID-19 pandemic and its breakup with Synta, and starts new production lines from its acquisition of Meade Instruments. But for now, the BL102 and BL135 scopes are here to stay, and are also some of the few beginner scopes in stock right now. But buyer beware…</p>
+<QuickSpecs items={frontmatter.quickSpecs} />
+
+<ProsCons pros={frontmatter.prosCons?.pros} cons={frontmatter.prosCons?.cons} />
+
+<Ratings rating={frontmatter.rating} />
+
+<Affiliates affiliate={frontmatter.affiliate} />
+
+<img class="post-image post-image-lg" src={frontmatter.imageDir + '/optics.webp'} alt="Orion BL102 Optics"></img>
+<h2>Optics</h2>
+
+<p>The SkyScanner BL102 is a 102mm (4”) f/6.3 Newtonian reflector with a focal length of 640mm. The primary mirror in this telescope is spherical, and not parabolic. With a long focal ratio, this would not be an issue. A 4.5” f/8 spherical mirror such as the one used in the Orion XT4.5 has a mirror which deviates from parabolic by far less than the Rayleigh criterion of ¼ wave. A 4” telescope needs to be f/7.1 or longer to achieve acceptably sharp images with a spherical mirror, or about 3” longer in focal length than the BL102. The BL102’s optics also do not undergo any kind of quality control and tend to have other issues with the figure of the primary mirror and the flatness (or lack thereof) of the secondary mirror. As such, these scopes do not achieve sharp images - while certainly usable at low power and better than Bird-Jones catadioptric Newtonians sold at a similar price, the BL102 simply doesn’t compare to what a good 4-5” Dobsonian can achieve in terms of sharpness. The optics can thankfully be collimated relatively easily and without tools, so you can definitely get the most possible out of them, but they’re still fundamentally flawed.</p>
+<p>The focuser on the SkyScanner BL102 is a 1.25” plastic rack-and-pinion. This is not the nicer plastic 1.25” focuser found on many beginner scopes; it’s a very cheap injection-molded thing ripped off of a 60mm “department store” refractor. It has lots of wobble, and the focuser sticks so far out from the tube that low-power eyepieces such as the included 26mm actually have vignetting towards the edge of the field due to the drawtube cutting off the edges of the field and putting the focal plane far away from the secondary mirror.</p>
+<img class="post-image post-image-lg" src={frontmatter.imageDir + '/mount.webp'} alt="Orion BL102 Mount"></img>
+<h2>Mount</h2>
+<p>The SkyScanner BL102’s mount is a pretty standard tabletop Dobsonian or one-armed fork design. The scope swivels side to side on a set of 3 plastic pads gliding smoothly against the melamine-coated surface of the mount, and pivots up and down on a screw which can be tightened or loosened with a clutch knob on the side. There are no gears, slow-motion controls, etc. to worry about and the scope stays where you aim it, moving at high magnification with minimal force but without bouncing around or blowing in the wind.</p>
+<img class="post-image post-image-md" src={frontmatter.imageDir + '/accessories.webp'} alt="Orion BL102 Accessories"></img>
+
+<GenericTable
+  title="Included Accessories"
+  headers={['Accessory', 'Notes']}
+  rows={[
+    ['25mm Kellner eyepiece', 'Provides 26x'],
+    ['10mm Plossl eyepiece', 'Provides 64x'],
+    ['1.25” 3x Barlow lens', 'All-plastic; very poor image quality'],
+    ['Red dot finder', 'For aiming'],
+  ]}
+/>
+<p>The BL102’s two included eyepieces work, but they’re not particularly good, even for the low standards of kit eyepieces with an inexpensive beginner scope. The 25mm Kellner has a lots of glare problems, while the 10mm Plossl is uncomfortable to look through, has a narrow field, and has severe issues with glare and a rather dim image. Both eyepieces use a lot of plastic and clearly don’t have great coatings.</p>
+<p>The included 3x Barlow lens is a miserable, all-plastic device with a plastic lens that turns the image to complete mush. It’s similar to the dreaded 3x Barlow provided with scopes like the Celestron PowerSeeker line to enable small, poor-quality telescopes to technically achieve 400x or similarly ludicrous powers.</p>
+<p>The BL102 can handle up to 100x or so before the image starts to get fuzzy (a normal 4” can handle 200x), so if you are stuck with one of these scopes, an eyepiece in the 6mm range wouldn’t be a terrible idea to add to your kit. The included pair of eyepieces work but we certainly don’t like them.</p>
+<p>The BL102’s red dot finder is somewhat difficult to align, has a non-standard mounting bracket, and most insultingly has a tinted window which dims the view through the night sky. It barely suffices for its purpose; fortunately at 26x you can sight along the tube without the finder and get pretty close to your targets anyway.</p>
+<img class="post-image post-image-lg" src={frontmatter.imageDir + '/focuser.webp'} alt="Orion BL102 Focuser"></img>
+
+<h2>What can you see?</h2>
+<p>The SkyScanner BL102 is not the greatest scope optically, but it’s still far better than small refractors or Bird-Jones telescopes sold at similar prices. You can resolve the phases of Venus - and perhaps Mercury - and see a few dark markings and the ice caps on Mars. The Moon looks amazing. Jupiter and Saturn’s moons are visible, and the BL102 can show you some cloud belts on Jupiter along with the Great Red Spot. A good 4” telescope can show you the Cassini Divison in Saturn’s rings and resolve Jupiter’s four largest moons as tiny disks. The BL102 can have a hard time pulling this off. Uranus and Neptune are merely fuzzy points of light, with no clear disk or moons visible - mostly due to this scope’s small aperture.</p>
+<p>Deep-sky views with any telescope depend heavily on your light pollution levels. Under most conditions the SkyScanner BL102 will show you a lot of open star clusters, but it cannot resolve globular star clusters due to its small aperture. Galaxies can be seen in the thousands under dark skies and a few might show features like dust lanes; under suburban and urban skies you’ll struggle to detect any beyond the Andromeda Galaxy. Nebulae like Orion and the Lagoon look great under all but the most light-polluted conditions.</p>
+<img class="post-image post-image-lg" src={frontmatter.imageDir + '/back.webp'} alt="Orion BL102 Back"></img>
+
+<h2>Drawbacks</h2>
+<p>As we’ve mentioned before, the SkyScanner BL102 doesn’t quite have diffraction-limited optics, which makes it less capable in terms of sharpness than it should be - although it’s still pretty usable. The included accessories are borderline garbage, and the scope’s focuser is annoying to use. It is certainly not a great scope, but it does function despite its major shortcomings.</p>
+<h2>Conclusion</h2>
+
+<p>The SkyScanner BL102 is certainly below what we’d expect in terms of quality at its price range, though it’s a functioning telescope and will do the job if you’re just desperate for one. However, we’d strongly urge you to get one of the higher-quality Dobsonians offered by Orion, Sky-Watcher, Apertura, or Zhumell if you can.</p>

@@ -1,0 +1,145 @@
+---
+import Layout from './Layout.astro';
+import '../styles/postsGlobal.css';
+import '../styles/reviewPost.css';
+import SocialShare from '../components/SocialShare.astro';
+import FeedbackCTA from '../components/FeedbackCTA.astro';
+
+const { url } = Astro.props;
+
+const {
+  title,
+  description,
+  writer,
+  pubDate,
+  updatedDate,
+  cover_image,
+  rating = {}
+} = Astro.props.frontmatter;
+
+const ratingsArray = [
+  { category: "Overall", value: rating.overall },
+  { category: "Optics", value: rating.optics },
+  { category: "Mount", value: rating.mount },
+  { category: "Accessories", value: rating.accessories }
+].filter(r => r.value !== undefined);
+
+// --- NEW: condition for legacy Zane posts ---
+const cutoff = new Date('2025-09-01T00:00:00Z'); // absolute date
+const pubDateObj = pubDate ? new Date(pubDate) : null;
+const isLegacyZane =
+  (String(writer || '').trim().toLowerCase() === 'zane landers') &&
+  (pubDateObj instanceof Date && !Number.isNaN(pubDateObj.getTime()) && pubDateObj < cutoff);
+
+// What to show in the byline
+const writerLine = isLegacyZane
+  ? `Written by ${writer} 2 years ago, for TelescopesToBuy.`
+  : `Written by ${writer}`;
+
+const jsonLdProduct = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": title,
+  "description": description,
+  "review": {
+    "@type": "Review",
+    "author": { "@type": "Person", "name": writer },
+    "datePublished": pubDate,
+    "dateModified": updatedDate || pubDate,
+    "reviewBody": description,
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": rating.overall,
+      "bestRating": "10",
+      "worstRating": "1"
+    }
+  }
+};
+
+function parseScore(v: unknown): number | null {
+  if (v === undefined || v === null || v === '') return null;
+  if (typeof v === 'number' && Number.isFinite(v)) return Math.max(0, Math.min(10, v));
+
+  const s = String(v).trim().toLowerCase();
+  const m = s.match(/^(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+(?:\.\d+)?))?$/);
+  if (m) {
+    const num = parseFloat(m[1]);
+    const den = m[2] ? parseFloat(m[2]) : 10;
+    if (!Number.isNaN(num) && !Number.isNaN(den) && den > 0) {
+      return Math.max(0, Math.min(10, (num / den) * 10));
+    }
+  }
+
+  const map: Record<string, number> = { a: 9.5, 'a-': 9, 'b+': 8.5, b: 8, 'b-': 7.5, c: 7, 'c-': 6.5 };
+  return map[s] ?? null;
+}
+
+function scoreToHue(score: number | null) {
+  if (score === null) return 210; // neutral fallback
+  return Math.round((score / 10) * 120); // red→green
+}
+
+const overallNum = parseScore(rating?.overall);
+const overallText = overallNum !== null ? overallNum.toFixed(1) : 'N/A';
+const overallHue = scoreToHue(overallNum);
+---
+
+<head>
+  <script type="application/ld+json">{JSON.stringify(jsonLdProduct, null, 2)}</script>
+  {cover_image && <link rel="preload" as="image" href={cover_image} />}
+</head>
+
+<Layout
+  title={title}
+  description={description}
+  category={Astro.props.frontmatter?.category}
+  image={cover_image}
+  ogType="article"
+>
+
+<div class="centered_flex">
+
+  <h1 class="fade-up review-title">
+    {title}
+    {Astro.props.frontmatter.reviewType && (
+      <span class={`review-tag ${Astro.props.frontmatter.reviewType}`}>
+        {Astro.props.frontmatter.reviewType === "hands-on" ? "Hands-On" : "Research"}
+      </span>
+    )}
+  </h1>
+
+<div class="review-post-starter">
+
+  <div class="review-post-starter-content">
+    <div class="centered_flex">
+    <img
+      src={cover_image}
+      class="post-starter-image"
+      alt={title + ' cover'}
+      fetchpriority="high"
+      loading="eager"
+      decoding="async"
+    />
+  </div>
+    <div class="review-meta centered_flex">
+    
+      <div class="main-rating-card rating-card centered_flex" style={`--h:${overallHue}`}>
+        <span class="category">Overall</span>
+        <span class="score">{overallText}/10</span>
+      </div>
+      <p class="post-starter-description">{Astro.props.frontmatter.description}</p>
+      <div class="share-header"><span class="share-label">Share:</span></div>
+      <SocialShare frontmatter={Astro.props.frontmatter} url={url} />
+      <p class="writer">{writerLine}</p>
+    </div>
+  </div>
+</div>
+
+  <article class="post review-post centered_flex">
+    <slot />
+  </article>
+
+  <FeedbackCTA />
+
+</div>
+</Layout>

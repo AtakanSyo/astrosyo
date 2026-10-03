@@ -1,0 +1,196 @@
+---
+export interface Props {
+  target: string | Date;
+}
+
+import '../styles/countdown.css';
+
+const target = Astro.props.target;
+
+function parseTarget(value: string | Date | number | null | undefined): Date | null {
+  if (!value) return null;
+  if (value instanceof Date) return isNaN(value.getTime()) ? null : value;
+
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    // Expecting day-month-year (e.g., "03-01-2026")
+    const match = /^(\d{1,2})-(\d{1,2})-(\d{4})$/.exec(trimmed);
+    if (match) {
+      const [, d, m, y] = match;
+      const dt = new Date(Number(y), Number(m) - 1, Number(d));
+      return isNaN(dt.getTime()) ? null : dt;
+    }
+    const parsed = new Date(trimmed);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  const fallback = new Date(value);
+  return isNaN(fallback.getTime()) ? null : fallback;
+}
+
+const targetDate = parseTarget(target);
+const targetMs = targetDate && !isNaN(targetDate.getTime()) ? targetDate.getTime() : null;
+---
+
+<div class="countdown" data-target-ms={targetMs ?? ''}>
+  <div class="countdown-title">Remaining Time</div>
+  <!-- <span class="countdown__now" data-now>Current time: --</span>
+  <span class="countdown__status" data-location-status>Using browser clock (local time).</span> -->
+  <div class="countdown__grid" aria-live="polite">
+    <div class="countdown__cell">
+      <div class="countdown__value" data-part="months">0</div>
+      <div class="countdown__label">Months</div>
+    </div>
+    <div class="countdown__cell">
+      <div class="countdown__value" data-part="days">0</div>
+      <div class="countdown__label">Days</div>
+    </div>
+    <div class="countdown__cell">
+      <div class="countdown__value" data-part="hours">00</div>
+      <div class="countdown__label">Hours</div>
+    </div>
+    <div class="countdown__cell">
+      <div class="countdown__value" data-part="minutes">00</div>
+      <div class="countdown__label">Minutes</div>
+    </div>
+    <div class="countdown__cell">
+      <div class="countdown__value" data-part="seconds">00</div>
+      <div class="countdown__label">Seconds</div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    const script = document.currentScript;
+    const root = script && script.previousElementSibling;
+    if (!root) return;
+
+    const targetMsAttr = root.getAttribute("data-target-ms");
+    const targetMs = targetMsAttr ? Number(targetMsAttr) : NaN;
+    const targetDate =
+      Number.isFinite(targetMs) && !Number.isNaN(targetMs)
+        ? new Date(targetMs)
+        : null;
+
+    const monthsEl  = root.querySelector('[data-part="months"]');
+    const daysEl    = root.querySelector('[data-part="days"]');
+    const hoursEl   = root.querySelector('[data-part="hours"]');
+    const minutesEl = root.querySelector('[data-part="minutes"]');
+    const secondsEl = root.querySelector('[data-part="seconds"]');
+    const nowEl     = root.querySelector('[data-now]');
+    const statusEl  = root.querySelector('[data-location-status]');
+
+    const setStatus = (msg) => {
+      if (statusEl) statusEl.textContent = msg;
+    };
+
+    function calcParts(target, now) {
+      if (!target || target <= now) {
+        return { months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+
+      // --- Months ---
+      let months =
+        (target.getFullYear() - now.getFullYear()) * 12 +
+        (target.getMonth() - now.getMonth());
+
+      let anchor = new Date(now);
+      anchor.setMonth(anchor.getMonth() + months);
+
+      // If we overshoot the target, pull back one month.
+      if (anchor > target) {
+        months -= 1;
+        anchor = new Date(now);
+        anchor.setMonth(anchor.getMonth() + months);
+      }
+
+      // Remaining ms after months
+      let remaining = Math.max(0, target - anchor);
+
+      // --- Days ---
+      const dayMs = 86_400_000;    // 24 * 60 * 60 * 1000
+      const hourMs = 3_600_000;    // 60 * 60 * 1000
+      const minuteMs = 60_000;     // 60 * 1000
+
+      const days = Math.floor(remaining / dayMs);
+      remaining -= days * dayMs;
+
+      // --- Hours ---
+      const hours = Math.floor(remaining / hourMs);
+      remaining -= hours * hourMs;
+
+      // --- Minutes ---
+      const minutes = Math.floor(remaining / minuteMs);
+      remaining -= minutes * minuteMs;
+
+      // --- Seconds ---
+      const seconds = Math.floor(remaining / 1_000);
+
+      return { months, days, hours, minutes, seconds };
+    }
+
+    function zeroOut() {
+      if (monthsEl)  monthsEl.textContent  = "0";
+      if (daysEl)    daysEl.textContent    = "0";
+      if (hoursEl)   hoursEl.textContent   = "00";
+      if (minutesEl) minutesEl.textContent = "00";
+      if (secondsEl) secondsEl.textContent = "00";
+    }
+
+    function update() {
+      const now = new Date();
+      if (nowEl) nowEl.textContent = `Current time: ${now.toLocaleString()}`;
+
+      if (!targetDate || Number.isNaN(targetDate.getTime())) {
+        // No valid target: show zeros but keep current time updated
+        zeroOut();
+        return;
+      }
+
+      const { months, days, hours, minutes, seconds } = calcParts(targetDate, now);
+
+      if (months <= 0 && days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0) {
+        zeroOut();
+        return;
+      }
+
+      if (monthsEl)  monthsEl.textContent  = String(months);
+      if (daysEl)    daysEl.textContent    = String(days);
+      if (hoursEl)   hoursEl.textContent   = String(hours).padStart(2, "0");
+      if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, "0");
+      if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, "0");
+    }
+
+    // Start countdown
+    update();
+    const interval = window.setInterval(update, 1_000);
+
+    window.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") update();
+    });
+
+    window.addEventListener("pagehide", () => {
+      window.clearInterval(interval);
+    });
+
+    // Geolocation: just for status text, like your Pluto script
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          setStatus(
+            `Using browser clock (local time). Location: ${latitude.toFixed(
+              4
+            )}, ${longitude.toFixed(4)}`
+          );
+        },
+        () => {
+          setStatus("Using browser clock (local time). Location permission denied.");
+        }
+      );
+    } else {
+      setStatus("Using browser clock (local time). Geolocation not supported.");
+    }
+  })();
+</script>

@@ -1,0 +1,88 @@
+---
+/**
+ * PostCard.astro
+ * Usage:
+ * <PostCard url={post.url} frontmatter={post.frontmatter} isP5={...} isReview={...} isInfo={...} isNasa={...} ctaText="Read" />
+ */
+
+const {
+  url = "#",
+  frontmatter = {},
+  ctaText = "Read post",
+  isP5 = false,
+  isReview = false,
+  isInfo = false,
+  isNasa = false,
+  // optional external class hook (keeps your existing class names unchanged)
+  class: extraClass = "",
+  // optional: provide precomputed date string if you want
+  dateText,
+} = Astro.props;
+
+const title = frontmatter.title ?? "";
+const description = frontmatter.description ?? "";
+const thumbnail = frontmatter.thumbnail ?? "";
+const pubDate = frontmatter.pubDate;
+const hasThumb = Boolean(thumbnail);
+
+const computedDateText =
+  dateText ??
+  (pubDate ? new Date(pubDate).toLocaleDateString() : "");
+
+const hasBadge = Boolean(isP5 || isReview || isInfo || isNasa);
+
+// Preserve your modifier classes pattern if you want them:
+const variantClasses = [
+  isP5 && "april-post-card--p5",
+  isReview && "april-post-card--review",
+  isInfo && "april-post-card--info",
+  isNasa && "april-post-card--nasa",
+].filter(Boolean).join(" ");
+
+const cardClass = [
+  "april-post-card",
+  variantClasses,
+  !hasThumb && "april-post-card--no-thumb",
+  extraClass
+].filter(Boolean).join(" ");
+const linkClass = ["april-post-card-link", hasThumb && "april-post-card-link--overlay"].filter(Boolean).join(" ");
+
+import '../styles/aprilCards.css';
+---
+
+<div class={cardClass}>
+  <a href={url} class={linkClass}>
+    {thumbnail && (
+      <div class="april-post-card-thumb">
+        <img
+          src={thumbnail}
+          alt={title}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    )}
+
+    <div class="april-post-card-info">
+      <div class="april-post-card-title">{title}</div>
+
+      <!-- {computedDateText && (
+        <div class="april-post-card-meta">{computedDateText}</div>
+      )} -->
+
+      {description && (
+        <p class="april-post-card-desc">{description}</p>
+      )}
+
+      <!-- <div class={`april-post-card-footer ${hasBadge ? "has-badge" : ""}`}>
+        <div class="april-post-card-badges">
+          {isP5 && <span class="p5-badge">Simulation</span>}
+          {isReview && <span class="review-badge">Review</span>}
+          {isInfo && <span class="info-badge">Info</span>}
+          {isNasa && <span class="nasa-badge">NASA</span>}
+        </div>
+        <div class="read-post">{ctaText}</div>
+      </div> -->
+    </div>
+  </a>
+</div>

@@ -1,0 +1,36 @@
+---
+/**
+ * InfoStepper.astro
+ *
+ * Props:
+ * - steps: Array<{
+ *     title: string;
+ *     description: string;
+ *     badge?: string;
+ *   }>
+ * - class?: string
+ */
+
+interface Step {
+  title: string;
+  description: string;
+  badge?: string;
+}
+
+const { steps = [], class: extraClass = '' } = Astro.props as {
+  steps?: Step[];
+  class?: string;
+};
+---
+
+<div class={['info-stepper', extraClass].filter(Boolean).join(' ')}>
+  {steps.map((step, index) => (
+    <article class="info-stepper__item">
+      <span class="info-stepper__badge">{step.badge ?? String(index + 1)}</span>
+      <div class="info-stepper__content">
+        <h4>{step.title}</h4>
+        <p>{step.description}</p>
+      </div>
+    </article>
+  ))}
+</div>

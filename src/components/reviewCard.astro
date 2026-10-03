@@ -1,0 +1,79 @@
+---
+/**
+ * ReviewCard.astro
+ * Review card: title + desc + Review badge + score badge + affiliate buttons.
+ *
+ * Props:
+ * - url: string
+ * - title: string
+ * - description: string
+ * - scoreText: string | number (e.g. 8.5)
+ * - hue: number (for your --h CSS var)
+ * - thumbnail: string (optional)
+ * - affiliates: Array<[name: string, link: string]>
+ * - ctaText: string (optional, defaults to "Read the review →")
+ * - class: string (optional extra classes)
+ */
+
+const {
+  url = "#",
+  title = "",
+  description = "",
+  scoreText,
+  hue = 0,
+  thumbnail = "",
+  affiliates = [],
+  ctaText = "Read review →",
+  class: extraClass = "",
+} = Astro.props;
+
+const affs = Array.isArray(affiliates) ? affiliates : [];
+const hasThumb = Boolean(thumbnail);
+const linkClass = ["post-card-link", hasThumb && "post-card-link--overlay"].filter(Boolean).join(" ");
+
+import '../styles/cards.css';
+import '../styles/reviewCard.css';
+---
+
+<div class="post-card post-card--review">
+  <a href={url} class={linkClass}>
+    {scoreText !== undefined && scoreText !== null && scoreText !== "" && (
+      <span class="score-badge" style={`--h:${hue}`}>
+        {scoreText}/10
+      </span>
+    )}
+
+    {thumbnail && (
+      <div class="post-card-thumb">
+        <img
+          src={thumbnail}
+          alt={title}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    )}
+    {!hasThumb && <span class="post-card-thumb-spacer" aria-hidden="true"></span>}
+    <div class="post-card-info centered_flex">
+    <div class="post-card-title">{title}</div>
+
+    {description && <p class="post-card-desc">{description}</p>}
+  </div>
+  </a>
+  <div class="affiliate-links">
+    {affs.length > 0 ? (
+      affs.map(([name, link]) => (
+        <a
+          href={link}
+          class="affiliate-btn"
+          target="_blank"
+          rel="noopener noreferrer sponsored nofollow"
+        >
+          Check on {name}
+        </a>
+      ))
+    ) : (
+      <span class="affiliate-placeholder"></span>
+    )}
+    </div>
+</div>

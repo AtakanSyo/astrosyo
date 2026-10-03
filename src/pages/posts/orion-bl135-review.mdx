@@ -1,0 +1,106 @@
+---
+category: reviews
+subcategory: telescopes
+reviewType: hands-on
+layout: ../../layouts/ReviewPostLayout.astro
+title: Orion Bl135 Review
+telescopeType: Dobsonian
+writer: Zane Landers
+brand: Orion
+rating:
+  overall: 7.5
+  optics: 8
+  mount: 8
+  accessories: 4
+affiliate:
+  amazon: 'https://amzn.to/4frcP1T'
+  highpointscientific: ''
+  astroshop: ''
+cover_image: /images/orion-bl135-review/cover.webp
+thumbnail: /images/orion-bl135-review/thumbnail.webp
+specs:
+  aperture: '135'
+  focalLength: '1100'
+pubDate: '2025-07-25'
+description: >-
+  Like the smaller BL102, Orion’s SkyScanner BL135 is a generic, low-quality
+  imported product that uses the good reputation of the SkyScanner 100mm
+  reflector and 80mm refractor in an attempt to sell an inferior telescope
+  without anyone noticing.
+slug: orion-bl135-review
+imageDir: /images/orion-bl135-review
+keywords:
+  - Orion Bl135
+prosCons:
+  pros:
+    - "Decent amount of aperture"
+    - "Easy to aim"
+    - "Stable"
+    - "Good, but not great, optics"
+  cons:
+    - "Quality control issues with optics"
+    - "Low-quality eyepieces and finder"
+    - "Poorly made focuser"
+    - "Surprisingly heavy"
+quickSpecs:
+  - "135mm (5.3″) Aperture"
+  - "1100mm Focal Length"
+  - "f/8.1"
+  - "2 included eyepieces"
+  - "Red dot finder"
+  - "Dobsonian"
+  - "Adjustable bearing friction for altitude axis"
+lang: en
+---
+import Affiliates from '../../components/Affiliates.astro'
+import Ratings from '../../components/Ratings.astro'
+import ProsCons from '../../components/ProsCons.astro'
+import QuickSpecs from '../../components/QuickSpecs.astro'
+import GenericTable from '../../components/GenericTable.astro'
+
+<h2>Introduction</h2>
+
+<p class="highlight">Like the smaller BL102, Orion’s SkyScanner BL135 is a generic, low-quality imported product that uses the good reputation of the SkyScanner 100mm reflector and 80mm refractor in an attempt to sell an inferior telescope without anyone noticing. The SkyScanner BL telescopes are imported from a company known as KSON which has made identical telescopes in the past for the “Galileo” brand. Whether these are temporary supply chain stopgaps or a permanent new inclusion to Orion’s product line is unknown.</p>
+<p>The BL135 isn’t completely useless, and certainly functions okay - but compared to a 130mm f/5 tabletop scope or a true 6” Dobsonian it’s noticeably lacking in build and optical quality.</p>
+<QuickSpecs items={frontmatter.quickSpecs} />
+
+<ProsCons pros={frontmatter.prosCons?.pros} cons={frontmatter.prosCons?.cons} />
+
+<Ratings rating={frontmatter.rating} />
+
+<Affiliates affiliate={frontmatter.affiliate} />
+
+<h2>Optics</h2>
+
+<p>The SkyScanner BL135 is a 135mm (5.3) f/8.1 Newtonian reflector with a focal length of 1100mm - essentially a slightly shrunken 6” f/8 reflector. Orion makes it no secret that the primary mirror of this scope is spherical - which should actually be fine; a 6” f/8 sphere is just barely within the tolerances of a ¼ wave deviation from parabolic and a 5.3” f/8 is a bit better. However, in the case of stuff coming out of KSON, “spherical” is actually code for “whatever comes off the polishing machine” and thus the quality control for these mirrors can be a little scattered. The bigger concern is the secondary mirror, which often comes less-than-flat and adds distortions of its own to the image. However, you are more likely than not to get a decent sample.</p>
+<p>The primary and secondary mirrors in the BL135 are both able to be collimated, and without tools - the secondary actually has thumb screws for adjustments, which makes it more easily aligned but also more prone to misalignment in the first place. The ends of the tube are made out of brittle cast metal alloy - rather than a spider made out of interlocking pieces of thin steel, the entire spider and front end ring are one unit. This can be a little worrying when it comes to longevity.</p>
+<p>The focuser on the BL135 is really the only thing wrong with the optical tube.  It’s a ridiculously tall 2” rack-and-pinion with a mix of plastic and cast metal components, but it has some issues with play in it and the focuser is so tall that it can cause vignetting with some eyepieces and also requires the scope to have an unusually-large secondary mirror to function at all - 9it’s 38mm (1.5”) in size, bigger than what most 6” f/8 reflectors have.</p>
+<img class="post-image post-image-lg" src="/images/orion-bl135-review/mount.webp" alt="Mount"></img>
+<h2>Mount</h2>
+
+<p>The SkyScanner BL135’s mount is fairly typical for a mass-manufactured Dobsonian; the whole thing is melamine-covered ¾” particle board and the scope pivots on a pair of integrated plastic altitude bearings. The BL135 has clutches to adjust the friction on the altitude bearings, which is a source of issues on larger scopes but works fine. For azimuth, the scope spins on 3 plastic pads gliding against the melamine-coated mount surface.</p>
+<p>The BL135’s mount is really sturdy - the sides have perpendicular braces which you don’t usually see until you get to 12” and larger Dobsonians, the ¾” thickness is arguably overkill, and the bottom board is a complete circle rather than a triangle. This makes the base heavy - at 24 pounds, it outweighs the base of the larger XT6 and even XT8! The whole scope is about a pound heavier than the XT6.</p>
+<img class="post-image post-image-lg" src="/images/orion-bl135-review/accessories.webp" alt="Accessories"></img>
+<GenericTable
+  title="Accessories"
+  headers={['Accessory', 'Notes']}
+  rows={[
+    ['25mm 1.25” Kellner eyepiece', '46x; narrow field, plasticky build'],
+    ['10mm 1.25” Plössl eyepiece', '110x; short eye relief, basic coatings'],
+    ['1.25” 3x Barlow lens', 'All-plastic optics; effectively unusable'],
+    ['Red-dot finder', 'Simple aiming aid; tinted window dims view'],
+  ]}
+/>
+<p>The included eyepieces are largely plastic in construction, and seem to have poor anti-reflection coatings. They also have narrow apparent fields - a bit below the usual minimum of 50 degrees in good Plossl or Kellner oculars - and the 10mm is uncomfortable to look through due to its poor eye relief. At the price of the BL135 you’d expect better, though replacing them with quality eyepieces isn’t too expensive. We would probably recommend getting a 32mm Plossl, 15mm wide-angle, and 9mm and 6mm “redline” eyepieces or a similar collection to augment/replace the stock eyepiece set.</p>
+<p>The included 3x Barlow is entirely plastic - including the optics - and basically comes from a “department store” telescope; it costs pennies to make and produces unusable images. A cereal box toy is of similar quality.</p>
+<p>The finder included with the BL135 is a simple red-dot unit. It works, but has a gray tinted window which dims the view - another cost-cutting measure by Orion that hurts the usefulness of the scope.</p>
+<h2>What can you see?</h2>
+<p>The SkyScanner BL135 has no trouble resolving craters on the Moon, the phases of Mercury and Venus, and the ice caps on Mars along with a few dark markings. Jupiter’s moons are tiny disks and you can see their shadows when they transit in front of it, along with the Great Red Spot and numerous colorful cloud bands. Saturn’s rings and the Cassini Division within them look marvelous, along with Saturn’s cloud bands and up to half a dozen moons. Uranus and Neptune are dim bluish dots, but Neptune’s moon Triton is just barely within the limits of the SkyScanner BL135’s light gathering ability under dark skies.</p>
+<p>Deep-sky views with any telescope depend on your light pollution levels. Even from suburban or city skies you can split tight double stars and view the bright and colorful open star clusters; under most conditions, the BL135 can resolve the outer members of large and bright globular star clusters like M13 or M22. Dust lanes in bright galaxies like M31 or M82 are easy to see. Under dark skies, other galaxies like M64 and M104 show dust lanes, and some of the brightest spiral galaxies begin to reveal their arms too. Big emission nebulae such as the Orion Nebula and Lagoon look fantastic, and you can also view smaller planetary nebulae like the Ring or Cat’s Eye.</p>
+<img class="post-image post-image-lg" src="/images/orion-bl135-review/side.webp" alt="Side"></img>
+
+<h2>Drawbacks</h2>
+<p>The price of the SkyScanner BL135 is higher than that of various 130mm f/5 tabletop scopes, which are better in quality than the BL135 and have a wider field of view and superior accessories, in addition to a much lighter weight and more compact form factor. Some 6” Dobsonians are even available for around what the BL135 goes for, and on the used market finding a 6” or 8” for under $400 is easy. As such, we don’t think there’s much reason to compromise on such a mediocre instrument. It works fine, but when scopes with straight-up spectacular optics and actually useful accessories included are available at the same price, why choose the BL135?</p>
+<h2>Conclusion</h2>
+
+<p>There are certainly far worse choices for beginners than the SkyScanner BL135 - it blows away most cheap tripod-mounted instruments and small computerized scopes. However, consider one of the better Dobsonians made by Orion, Sky-Watcher, Apertura, or Zhumell if possible; most of these are better optically and mechanically and tend to come with better accessories in the box.</p>

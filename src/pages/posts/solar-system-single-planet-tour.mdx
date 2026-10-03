@@ -1,0 +1,106 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Solar System Planet Tour"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-05'
+description: "Explore each Solar System planet in isolation; spin them up one by one and learn what makes every world unique."
+slug: solar-system-single-planet-tour
+imageDir: /images/solar-system-single-planet-tour
+thumbnail: /images/solar-system-single-planet-tour/thumbnail.webp
+keywords:
+  - solar system
+  - single planet
+  - astronomy visualization
+  - three.js
+  - webgl
+lang: en
+---
+
+import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+  <h2 id="mercury">Mercury</h2>
+  <SinglePlanetSim planet="Mercury" client:visible />
+  <p>
+    Mercury is the tiniest world and hugs the Sun at blistering proximity. Its cratered face resembles the Moon, and a slow rotation means
+    long days that bake one hemisphere while the other freezes. Notice the muted grays that speak to its battered, iron-rich crust.
+  </p>
+
+  <h2 id="venus">Venus</h2>
+  <SinglePlanetSim planet="Venus" client:visible ringsSpin={false} />
+  <p>
+    Venus glows with sulfurous clouds that hide a crushing atmosphere. It spins backward—retrograde—so sunrise comes in the west.
+    The thick, swirling cloud deck gives it a buttery, featureless sheen that hints at the superheated world beneath.
+  </p>
+
+  <h2 id="earth">Earth</h2>
+  <SinglePlanetSim planet="Earth" client:visible />
+  <p>
+    Ocean blues, cloud whites, and landmass browns make Earth instantly recognizable. Its moderate spin feeds a dynamic climate and
+    a magnetosphere that protects life from solar radiation. Pause the rotation to pick out continents and iconic weather systems.
+  </p>
+
+  <h2 id="mars">Mars</h2>
+  <SinglePlanetSim planet="Mars" client:visible />
+  <p>
+    Mars is a rusty desert etched with dried riverbeds, volcanoes, and polar ice caps. Its thin atmosphere allows dust storms to sweep across
+    the planet, tinting everything in shades of butterscotch. Watch how quickly a sol passes compared to Earth’s day.
+  </p>
+
+  <h2 id="jupiter">Jupiter</h2>
+  <SinglePlanetSim planet="Jupiter" client:visible />
+  <p>
+    Jupiter is the heavyweight champion: a gas giant with alternating light and dark belts forged by jet streams. The Great Red Spot has raged
+    for centuries, and the rapid rotation gives the planet a noticeable equatorial bulge. Clouds stretch in ribbons, revealing the complex weather beneath.
+  </p>
+
+  <h2 id="saturn">Saturn</h2>
+  <SinglePlanetSim planet="Saturn" client:visible />
+  <p>
+    Saturn’s golden hues and iconic rings make it the showpiece of the Solar System. The rings are made of countless ice and rock fragments,
+    and the planet itself rotates quickly enough to flatten slightly at the poles. Tilt the rings by pausing and panning to appreciate their layered texture.
+  </p>
+
+  <h2 id="uranus">Uranus</h2>
+  <SinglePlanetSim planet="Uranus" client:visible ringsSpin={false} />
+  <p>
+    Uranus rolls through space on its side, likely tipped by an ancient collision. Its pale cyan tone comes from methane haze high in the atmosphere.
+    The extreme axial tilt leads to seasons that last decades, bathing each pole in sunlight or darkness for years at a time.
+  </p>
+
+  <h2 id="neptune">Neptune</h2>
+  <SinglePlanetSim planet="Neptune" client:visible />
+  <p>
+    Neptune is the outer sentinel with deep azure clouds driven by the fastest winds in the Solar System. Dark storm spots appear and vanish,
+    and the planet’s internal heat keeps its atmosphere swirling even so far from the Sun. Let it spin to follow those shifting bands.
+  </p>
+
+<SimPostSchema
+  title="Solar System Single-Planet Tour"
+  description="Spin up each Solar System planet one at a time and learn what defines its appearance, rotation, and personality."
+  url="https://astrosyo.com/posts/solar-system-single-planet-tour"
+  datePublished="2025-11-05"
+  authorName="Astrosyo"
+  keywords={[
+    "solar system",
+    "single planet",
+    "astronomy visualization",
+    "three.js",
+    "webgl"
+  ]}
+  image="/images/solar-system-single-planet-tour/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Solar System Single-Planet Tour",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/solar-system-single-planet-tour#simulation",
+    "description": "A collection of single-planet simulations highlighting the unique character of each Solar System world."
+  }}
+/>

@@ -1,0 +1,84 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Saturn"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-11'
+description: "The ringed giant."
+slug: saturn
+imageDir: /images/saturn
+thumbnail: /images/saturn/thumbnail.webp
+keywords:
+  - saturn
+  - gas giant
+  - rings
+  - planet
+  - astronomy
+  - webgl
+lang: en
+---
+
+import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SinglePlanetSim planet="Saturn" client:visible cameraPosition={{ x: 0, y: 0, z: 2.5 }} textureContrast={1.4} />
+
+<h2>What you’re seeing</h2>
+<p>This simulation shows Saturn as a planetary sphere using a true-color texture highlighting its muted bands and subtle storms. To keep the comparison clean and performant, the famous rings and moons are not rendered here; the focus is the planet’s disk and atmospheric tones.</p>
+
+<h2>Discovery</h2>
+<p>Saturn has been known since antiquity, tracked by Babylonian, Greco-Roman, Indian, and Chinese astronomers. Telescopic observations from the 17th century revealed the ring system’s true nature and later uncovered a family of diverse moons, transforming Saturn from a bright wanderer into a complex mini-system.</p>
+
+<h2>Distance from the Sun</h2>
+<p>Saturn is the <strong>6th planet from the Sun</strong>. Its average orbital distance is about 1.43 billion km (9.58 AU). One Saturnian year lasts roughly 29.5 Earth years, while the planet rotates quickly, completing a day in about 10.7 hours.</p>
+
+<SinglePlanetSim planet="Saturn" client:visible cameraPosition={{ x: 0, y: 0, z: 10 }} />
+
+
+<h2>Special qualities</h2>
+<p>Saturn is renowned for its extensive ring system composed of ice and dust, structured into bright and dark bands by resonances with moons. It is also the least dense planet; its bulk composition of hydrogen and helium yields a density lower than water, an oft-quoted outreach comparison.</p>
+
+<h2>Moons</h2>
+<p>Saturn hosts a large retinue of moons, from tiny irregular bodies to Titan, the second-largest moon in the Solar System and the only one with a thick atmosphere. Enceladus, another standout, vents water-rich plumes from subsurface reservoirs, making it a prime astrobiology target.</p>
+
+<h2>Size and mass</h2>
+<p>Saturn’s equatorial diameter is about 120,536 km. Its mass is approximately 5.7 × 10^26 kg, around 95 times Earth’s. Despite its size, the low mean density reflects a hydrogen-helium interior with increasing pressure and temperature toward the center.</p>
+
+<SinglePlanetSim planet="Saturn" client:visible cameraPosition={{ x: 0, y: 0, z: 4 }} />
+
+
+<h2>Chemistry and atmosphere</h2>
+<p>The atmosphere is dominated by hydrogen and helium with trace species that color the bands and hazes. Ammonia, water, and other condensates form layered cloud decks, while deeper regions transition toward metallic hydrogen under immense pressure.</p>
+
+<h2>Name and meaning</h2>
+<p>Saturn takes its name from the Roman god of agriculture and time (Greek: Kronos), reflecting the planet’s slow motion across the sky compared with the inner planets. The name has persisted across languages since classical antiquity.</p>
+
+<SimPostSchema
+  title="Saturn"
+  description="A planetary sphere of Saturn with accurate texture, plus details about its discovery, distance from the Sun, rings, moons, and name."
+  url="https://astrosyo.com/posts/saturn"
+  datePublished="2025-11-11"
+  authorName="Astrosyo"
+  keywords={[
+    "saturn",
+    "gas giant",
+    "rings",
+    "astronomy",
+    "webgl",
+    "education"
+  ]}
+  image="/images/saturn/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Saturn Sphere",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/saturn#simulation",
+    "description": "Interactive planetary sphere of Saturn rendered with accurate texture."
+  }}
+/>

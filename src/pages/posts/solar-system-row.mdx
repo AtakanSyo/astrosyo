@@ -1,0 +1,80 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Solar System Planets in a Row"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-05'
+description: "Line up of every Solar System planet from Mercury to Neptune with true-to-scale radii and synchronized axial rotation."
+slug: solar-system-row
+imageDir: /images/solar-system-row
+thumbnail: /images/solar-system-row/thumbnail.webp
+keywords:
+  - solar system
+  - planet sizes
+  - astronomy visualization
+  - three.js
+  - webgl
+lang: en
+---
+
+import SolarSystemRow from "../../components/simulations/solar-system-row/SolarSystemRow.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SolarSystemRow client:load />
+
+<figcaption class="sim-caption">Every planet spins in order from Mercury through Neptune, scaled by true radii so their proportions read at a glance.</figcaption>
+
+<div class="sim-article">
+<h2 id="about-this-lineup">The Solar System Lineup</h2>
+<p>
+  All eight major planets stand shoulder-to-shoulder from left to right: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune.
+  Their diameters are scaled relative to one another, so the tiny rocky worlds crowd together while the gas and ice giants dominate the lineup.
+  A gentle rotation lets every world show off its best face without distracting from the overall comparison.
+</p>
+<p>
+  The single-file arrangement makes it easy to trace the classic sequence we learn in school and appreciate how dramatically the outer planets
+  outsize their inner neighbors. Pause the animation whenever you want to study cloud bands, storm systems, or subtle color changes.
+</p>
+
+<h3 id="what-to-notice">What to notice</h3>
+<p>
+  Mercury and Mars appear almost lost beside Earth, yet still show distinct color palettes. Jupiter and Saturn crowd the middle with belts,
+  zones, and hints of ring structure, while Uranus and Neptune close the row with cooler hues. Watch for the slow, retrograde spin of Venus
+  and Uranus compared to the quick rotation of Jupiter.
+</p>
+
+<h2 id="planet-snapshots">Planet snapshots</h2>
+<p>
+  This gallery-style view favors a straight comparison. Need a mnemonic refresher? Follow the row from the sun-scorched face of Mercury all the way
+  to distant Neptune. Each globe keeps spinning so you can pick out landmarks like Jupiter’s Great Red Spot or the contrasting north and south poles of Earth.
+</p>
+</div>
+
+<SimPostSchema
+  title="Solar System Row"
+  description="An ordered lineup of every Solar System planet with proportionally scaled radii and synchronized rotation."
+  url="https://astrosyo.com/posts/solar-system-row"
+  datePublished="2025-11-05"
+  authorName="Astrosyo"
+  keywords={[
+    "solar system",
+    "planet sizes",
+    "astronomy visualization",
+    "three.js",
+    "webgl"
+  ]}
+  image="/images/solar-system-row/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Solar System Row",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/solar-system-row#simulation",
+    "description": "A linear lineup of Solar System planets rendered with reusable Three.js helpers."
+  }}
+/>

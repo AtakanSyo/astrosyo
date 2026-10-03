@@ -1,0 +1,93 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/index.css';
+import '../../styles/cards.css';
+import '../../styles/category.css';
+import FloatingIcons from "../../components/FloatingIcons.astro";
+import PostCard from "../../components/postCard.astro";
+
+export async function getStaticPaths() {
+  const all = Object.values(
+    import.meta.glob('../posts/*.{md,mdx}', { eager: true })
+  ) as any[];
+  const set = new Set();
+  for (const p of all) {
+    const c = p.frontmatter?.category;
+    if (typeof c === 'string' && c) set.add(c.toLowerCase());
+  }
+  return Array.from(set).map((slug) => ({ params: { slug } }));
+}
+
+const slug = String(Astro.params.slug ?? '').toLowerCase();
+
+const labelMap: Record<string, string> = {
+  reviews: 'Telescope & Gear Reviews',
+  nasa: 'NASA Articles',
+  informational: 'Astronomy Guides & Insights',
+  simulation: 'Science Stories',
+};
+const categoryLabel = labelMap[slug] || `${slug.charAt(0).toUpperCase() + slug.slice(1)} Posts`;
+
+const posts = (Object.values(
+  import.meta.glob('../posts/*.{md,mdx}', { eager: true })
+) as any[])
+  .filter((p) => typeof p.frontmatter?.category === 'string' && p.frontmatter.category.toLowerCase() === slug)
+  .sort(
+    (a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime()
+  );
+
+// const count = posts.length;
+// const countText =
+//   slug === 'simulation'
+//     ? `Check out our ${count} ${count === 1 ? 'story' : 'stories'}.`
+//     : slug === 'reviews'
+//     ? `Check out our ${count} ${count === 1 ? 'review' : 'reviews'}.`
+//     : slug === 'informational'
+//     ? `Check out our ${count} ${count === 1 ? 'guide' : 'guides'}.`
+//     : slug === 'nasa'
+//     ? `Check out our ${count} NASA ${count === 1 ? 'feature' : 'features'}.`
+//     : `Check out our ${count} ${count === 1 ? 'post' : 'posts'}.`;
+---
+
+<Layout title="Category">
+  <h1 class="category-title">{categoryLabel}</h1>
+  <!-- <p class="category-count-text centered_flex">{countText}</p> -->
+
+  <div class="category-grid">
+    {posts.length === 0 ? (
+      <p>No posts.</p>
+    ) : (
+      posts.map(({ frontmatter, url }) => {
+        const cat = frontmatter.category?.toLowerCase();
+        const isP5 = cat === 'simulation';
+        const isReview = cat === 'reviews';
+        const isInfo = cat === 'informational';
+        const isNasa = cat === 'nasa';
+
+        const ctaText =
+          isP5
+            ? 'Go to the story →'
+            : isReview
+            ? 'Read the review →'
+            : isInfo
+            ? 'Read the guide →'
+            : isNasa
+            ? 'See the article →'
+            : 'Read full post →';
+
+        return (
+          <PostCard
+            url={url}
+            frontmatter={frontmatter}
+            isP5={isP5}
+            isReview={isReview}
+            isInfo={isInfo}
+            isNasa={isNasa}
+            ctaText={ctaText}
+            dateText={new Date(frontmatter.pubDate).toLocaleDateString()}
+          />
+        );
+      })
+    )}
+  </div>
+</Layout>

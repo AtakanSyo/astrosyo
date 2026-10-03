@@ -1,0 +1,58 @@
+/* Page shell */
+.authors-page {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+/* Author card */
+.author {
+  display: flex;
+  gap: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1.5rem;
+  align-items: center;
+}
+
+/* Portraits */
+.author img {
+  width: clamp(140px, 20vw, 200px);
+  height: auto;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Bio text */
+.bio {
+  flex: 1;
+}
+
+.bio h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.bio p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .author {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .author img {
+    width: 100%;
+    max-width: 260px;
+    border-radius: 12px;
+  }
+}
+

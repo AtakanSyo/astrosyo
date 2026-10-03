@@ -1,0 +1,126 @@
+---
+category: reviews
+subcategory: telescopes
+reviewType: research
+layout: ../../layouts/ReviewPostLayout.astro
+title: Celestron AstroMaster 114EQ Review
+telescopeType: Bird-Jones Reflector
+writer: Astrosyo
+brand: Celestron
+rating:
+  overall: 2.5
+  optics: 2
+  mechanics: 3
+  value: 2
+affiliate:
+  amazon:
+  highpointscientific:
+  astroshop:
+cover_image: /images/celestron-astromaster-114eq-review/cover.webp
+specs:
+  aperture: '114'
+  focalLength: '1000'
+pubDate: '2025-10-30'
+description: >-
+  The Celestron AstroMaster 114EQ uses a cost-cutting Bird-Jones optical design
+  that results in poor image quality, difficult collimation, and frustrating usability.
+slug: celestron-astromaster-114eq-review
+thumbnail: /images/celestron-astromaster-114eq-review/thumbnail.webp
+imageDir: /images/celestron-astromaster-114eq-review
+keywords:
+  - Celestron AstroMaster 114EQ
+prosCons:
+  pros:
+    - "Includes a usable red-dot finder"
+    - "10 mm eyepiece performs acceptably"
+    - "Equatorial mount allows manual tracking"
+  cons:
+    - "Bird-Jones optical design causes soft, distorted images"
+    - "Corrector lens inside the focuser makes collimation nearly impossible"
+    - "Plastic mount components cause vibration and instability"
+    - "Misleading marketing and poor value for the price"
+quickSpecs:
+  - "114 mm (4.5”) Aperture"
+  - "1000 mm Focal Length (via corrector lens)"
+  - "Bird–Jones Spherical Mirror System"
+  - "Equatorial Mount"
+  - "Manual slow-motion controls"
+lang: en
+---
+
+import Affiliates from '../../components/Affiliates.astro'
+import Ratings from '../../components/Ratings.astro'
+import ProsCons from '../../components/ProsCons.astro'
+import QuickSpecs from '../../components/QuickSpecs.astro'
+
+<h2>Introduction</h2>
+
+<p class="highlight">The Celestron AstroMaster 114EQ is a popular beginner telescope thanks to aggressive online promotion and a misleading specification sheet. While the box advertises a 1000 mm focal length and “powerful magnification,” the optical design used to achieve these numbers—known as a Bird-Jones system—introduces severe alignment and image quality problems.</p>
+
+<p>
+User reports and independent testing indicate that the AstroMaster 114EQ prioritizes marketability over optical performance. The scope uses a spherical mirror with a permanently built-in corrector lens inside the focuser. This design makes accurate collimation nearly impossible, introduces optical distortion, and results in soft, washed-out views that disappoint most beginners. At this price, significantly better telescopes exist, such as the Zhumell Z130, SkyWatcher Heritage 130P, and Meade Infinity 102.
+</p>
+
+<QuickSpecs items={frontmatter.quickSpecs} />
+
+<ProsCons pros={frontmatter.prosCons?.pros} cons={frontmatter.prosCons?.cons} />
+
+<Ratings rating={frontmatter.rating} />
+
+<Affiliates affiliate={frontmatter.affiliate} />
+
+<img
+  class="post-image post-image-lg"
+  src={frontmatter.imageDir + '/optics.webp'}
+  alt="Optics"
+/>
+
+<h2>Optics</h2>
+
+<p>
+The AstroMaster 114EQ is a Bird–Jones reflector, meaning its 1000 mm focal length is artificially created 
+by placing a corrector lens inside the focuser. This is the worst possible location, since the lens shifts 
+every time the focuser moves, which constantly throws off alignment. Because the mirror is spherical—not 
+parabolic—the lens is supposed to correct the aberrations caused by the mirror, but in this implementation 
+it introduces even more distortion.
+</p>
+
+<p>
+The result is soft, low-contrast views. Jupiter’s bands are faint, Saturn's rings lack definition, and deep-sky objects appear dim and blurry. The Moon is the only target that looks acceptable, but nearly any telescope can show the Moon well.
+</p>
+
+
+<img
+  class="post-image post-image-lg"
+  src={frontmatter.imageDir + '/mount.webp'}
+  alt="Mount"
+/>
+
+<h2>Mechanics & Mount</h2>
+
+<p>
+The included equatorial mount is technically functional, but not enjoyable to use. Much of the mount head and slow-motion controls are plastic rubbing against plastic, which quickly wears down and introduces backlash. Focusing causes vibration, and tracking celestial objects requires constant correction. Instead of enabling learning, it often frustrates beginners.
+</p>
+
+<h2>Accessories</h2>
+
+<p>
+The 20 mm eyepiece includes an unnecessary erecting lens intended to create a right-side-up image, which further degrades sharpness and contrast. The 10 mm Kellner eyepiece is serviceable, and the red-dot finder is usable, but neither offsets the optical design flaws of the telescope itself.
+</p>
+
+<h2>Drawbacks</h2>
+
+<p>
+The AstroMaster 114EQ’s core problem is the design itself. The optical tube is nearly impossible to collimate correctly because of the fixed internal corrector lens. The mount is wobbly, the focuser introduces tilt, and the included 20 mm eyepiece makes image quality even worse. Practically every component encourages immediate replacement, at which point a better telescope could have been purchased from the start.
+</p>
+
+<h2>Conclusion</h2>
+
+<p>
+The Celestron AstroMaster 114EQ is not recommended for beginners interested in astronomy. For the same price, tabletop Dobsonians such as the Zhumell Z130 and SkyWatcher Heritage 130P offer significantly better optics and easier use, while refractors such as the Meade Infinity 102 provide stable mounts and sharp images. The AstroMaster 114EQ is built to look good on a store shelf, not to deliver meaningful astronomical performance.
+</p>
+
+<section class="review-disclaimer">
+  <strong>Disclaimer:</strong> This review is based on optical specifications, teardown reports,
+  and user feedback from astronomy communities. We have not personally tested this telescope.
+</section>

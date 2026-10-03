@@ -1,0 +1,174 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Jupiter"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-08-09'
+description: "The largest planet in the Solar System."
+slug: jupiter
+imageDir: /images/jupiter
+thumbnail: /images/jupiter/thumbnail.webp
+lang: en
+---
+
+import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
+import JupiterMagneticFieldSim from "../../components/simulations/single-planet/JupiterMagneticFieldSim.jsx";
+import JupiterMoonsSim from "../../components/simulations/single-planet/JupiterMoonsSim.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import PlanetSizeComparison from "../../components/simulations/planet-size-comparison/PlanetSizeComparison.jsx";
+
+<SinglePlanetSim
+  planet="Jupiter"
+  client:visible
+  cameraPosition={{ x: 0, y: 0, z: 2.4 }}
+  textureContrast={1.2}
+  tiltDeg={[20, 20, -25]}
+  ambientIntensity={0.0}
+/>
+
+<p>Jupiter was discovered by ancient civilizations in ancient times. 
+	  However, first detailed observations of it were made 
+	  by Galileo Galeli, in 1610, 
+	  by a telescope made by Galileo himself.</p>
+
+<figure class="post-figure post-image-grid-figure">
+  <div class="post-image-grid" aria-label="Galileo's early Jupiter sketches">
+    <img
+      src="/images/jupiter/galileo-sketch-1.webp"
+      alt="Galileo sketch of Jupiter with early observations"
+      loading="lazy"
+      decoding="async"
+    />
+    <img
+      src="/images/jupiter/galileo-sketch-2.webp"
+      alt="Galileo sketch of Jupiter showing changing positions of its moons"
+      loading="lazy"
+      decoding="async"
+    />
+    <img
+      src="/images/jupiter/galileo-sketch-3.webp"
+      alt="Galileo sketch of Jupiter continuing the observation series"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <figcaption class="post-image-grid-caption">
+    Galileo’s sketches of the moons of Jupiter made on the nights of February 3 and 4, 1610. (Ori means Orient, or East, Occ Occident, or West). Image Credit: Octavo Corp./Warnock Library)
+  </figcaption>
+</figure>
+
+He laid out sketches of what he saw, 4 bright dots next to the large 
+  brightness in the middle. These bright dots would later 
+  come out to be the largest moons of Jupiter.
+
+
+<figure class="post-figure">
+  <img
+    class="post-image post-image-lg"
+    src="/images/jupiter/jupiter-HST.webp"
+    alt="Jupiter's Great Red Spot"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>Jupiter during the Hubble Space Telescope’s first observations in 1991, 
+    revealing fine cloud structures and the Great 
+    Red Spot in unprecedented detail for that time.</figcaption>
+</figure>
+
+  373 years later, with the help of uncromphendable improvements in science & engineering, 
+  humanity would photograph Jupiter with a new instrument called Hubble Space Telescope,
+  this time in much more detail.
+
+<figure class="post-figure">
+  <img
+    class="post-image post-image-lg"
+    src="/images/jupiter/Detailed_view_of_Jupiter_and_its_immense_swirling_cloud_patterns-2.webp"
+    alt="Close view of Jupiter's swirling cloud bands and storms"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>Hubble’s detailed look at Jupiter’s cloud tops, highlighting the layered bands and nested storms.</figcaption>
+</figure>
+
+<p>Zooming in on the belts shows how turbulent Jupiter’s atmosphere is: alternating jet streams pull clouds into ribbons, while smaller vortices trace the shear zones that feed the Great Red Spot. The pale zones rise higher and reflect more sunlight, whereas the darker belts reveal deeper, warmer layers below.</p>
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/jupiter_texture.webp"
+  secondaryTexture="/textures/earth-texture-nasa.webp"
+  primaryRadius={139822}
+  secondaryRadius={12742}
+  planetDistance={1.2}
+  primaryContrast={1.05}
+  secondaryContrast={0.95}
+  orthoExtent={1}
+  options={{ rotationHours: 24 }}
+/>
+
+<p>Jupiter’s scale is almost overwhelming, its diameter 
+  is about 143,000 km, more 
+  than 11 times that of Earth, and its volume is so vast that over 
+  1,300 Earths could fit 
+  inside it.</p>
+
+<figure class="post-figure">
+  <img
+    class="post-image post-image-lg"
+    src="/images/jupiter/the-great-red-spot.webp"
+    alt="Jupiter's Great Red Spot"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>Jupiter’s Great Red Spot, photographed by Juno.</figcaption>
+</figure>
+
+
+Jupiter hosts one of the largest storms ever observed by humanity.
+Its size is so immense that it can engulf the entire Earth 
+(about 16,000 km wide), larger than our planet’s diameter.
+
+<figure class="post-figure">
+  <JupiterMoonsSim
+    client:visible
+    cameraPosition={{ x: 0, y: 0, z: 40 }}
+    moonsOptions={{ layout: 'line', distanceScale: 1.0, sizeScale: 10.0 }}
+  />
+  <figcaption>Jupiter's 4 largest moons (sizes scaled up 10× for visibility).</figcaption>
+</figure>
+
+Jupiter has 95 known moons, making it the planet with the most 
+satellites in our Solar System; among them are the four Galilean 
+moons—Io, Europa, Ganymede, and Callisto.
+
+If the sizes of the moon and the distance between the planet 
+were kept to scale, the moons would hardly be visible. This explains why
+Galileo needed to build a telescope of his own to observe these moons.
+
+<SimPostSchema
+  title="Jupiter"
+  description="A planetary sphere of Jupiter with accurate texture, plus details about its discovery, distance from the Sun, atmosphere, moons, and name."
+  url="https://astrosyo.com/posts/jupiter"
+  datePublished="2025-08-09"
+  authorName="Astrosyo"
+  keywords={[
+    "jupiter",
+    "gas giant",
+    "astronomy",
+    "webgl",
+    "education"
+  ]}
+  image="/images/jupiter/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Jupiter Sphere",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/jupiter#simulation",
+    "description": "Interactive planetary sphere of Jupiter rendered with accurate texture."
+  }}
+/>

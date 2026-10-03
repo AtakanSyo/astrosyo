@@ -1,0 +1,166 @@
+---
+import '../styles/cards.css';
+import '../styles/telescopes.css';
+import '../styles/reviewLinkCards.css';
+
+interface Props {
+  files: string | string[];
+  heading?: string;
+  showAffiliateLinks?: boolean;
+}
+
+const { files, heading, showAffiliateLinks = true } = Astro.props as Props;
+const requestedFiles = Array.isArray(files) ? files : [files];
+
+function normalizeFileName(name: string | undefined | null) {
+  if (!name) return null;
+  return (
+    name
+      .replace(/\\/g, '/')
+      .split('/')
+      .pop()
+      ?.replace(/\.mdx?$/i, '')
+      ?.trim()
+      .toLowerCase() ?? null
+  );
+}
+
+function slugFromUrl(url: string | undefined | null) {
+  if (!url) return null;
+  return (
+    url
+      .replace(/\/+$/, '')
+      .split('/')
+      .filter(Boolean)
+      .pop()
+      ?.toLowerCase() ?? null
+  );
+}
+
+const normalizedNames = requestedFiles
+  .map((name) => normalizeFileName(name))
+  .filter((val): val is string => Boolean(val));
+
+const uniqueOrder = Array.from(new Set(normalizedNames));
+
+const allPosts = Object.values(
+  import.meta.glob('../pages/posts/*.{md,mdx}', { eager: true })
+) as any[];
+
+type PostEntry = (typeof allPosts)[number];
+
+const postLookup = new Map<string, PostEntry>();
+
+for (const post of allPosts) {
+  const slug = slugFromUrl(post.url);
+  if (slug) {
+    postLookup.set(slug, post);
+  }
+}
+
+const selectedPosts = uniqueOrder
+  .map((slug) => postLookup.get(slug) ?? null)
+  .filter((post): post is PostEntry => Boolean(post));
+
+const missing = uniqueOrder.filter((slug) => !postLookup.has(slug));
+if (missing.length > 0) {
+  console.warn(`[ReviewLinkCards] Missing posts for: ${missing.join(', ')}`);
+}
+
+function formatScore(value: unknown) {
+  if (value === null || value === undefined || value === '') return null;
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    const normalized = Math.max(0, Math.min(10, value));
+    return Number.isInteger(normalized)
+      ? `${normalized}/10`
+      : `${normalized.toFixed(1)}/10`;
+  }
+  const num = Number.parseFloat(String(value));
+  if (!Number.isNaN(num)) {
+    const normalized = Math.max(0, Math.min(10, num));
+    return Number.isInteger(normalized)
+      ? `${normalized}/10`
+      : `${normalized.toFixed(1)}/10`;
+  }
+  return String(value);
+}
+
+const containerClass =
+  selectedPosts.length > 1 ? 'post-grid review-link-grid' : 'review-link-single';
+
+const labels = {
+  empty: 'No matching review posts found.',
+  untitled: 'Untitled Review',
+  byPrefix: 'By ',
+  reviewBadge: 'Review',
+  readReview: 'Read the review →',
+};
+---
+
+{heading && <h2 class="review-link-heading">{heading}</h2>}
+
+{selectedPosts.length === 0 ? (
+  <div class="review-link-empty">{labels.empty}</div>
+) : (
+  <div class={containerClass}>
+    {selectedPosts.map((post) => {
+      const { frontmatter, url } = post;
+      const title = frontmatter?.title
+        ? frontmatter.title.replace(/\s+(Review|Overview)$/i, '')
+        : labels.untitled;
+      const description = frontmatter?.description;
+      const writer = frontmatter?.writer;
+      const pubDate = frontmatter?.pubDate
+        ? new Date(frontmatter.pubDate).toLocaleDateString()
+        : null;
+      const scoreLabel = formatScore(frontmatter?.rating?.overall);
+      const affiliate = frontmatter?.affiliate ?? {};
+      const affiliates = [
+        ['Amazon', affiliate.amazon],
+        ['HighPoint', affiliate.highpointscientific],
+        ['Astroshop', affiliate.astroshop],
+      ].filter(([, link]) => Boolean(link)) as Array<[string, string]>;
+
+      return (
+        <div class="post-card post-card--review review-link-card">
+          <a href={url} class="post-card-link">
+            <div class="post-card-title">{title}</div>
+
+            {(writer || pubDate) && (
+              <div class="post-card-meta">
+                {writer ? `${labels.byPrefix}${writer}` : ''}
+                {writer && pubDate ? ' — ' : ''}
+                {pubDate ?? ''}
+              </div>
+            )}
+
+            {description && <p class="post-card-desc">{description}</p>}
+
+            <div class="post-card-footer has-badge">
+              <div class="post-card-badges">
+                <span class="review-badge">{labels.reviewBadge}</span>
+                {scoreLabel && <span class="score-badge">{scoreLabel}</span>}
+              </div>
+              <div class="read-post">{labels.readReview}</div>
+            </div>
+          </a>
+
+          {showAffiliateLinks && affiliates.length > 0 && (
+            <div class="affiliate-links">
+              {affiliates.map(([label, link]) => (
+                <a
+                  href={link}
+                  class="affiliate-btn"
+                  target="_blank"
+                  rel="noopener noreferrer sponsored nofollow"
+                >
+                  {`Check on ${label}`}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    })}
+  </div>
+)}

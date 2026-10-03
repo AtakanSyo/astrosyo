@@ -1,0 +1,56 @@
+---
+import Layout from './Layout.astro';
+import '../styles/postsGlobal.css';
+import '../styles/infoPost.css';  // ← pulls in your global styles
+import SocialShare from '../components/SocialShare.astro';
+import FeedbackCTA from '../components/FeedbackCTA.astro';
+
+const { url } = Astro.props;
+
+const {
+  title,
+  description,
+  writer,
+  pubDate,
+  cover_image,
+} = Astro.props.frontmatter;
+
+
+---
+
+<head>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+  />
+  {cover_image && <link rel="preload" as="image" href={cover_image} />}
+</head>
+
+<Layout
+  title={title}
+  description={description}
+  category={Astro.props.frontmatter?.category}
+  image={cover_image}
+  ogType="article"
+>
+  <article class="post centered_flex">
+    {cover_image && (
+      <img
+        src={cover_image}
+        class="info-post-starter-image"
+        alt={title + ' cover'}
+        fetchpriority="high"
+        loading="eager"
+        decoding="async"
+      />
+    )}
+
+    <h1>{title}</h1>
+    <p class="post-description">{description}</p>
+
+    <p class="writer">Written by {writer}</p>
+    <SocialShare frontmatter={Astro.props.frontmatter} url={url} />
+    <slot />
+  </article>
+  <FeedbackCTA />
+</Layout>

@@ -1,0 +1,138 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/index.css';
+import '../styles/telescopes.css';
+import '../styles/topTelescopes.css';
+
+const allPosts = Object.values(
+  import.meta.glob('./posts/*.{md,mdx}', { eager: true })
+) as any[];
+
+function normalizeCat(cat: unknown): string[] {
+  if (!cat) return [];
+  if (Array.isArray(cat)) return cat.filter(Boolean).map((c) => String(c).toLowerCase());
+  return [String(cat).toLowerCase()];
+}
+
+function hasCat(frontmatter: any, needle: string) {
+  return normalizeCat(frontmatter.category ?? frontmatter.categories).includes(needle);
+}
+
+function parseScore(value: unknown): number | null {
+  if (value === undefined || value === null || value === '') return null;
+  if (typeof value === 'number' && Number.isFinite(value)) return Math.max(0, Math.min(10, value));
+  const text = String(value).trim().toLowerCase();
+  const match = text.match(/^(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+(?:\.\d+)?))?$/);
+  if (match) {
+    const numerator = parseFloat(match[1]);
+    const denominator = match[2] ? parseFloat(match[2]) : 10;
+    if (!Number.isNaN(numerator) && !Number.isNaN(denominator) && denominator > 0) {
+      return Math.max(0, Math.min(10, (numerator / denominator) * 10));
+    }
+  }
+  const lookup: Record<string, number> = { a: 9.5, 'a-': 9, 'b+': 8.5, b: 8, 'b-': 7.5, c: 7, 'c-': 6.5 };
+  return lookup[text] ?? null;
+}
+
+function scoreDescriptor(score: number | null) {
+  if (score === null) return null;
+  if (score >= 9) return 'cosmic';
+  if (score >= 8) return 'strong pick';
+  if (score >= 7) return 'a decent choice';
+  if (score >= 6) return 'not bad';
+  if (score >= 5.5) return 'okay';
+  if (score >= 4) return 'better options exist';
+  return 'not recommended';
+}
+
+const reviewPosts = allPosts
+  .map((post) => {
+    const score = parseScore(post.frontmatter?.rating?.overall);
+    return { ...post, score };
+  })
+  .filter((post) => post.score !== null && hasCat(post.frontmatter ?? {}, 'reviews'))
+  .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+  .slice(0, 10);
+
+function scoreToHue(score: number | null | undefined) {
+  // 0→120 (red→green); fallback to a neutral blue if missing
+  if (score === null || score === undefined) return 210;
+  return Math.round((score / 10) * 120);
+}
+---
+
+<Layout title="Top 10 Telescope Picks">
+  <section class="centered_flex top-ten-section">
+    <div class="hero" style="margin-top: 4vh;">
+      <span class="hero-kicker">Top 10 Picks</span>
+      <h1 class="home-title" style="font-size: clamp(2rem, 4vw + 1rem, 4.25rem);">
+        Highest-Rated Telescopes on Astrosyo
+      </h1>
+      <p class="home-description" style="max-width: 52ch;">
+        We have crowned these ten telescopes the standouts after detailed reviews, long thinking sessions, and arduous arguments.
+      </p>
+    </div>
+
+    <div class="top-ten-grid">
+      {reviewPosts.map((post, index) => {
+        const { frontmatter, score, url } = post;
+        const descriptor = scoreDescriptor(score);
+        const pubDate = frontmatter.pubDate ? new Date(frontmatter.pubDate).toLocaleDateString() : null;
+        const affiliate = frontmatter.affiliate ?? {};
+        const hue = scoreToHue(score);
+        const affs = [
+          ['Amazon', affiliate.amazon],
+          ['HighPoint', affiliate.highpointscientific],
+          ['Astroshop', affiliate.astroshop],
+        ].filter(([, link]) => link);
+
+        const cleanTitle = frontmatter.title
+          ? frontmatter.title.replace(/\s+(Review|Overview)$/i, '')
+          : 'Untitled Telescope';
+
+        const thumbnail = frontmatter.thumbnail;
+
+        return (
+          <div class="post-card post-card--review top-ten-card">
+            <a href={url} class="post-card-link top-ten-link">
+              {thumbnail && (
+                <div class="post-card-thumb top-ten-thumb">
+                  <span class="top-ten-rank">#{index + 1}</span>
+                  <img src={thumbnail} alt={`${cleanTitle} thumbnail`} loading="lazy" />
+                </div>
+              )}
+              {!thumbnail && <span class="top-ten-rank">#{index + 1}</span>}
+              <div class="post-card-title">{cleanTitle}</div>
+              {frontmatter.description && (
+                <p class="post-card-desc">{frontmatter.description}</p>
+              )}
+
+              <div class="post-card-footer has-badge">
+                <div class="post-card-badges">
+                  <span class="review-badge">Review</span>
+                  <span class="score-badge" style={`--h:${hue}`}>
+                    {score?.toFixed(1)}/10
+                  </span>
+                  {descriptor && <span class="top-ten-chip">{descriptor}</span>}
+                  {frontmatter.brand && <span class="top-ten-chip">{frontmatter.brand}</span>}
+                  {frontmatter.telescopeType && <span class="top-ten-chip">{frontmatter.telescopeType}</span>}
+                </div>
+                <div class="read-post">Read the review →</div>
+              </div>
+            </a>
+
+            {affs.length > 0 && (
+              <div class="affiliate-links">
+                {affs.map(([name, link]) => (
+                  <a href={link} class="affiliate-btn" target="_blank" rel="noopener noreferrer sponsored nofollow">
+                    Check on {name}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  </section>
+</Layout>

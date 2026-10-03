@@ -1,0 +1,39 @@
+.nasa-article-title {
+  margin-top: 3rem;
+}
+
+.nasa-image{
+  max-height: 70vh;
+  max-width: 90vw;
+}
+
+section p {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/*───────────────────────────────────────────────
+  Credits section (no colors)
+───────────────────────────────────────────────*/
+.credits {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border-top: 1px solid;
+  font-size: 0.9rem;
+}
+
+.credits h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.credits p {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.credits strong {
+  font-weight: 600;
+}

@@ -1,0 +1,134 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Jupiter and Saturn Size Comparison"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-09-22'
+description: "True scale difference between Jupiter and Saturn."
+slug: jupiter-saturn-size-comparison
+imageDir: /images/jupiter-saturn-size-comparison
+thumbnail: /images/jupiter-saturn-size-comparison/thumbnail.webp
+keywords:
+  - jupiter
+  - saturn
+  - gas giants
+  - planet size comparison
+  - astronomy
+  - webgl
+  - simulation
+lang: en
+---
+
+import SaturnComparison from "../../components/simulations/saturn-size-comparison/SaturnComparison.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SaturnComparison
+  client:load
+  saturnTexture="/textures/saturn_texture.webp"
+  saturnRingTexture="/textures/saturns_rings_texture.webp"
+  secondaryTexture="/textures/jupiter_texture.webp"
+  options={{ cameraPosition: [0, 0, 7] }}
+  saturnRadius={58232}
+  secondaryRadius={69911}
+  planetDistance={3.4}
+  saturnContrast={1.05}
+  secondaryContrast={1.0}
+  saturnTiltDeg={[0, 10, -26.7]}
+  orthoExtent={1.4}
+/>
+
+<figcaption class="sim-caption">Jupiter and Saturn shown at accurate relative size.</figcaption>
+
+<h2>What the visualization shows</h2>
+<p>This visualization places Saturn next to Jupiter using their real physical 
+  diameters and true 3D geometry. Jupiter appears as a massive, turbulent atmosphere 
+  with deeply colored storm bands, while Saturn presents a smoother golden appearance. 
+  The simulation captures this difference 
+  without exaggeration or artistic distortion.</p>
+
+<SaturnComparison
+  client:load
+  saturnTexture="/textures/saturn_texture.webp"
+  saturnRingTexture="/textures/saturns_rings_texture.webp"
+  secondaryTexture="/textures/jupiter_texture.webp"
+  options={{ cameraPosition: [0, 12, 0] }}
+  saturnRadius={58232}
+  secondaryRadius={69911}
+  planetDistance={4}
+  saturnContrast={1.05}
+  secondaryContrast={1.0}
+  saturnTiltDeg={[0, 0, 0]}
+  orthoExtent={2.4}
+/>
+
+<h2>The numbers behind the scale</h2>
+<p>Saturn’s diameter is approximately 120,536 km. Jupiter’s diameter is about 139,820 km. The diameter ratio between them is:</p>
+
+$$
+\frac{D_J}{D_S} = \frac{139{,}820}{120{,}536} \approx 1.16
+$$
+
+<p>Volume scales with the cube of the diameter:</p>
+
+$$
+(1.16)^3 \approx 1.56
+$$
+
+<p>This means Jupiter has about one and a half times the volume of Saturn. Surface area, which determines how large the visible planetary face appears, scales with the square of the diameter:</p>
+
+$$
+(1.16)^2 \approx 1.35
+$$
+
+<p>So Jupiter’s visible disk is roughly 35% larger than Saturn’s.</p>
+  
+<SaturnComparison
+  client:load
+  saturnTexture="/textures/saturn_texture.webp"
+  saturnRingTexture="/textures/saturns_rings_texture.webp"
+  secondaryTexture="/textures/jupiter_texture.webp"
+  options={{ cameraPosition: [0, -6, -6] }}
+  saturnRadius={58232}
+  secondaryRadius={69911}
+  planetDistance={4}
+  saturnContrast={1.05}
+  secondaryContrast={1.0}
+  saturnTiltDeg={[0, 0, 0]}
+  orthoExtent={2.4}
+/>
+
+Beyond raw size, the contrast between Jupiter and Saturn reflects how differently they shaped the Solar System around them. Jupiter’s immense gravity influenced the orbits of nearby material, likely limiting the mass available for other planets to grow and helping sculpt the asteroid belt. Saturn, while still dominant on a planetary scale, played a more localized role. Their size difference is therefore not just a numerical curiosity, but a record of how the early Solar System evolved under competing gravitational giants.
+
+Viewed in isolation, Saturn feels enormous and commanding. Only when placed beside Jupiter at true scale does perspective shift, revealing how subtle differences in diameter translate into dramatic differences in volume, mass, and influence. This is why side-by-side comparisons matter in astronomy: scale is rarely intuitive, and our perception is easily misled without a direct reference. By removing artistic exaggeration and focusing purely on physical proportions, this visualization lets the Solar System speak for itself.
+
+<SimPostSchema
+  title="Jupiter and Saturn Size Comparison"
+  description="An interactive browser-based simulation that shows the true scale difference between Jupiter and Saturn."
+  url="https://astrosyo.com/posts/jupiter-saturn-size-comparison"
+  datePublished="2025-09-22"
+  authorName="Astrosyo"
+  keywords={[
+    "jupiter",
+    "saturn",
+    "gas giants",
+    "planet size comparison",
+    "astronomy",
+    "three.js",
+    "webgl",
+    "education"
+  ]}
+  image="/images/jupiter-saturn-size-comparison/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Planet Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/jupiter-saturn-size-comparison#simulation",
+    "description": "Interactive visualization comparing Jupiter and Saturn with accurate scale."
+  }}
+/>

@@ -1,0 +1,80 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "P-Type Star System Simulation"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-10'
+description: "Planets bound to two suns."
+slug: p-type-system
+imageDir: /images/p-type-system
+thumbnail: /images/p-type-system/thumbnail.webp
+keywords:
+  - p-type
+  - circumbinary planet
+  - orbital mechanics
+  - three.js
+  - astronomy visualization
+lang: en
+---
+
+import PTypeSystem from "../../components/simulations/p-type-system/p-type-system.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<PTypeSystem client:load showPause={true} />
+
+<figcaption class="sim-caption">
+  Two suns revolve around a shared barycenter while a lone world loops around both on a dashed, ellipsoidal track.
+</figcaption>
+
+<div class="sim-article">
+  <h2 id="about-this-simulation">About this simulation</h2>
+  <p>
+    P-type, or circumbinary, systems host planets that orbit a pair of stars instead of just one. In this visualization, both stars chase
+    each other along concentric loops while a planet glides along a stable orbit that encloses the pair. You can see the barycenter sit at the
+    center of the scene: the heavier star wobbles less, the lighter one swings wider, and the planet responds to the combined pull.
+  </p>
+  <p>
+    Lighting is shared between the suns so the planet inherits highlights from each star as they sweep overhead. A thin circumbinary disk gives
+    you a reference plane, and dashed path markers keep the orbital geometry easy to read from the top-down camera.
+  </p>
+
+  <h3 id="what-to-look-for">What to look for</h3>
+  <p>
+    Track how the stellar pair never collide—their separation stays constant while the barycenter remains fixed. The planet’s motion stays smooth,
+    but you can pause whenever it reaches periapsis to compare distances to both stars. Because axial tilt is enabled, daylight stripes slide across
+    the planet at a different cadence than the orbital period, hinting at unusual seasons in binary systems.
+  </p>
+  <p>
+    Want to experiment further? The component accepts overrides for stellar masses, separation, and orbital periods, making it easy to mimic
+    famous systems like Kepler-16 or TOI-1338 with a few prop tweaks.
+  </p>
+</div>
+
+<SimPostSchema
+  title="P-Type Star System Simulation"
+  description="Interact with a circumbinary star system where twin suns orbit their barycenter and a planet trails both on a glowing ellipse."
+  url="https://astrosyo.com/posts/p-type-system"
+  datePublished="2025-11-10"
+  authorName="Astrosyo"
+  keywords={[
+    "p-type",
+    "circumbinary planet",
+    "orbital mechanics",
+    "three.js",
+    "astronomy visualization"
+  ]}
+  image="/images/p-type-system/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "P-Type Star System Simulation",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/p-type-system#simulation",
+    "description": "Top-down Three.js view of a circumbinary star system with twin suns and a pause-aware orbiting planet."
+  }}
+/>

@@ -1,0 +1,70 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Solar System Planets In Order"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-05'
+description: "Line up the Solar System planets at a uniform size to compare colors, cloud bands, and surface detail side by side."
+slug: solar-system-planets-in-order
+imageDir: /images/solar-system-planets-in-order
+thumbnail: /images/solar-system-planets-in-order/thumbnail.webp
+keywords:
+  - solar system
+  - planetary comparison
+  - astronomy visualization
+  - three.js
+  - webgl
+lang: en
+---
+
+import SolarSystemPlanetsInOrder from "../../components/simulations/solar-system-planets-in-order/SolarSystemPlanetsInOrder.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SolarSystemPlanetsInOrder client:load />
+
+<figcaption class="sim-caption">Each planet appears at the same apparent radius so you can focus entirely on color, texture, and atmospheric personality. Order, left to right: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune.</figcaption>
+
+<div class="sim-article">
+  <h2 id="same-size-different-worlds">Same size, different worlds</h2>
+  <p>
+    Strip away diameter differences and a new kind of comparison emerges. When every planet shares the same silhouette, details like
+    Jupiter’s rust-colored belts, Earth’s blue oceans, or Mars’s dust storms jump to center stage. You can even spot the retrograde
+    rotation of Venus and Uranus as they slowly turn opposite the others.
+  </p>
+
+  <h3 id="color-palette">Color palette tour</h3>
+  <p>
+    Move along the row from Mercury’s scorched greys through Venus’s thick clouds and Earth’s vibrant blues. The outer worlds glow with
+    muted pastels: Jupiter shifts between ochres and creams, Saturn shows buttery shades, while Uranus and Neptune lean toward icy cyan.
+    Uniform sizing keeps your eye on those subtle gradients.
+  </p>
+</div>
+
+<SimPostSchema
+  title="Solar System Planets In Order"
+  description="Compare the colors and cloud patterns of every Solar System planet by seeing them all at the same apparent size."
+  url="https://astrosyo.com/posts/solar-system-planets-in-order"
+  datePublished="2025-11-05"
+  authorName="Astrosyo"
+  keywords={[
+    "solar system",
+    "planetary comparison",
+    "astronomy visualization",
+    "three.js",
+    "webgl"
+  ]}
+  image="/images/solar-system-planets-in-order/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Solar System Planets In Order",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/solar-system-planets-in-order#simulation",
+    "description": "A linear gallery of Solar System planets displayed at equal radii to highlight differences in color and texture."
+  }}
+/>

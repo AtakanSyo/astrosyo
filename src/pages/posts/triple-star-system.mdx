@@ -1,0 +1,131 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Triple Star Systems"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-11-10'
+description: "Three suns chase each other around a center of mass while a lone planet clings to one star’s orbit."
+slug: triple-star-system
+imageDir: /images/triple-star-system
+thumbnail: /images/triple-star-system/thumbnail.webp
+keywords:
+  - triple star
+  - multi-star system
+  - exoplanet
+  - three.js
+  - astronomy visualization
+lang: en
+---
+
+import TripleStarSystem from "../../components/simulations/triple-star-system/triple-star-system.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<TripleStarSystem client:load showPause={true} />
+
+<figcaption class="sim-caption">
+A faint barycentric disc highlights
+the central reference point (center of mass), and dashed rings show the distinct orbital radii for every body.
+</figcaption>
+
+<p>
+  Triple systems are wild: each star traces its own loop around a shared center of mass. 
+  This visualization shows all three orbits with
+  shifting radii and phases so you can watch them orbit around the barycenter (center of mass). 
+  A single planet remains bound to the primary star, carrying its
+  dashed orbital path wherever the host goes.
+</p>
+
+<h2 id="alpha-centauri-preset">Alpha Centauri Star System</h2>
+
+<TripleStarSystem
+  client:load
+  id="alpha-centauri-triple"
+  showPause={true}
+  showPlanet={false}
+  options={{
+    cameraDistance: 2.1,
+    backgroundColor: 0x02030a,
+    daysPerSecond: 40,
+    ambientIntensity: 0.35,
+    glowStrength: 1.9,
+    baryDiscThickness: 1.35,
+    baryDiscOpacity: 0.04,
+    stars: {
+      alpha: {
+        name: "Alpha Cen A",
+        radius: 1.25,
+        color: 0xffe2b8,
+        intensity: 200,
+        orbitDays: 260,
+        phaseOffset: 0,
+        orbitShiftX: 0,
+        orbitShiftZ: 0,
+      },
+      beta: {
+        name: "Alpha Cen B",
+        radius: 0.95,
+        color: 0xffc07a,
+        intensity: 140,
+        orbitDays: 260,
+        phaseOffset: Math.PI,
+        orbitShiftX: 0,
+        orbitShiftZ: 0,
+      },
+      gamma: {
+        name: "Proxima Cen",
+        radius: 0.38,
+        color: 0xff5a5a,
+        intensity: 55,
+        orbitDays: 900,
+        phaseOffset: Math.PI * 0.15,
+        orbitShiftX: 0,
+        orbitShiftZ: 0,
+      },
+    },
+    starOrbitRadii: {
+      alpha: 4.2,
+      beta: 5.8,
+      gamma: 28,
+    },
+  }}
+/>
+
+<figcaption class="sim-caption">
+An abstract visualization of the Alpha Centauri triple star system.
+</figcaption>
+
+The Alpha Centauri star system is a hierarchical triple: 
+two stars (Alpha Centauri A and B) form a tight binary at 
+the center, orbiting their shared barycenter, while a third star (Proxima 
+Centauri) moves on a vastly wider 
+orbit around that inner pair. The inner stars behave almost like a single combined mass to the 
+distant companion, which is why the outer orbit can remain stable over immense timescales. 
+
+<SimPostSchema
+  title="Triple Star System Simulation"
+  description="Explore a triple-star barycentric dance where three suns orbit the same center and a planet clings to just one of them."
+  url="https://astrosyo.com/posts/triple-star-system"
+  datePublished="2025-11-10"
+  authorName="Astrosyo"
+  keywords={[
+    "triple star",
+    "multi-star system",
+    "exoplanet",
+    "three.js",
+    "astronomy visualization"
+  ]}
+  image="/images/triple-star-system/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Triple Star System Simulation",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/triple-star-system#simulation",
+    "description": "Interactive triple-star visualization with a planet bound to a single host star."
+  }}
+/>

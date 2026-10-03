@@ -26,3 +26,9 @@ supabase/.temp/
 
 # jetbrains setting folder
 .idea/
+
+# Local telescope source materials; keep out of GitHub
+/TTB/
+
+# Separate local historical preview
+/src/my-astro-blog-feb-2026/

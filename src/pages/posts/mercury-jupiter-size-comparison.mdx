@@ -1,0 +1,91 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Mercury and Jupiter Size Comparison"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-09-18'
+description: "The true scale difference between Mercury and Jupiter."
+slug: mercury-jupiter-size-comparison
+imageDir: /images/mercury-jupiter-size-comparison
+thumbnail: /images/mercury-jupiter-size-comparison/thumbnail.webp
+keywords:
+  - mercury
+  - jupiter
+  - planet size comparison
+  - astronomy
+  - webgl
+  - simulation
+lang: en
+---
+
+import PlanetSizeComparison from "../../components/simulations/planet-size-comparison/PlanetSizeComparison.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/jupiter_texture.webp"
+  secondaryTexture="/textures/mercury_texture.webp"
+  primaryRadius={69911}
+  secondaryRadius={2440}
+  planetDistance={1}
+  primaryContrast={1.05}
+  secondaryContrast={1.15}
+  orthoExtent={1.2}
+/>
+
+<figcaption class="sim-caption">Mercury and Jupiter shown at accurate relative size.</figcaption>
+
+<h2>What the simulation shows</h2>
+<p>This visualization places Mercury and Jupiter side by side using their real physical diameters and full 3D geometry. Mercury, the smallest planet in the Solar System, displays a cratered and scorched surface. Jupiter, the largest planet, fills the frame with deep atmospheric bands and massive cloud systems. Textbook illustrations often exaggerate Mercury to make it visible, but when rendered at true scale next to Jupiter, it nearly vanishes. Seeing them rotate together emphasizes how tiny Mercury really is compared to the giant of the Solar System.</p>
+
+<h2>The numbers behind the scale</h2>
+<p>Mercury’s diameter is approximately 4,880 km. Jupiter’s diameter is about 139,820 km. The ratio of their diameters is:</p>
+
+$$
+\frac{D_J}{D_M} = \frac{139{,}820}{4{,}880} \approx 28.7
+$$
+
+<p>Volume scales with the cube of the diameter:</p>
+
+$$
+(28.7)^3 \approx 23{,}600
+$$
+
+<p>This means Jupiter could contain more than twenty-three thousand Mercury-sized volumes. Surface area, which determines how large a planet's visible face appears, scales with the square of the diameter:</p>
+
+$$
+(28.7)^2 \approx 823
+$$
+
+<p>So Jupiter’s visible disk is more than eight hundred times larger than Mercury’s. The simulation preserves these exact ratios, allowing the scale difference to be understood visually rather than mathematically.</p>
+
+<SimPostSchema
+  title="Mercury and Jupiter Size Comparison"
+  description="An interactive browser-based simulation that shows the true scale difference between Mercury and Jupiter."
+  url="https://astrosyo.com/posts/mercury-jupiter-size-comparison"
+  datePublished="2025-09-18"
+  authorName="Astrosyo"
+  keywords={[
+    "mercury",
+    "jupiter",
+    "planet size comparison",
+    "astronomy",
+    "three.js",
+    "webgl",
+    "education"
+  ]}
+  image="/images/mercury-jupiter-size-comparison/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Planet Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/mercury-jupiter-size-comparison#simulation",
+    "description": "Interactive visualization comparing Mercury and Jupiter with accurate scale."
+  }}
+/>

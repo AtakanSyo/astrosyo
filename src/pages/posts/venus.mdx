@@ -1,0 +1,83 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Venus"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-08-14'
+description: "The inferno of the Solar System."
+slug: venus
+imageDir: /images/venus
+thumbnail: /images/venus/thumbnail.webp
+keywords:
+  - venus
+  - terrestrial planet
+  - planet
+  - astronomy
+  - webgl
+lang: en
+---
+
+import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<SinglePlanetSim 
+  planet="Venus" 
+  client:visible 
+  cameraPosition={{ x: 0, y: 0, z: 3.5 }} 
+  ambientIntensity={0.0}
+/>
+
+<figcaption class="sim-caption">Venus rendered with a realistic planetary texture.</figcaption>
+
+<h2>What you’re seeing</h2>
+<p>This simulation shows Venus as a planetary sphere using its real cloud texture. The surface is not visible — Venus is permanently hidden beneath a dense global layer of sulfuric acid clouds. The texture reveals swirling atmospheric patterns instead of land features.</p>
+
+<h2>Discovery</h2>
+<p>Venus has been known since prehistoric times. Civilizations including the Babylonians, Greeks, Maya, and Chinese tracked its motion. Because it appears near sunrise and sunset, early observers believed the morning and evening appearances were two different objects.</p>
+
+<h2>Distance from the Sun</h2>
+<p>Venus is the <strong>2nd planet from the Sun</strong>. Its average orbital distance is about 108 million km, or 0.72 AU. Venus orbits the Sun once every 225 Earth days and rotates extremely slowly — a Venusian day is longer than its year.</p>
+
+<h2>Special qualities</h2>
+<p>Venus is the hottest planet in the Solar System, even hotter than Mercury, due to its runaway greenhouse effect. Temperatures reach around 475°C, and the atmosphere is so dense that the surface pressure equals that of being nearly 1 km underwater on Earth. Venus also rotates backward compared to most planets, a motion known as retrograde rotation.</p>
+
+<h2>Moons</h2>
+<p>Venus has no moons. Despite extensive observation, no natural satellites have ever been detected.</p>
+
+<h2>Size and mass</h2>
+<p>Venus has a diameter of 12,104 km, making it almost the same size as Earth. It is often called Earth’s “sister planet,” though their atmospheres and surface conditions could not be more different. Venus has a mass about 82% of Earth’s.</p>
+
+<h2>Chemistry and atmosphere</h2>
+<p>Venus’s atmosphere is composed primarily of carbon dioxide (over 96%), with thick clouds of sulfuric acid. The greenhouse effect traps heat so efficiently that no known probe has survived on the surface longer than a couple of hours. Lightning, super-rotating winds, and acid rain shape the upper atmosphere.</p>
+
+<h2>Name and meaning</h2>
+<p>Venus is named after the Roman goddess of love and beauty. Its brightness in the sky likely contributed to its association with deities of beauty in multiple cultures throughout history.</p>
+
+<SimPostSchema
+  title="Venus"
+  description="A planetary sphere of Venus with accurate cloud texture, plus details about its discovery, distance from the Sun, atmosphere, and name."
+  url="https://astrosyo.com/posts/venus"
+  datePublished="2025-11-11"
+  authorName="Astrosyo"
+  keywords={[
+    "venus",
+    "terrestrial planet",
+    "astronomy",
+    "webgl",
+    "education"
+  ]}
+  image="/images/venus/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Venus Sphere",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/venus#simulation",
+    "description": "Interactive planetary sphere of Venus rendered with accurate texture."
+  }}
+/>

@@ -1,0 +1,91 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Jupiter and Earth Size Comparison"
+category: simulation
+writer: Astrosyo
+pubDate: '2025-08-20'
+description: "The true scale difference between Jupiter and Earth."
+slug: jupiter-earth-size-comparison
+imageDir: /images/jupiter-earth-size-comparison
+thumbnail: /images/jupiter-earth-size-comparison/thumbnail.webp
+keywords:
+  - Jupiter
+lang: en
+---
+
+import PlanetSizeComparison from "../../components/simulations/planet-size-comparison/PlanetSizeComparison.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/jupiter_texture.webp"
+  secondaryTexture="/textures/earth-texture-nasa.webp"
+  primaryRadius={139822}
+  secondaryRadius={12742}
+  planetDistance={1.2}
+  primaryContrast={1.05}
+  secondaryContrast={0.95}
+  orthoExtent={1.2}
+  options={{ rotationHours: 24 }}
+/>
+
+<figcaption class="sim-caption">Jupiter and Earth rendered at true relative diameters, textured and spinning in place so the size contrast is instantly visible.</figcaption>
+
+<h2>What the simulation shows</h2>
+<p>This scene places Jupiter and Earth side by side at their correct diameters, with physically sized spheres and photoreal textures, rotating about their own axes. The layout is intentionally compact—this is not their real orbital spacing—but the geometry is accurate: Earth’s diameter is ~12,742 km and Jupiter’s is ~139,820 km. Seeing both globes in the same frame removes the distortion of textbook cartoons and makes the scale difference intuitive; the smaller world is not “slightly” smaller, it is dwarfed.</p>
+
+<h2>The numbers behind the scale</h2>
+
+$$
+r \;=\; \frac{D_J}{D_E}
+   \;=\;
+   \frac{139{,}820}{12{,}742}
+   \;\approx\; 10.97
+$$
+
+<p>
+  Because volume scales with the cube of diameter, the volume ratio becomes
+</p>
+
+
+$$
+r^3 \;\approx\; 10.97^3 \;\approx\; 1.32 \times 10^3
+$$
+
+<p>
+  meaning Jupiter could fit over **one thousand Earth-sized volumes** inside it. Likewise, surface area scales with the square of diameter:
+</p>
+$$
+r^2 \;\approx\; 10.97^2 \;\approx\; 1.20 \times 10^2
+$$
+<p>so Jupiter’s visible disk covers about **120× more surface area** than Earth. The simulation preserves these exact proportions, letting your eyes absorb what the numbers struggle to convey.</p>
+<SimPostSchema
+  title="Jupiter and Earth Size Comparison"
+  description="An interactive browser-based simulation that shows the true scale difference between Jupiter and Earth."
+  url="https://astrosyo.com/posts/jupiter-earth-size-comparison"
+  datePublished="2025-08-20"
+  authorName="Astrosyo"
+  keywords={[
+    "jupiter",
+    "earth",
+    "planet size comparison",
+    "astronomy",
+    "three.js",
+    "webgl",
+    "education"
+  ]}
+  image="/images/jupiter-earth-size-comparison/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Planet Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/jupiter-earth-size-comparison#simulation",
+    "description": "Interactive visualization comparing Jupiter and Earth with accurate scale."
+  }}
+/>
