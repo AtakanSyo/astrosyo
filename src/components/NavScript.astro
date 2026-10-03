@@ -34,6 +34,11 @@
       });
 
       searchToggle?.addEventListener('click', () => {
+        // Tell the CSS where the icon is, so the field expands outward from it.
+        const iconBox = searchToggle.getBoundingClientRect();
+        searchForm?.style.setProperty('--search-x', `${iconBox.left + iconBox.width / 2}px`);
+        // Flush styles so the animation starts from the icon, not the default centre.
+        void searchForm?.offsetWidth;
         nav.classList.add('search-open');
         searchInput?.focus();
       });
