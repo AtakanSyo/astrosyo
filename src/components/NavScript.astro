@@ -35,10 +35,15 @@
 
       searchToggle?.addEventListener('click', () => {
         // Tell the CSS where the icon is, so the field expands outward from it.
-        const iconBox = searchToggle.getBoundingClientRect();
-        searchForm?.style.setProperty('--search-x', `${iconBox.left + iconBox.width / 2}px`);
-        // Flush styles so the animation starts from the icon, not the default centre.
-        void searchForm?.offsetWidth;
+        // Applied with transitions off and flushed, so the collapsed field
+        // jumps to the icon first and the expansion then starts from there.
+        if (searchForm) {
+          const iconBox = searchToggle.getBoundingClientRect();
+          searchForm.style.transition = 'none';
+          searchForm.style.setProperty('--search-x', `${iconBox.left + iconBox.width / 2}px`);
+          void searchForm.offsetWidth;
+          searchForm.style.transition = '';
+        }
         nav.classList.add('search-open');
         searchInput?.focus();
       });

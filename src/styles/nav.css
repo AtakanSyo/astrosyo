@@ -187,14 +187,15 @@ header {
     position: absolute;
     inset: 0;
     margin: 0;
-    background: #000;
-    /* Collapsed to a sliver at the search icon (--search-x is set by
+    background: #161616;
+    /* Collapsed to a small pill at the search icon (--search-x is set by
        NavScript on click); opening widens it sideways to the full header. */
     clip-path: inset(
-      0
+      8px
       calc(100% - var(--search-x, 50%) - 22px)
-      0
+      8px
       calc(var(--search-x, 50%) - 22px)
+      round 999px
     );
     opacity: 0;
     visibility: hidden;
@@ -206,7 +207,7 @@ header {
   }
 
   .site-nav.search-open .nav-search-form {
-    clip-path: inset(0 0 0 0);
+    clip-path: inset(0 0 0 0 round 0px);
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -233,11 +234,12 @@ header {
     margin: 0;
   }
 
-  /* logo, links and search icon: fade instead of vanishing */
+  /* logo, links and search icon stay put and are covered by the
+     expanding field; they only become inert once it has passed over them */
   .logo,
   .nav-item,
   .nav-search-toggle {
-    transition: background 0.2s, opacity 0.12s ease, visibility 0s;
+    transition: background 0.2s, visibility 0s;
   }
 
   .site-nav.search-open .nav-item {
@@ -251,10 +253,9 @@ header {
   header:has(.site-nav.search-open) .logo,
   .site-nav.search-open .nav-item,
   .site-nav.search-open .nav-search-toggle {
-    opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.12s ease, visibility 0s linear 0.12s;
+    transition: visibility 0s linear 0.25s;
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -13,6 +13,10 @@ const {
   url,
 } = Astro.props.frontmatter;
 
+// `hideDescription: true` in a post's frontmatter drops the line under the
+// title; the description is still used for search engines and link previews.
+const hideDescription = Astro.props.frontmatter?.hideDescription === true;
+
 const rawPostColor = typeof Astro.props.frontmatter?.postColor === "string"
   ? Astro.props.frontmatter.postColor.trim()
   : "";
@@ -66,7 +70,7 @@ const articleStyle = [
 
     <div class="post-entrance centered_flex" style={entranceStyle}>
       <h1 class="sim-article-title fade-up">{title}</h1>
-      <p class="post-description">{description}</p>
+      {!hideDescription && <p class="post-description">{description}</p>}
 <!-- <SocialShare frontmatter={Astro.props.frontmatter} url={url} /> -->    </div>
 
     <slot />
