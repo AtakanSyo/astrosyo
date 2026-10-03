@@ -5,9 +5,15 @@
 .telescope-rankings-page-title {
   text-align: center;
   margin-top: 2rem;
-  font-family: "Poiret One", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-secondary);
   font-weight: 400;
 }
+/* Group headings: "All Telescopes", "Dobsonian Telescopes", … */
+.post-group h2 {
+  font-family: var(--font-secondary);
+  font-weight: 400;
+}
+
 /* Rankings / All Telescopes layout */
 .post-group .post-grid {
   display: grid;

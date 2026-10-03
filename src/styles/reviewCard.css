@@ -134,6 +134,12 @@
   }
 }
 
+/* Telescope card titles use the secondary (display) font */
+.post-card--review .post-card-title {
+  font-family: var(--font-secondary);
+  font-weight: 400;
+}
+
 .post-card--review .post-card-thumb-spacer {
   display: block;
   height: 3.8rem;

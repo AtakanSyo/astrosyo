@@ -29,6 +29,10 @@ body::-webkit-scrollbar {
 }
 :root {
   --color-text: #e4e4e4;        /* soft off-white text */
+
+  /* Secondary (display) font: titles, CTAs, card titles */
+  --font-secondary: "Poiret One", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
   --spacing: 1rem;
   --golden-ratio: 1.618;
   --header-height: 52px;

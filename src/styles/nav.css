@@ -54,6 +54,8 @@ header {
 
 /* the regular links */
 .nav-item {
+  font-family: var(--font-secondary);
+  font-weight: 400;
   color: #e4e4e4;
   text-decoration: none;
   padding: 0.5rem 1rem;
@@ -271,7 +273,6 @@ header {
     color: #e4e4e4;
     transition: background 0.2s ease, color 0.2s ease;
     font-size: 1.2rem;
-    font-weight: 900;
   }
 
   .nav-item:hover {
