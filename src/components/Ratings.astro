@@ -34,26 +34,11 @@ const visible = rating
       .map(([key, value]) => ({ key, label: toLabel(key), score: parseScore(value) }))
       .filter((c) => c.score !== null)
   : [];
-
-function scoreDescriptor(score: number | null): string | null {
-  if (score === null) return null;
-  if (score >= 9) return 'cosmic';
-  if (score >= 8) return 'strong pick';
-  if (score >= 7) return 'a decent choice';
-  if (score >= 6) return 'not bad';
-  if (score >= 5.5) return 'okay';
-  if (score >= 4) return 'better options exist';
-  return 'not recommended';
-}
-
-const overallScore = parseScore(rating?.overall);
-const descriptor = scoreDescriptor(overallScore);
 ---
 {visible.length > 0 && (
   <section class="ratings">
     <h3 class="ratings-title">
       Performance Breakdown
-      {descriptor && <span class="ratings-descriptor">{descriptor}</span>}
     </h3>
 
     <div class="ratings-row" role="list">

@@ -220,16 +220,16 @@ h1 .review-tag {
   border: 1px solid var(--tile-border);
 }
 
-/* apply the rating hue only to border + score */
+/* border + score are white (no longer tinted by the rating) */
 .rating-tile{
-  --rate-color: hsl(var(--h, 0) var(--rate-sat) var(--rate-lit));
-  border-color: color-mix(in oklab, var(--rate-color) 70%, rgba(255,255,255,0.10));
+  --rate-color: #fff;
+  border-color: var(--rate-color);
 }
 
 .rating-score{
   color: var(--rate-color);
   font-size: 1.35rem;
-  font-weight: 900;
+  font-weight: 300;
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
   line-height: 1;
@@ -237,7 +237,8 @@ h1 .review-tag {
 
 .rating-label{
   margin-top: 8px;
-  color: var(--text-muted);
+  color: #fff;
+  font-weight: 300;
   font-size: 0.8rem;
   line-height: 1.2;
 }
@@ -401,7 +402,7 @@ h1 .review-tag {
 
 .review-disclaimer {
   background-color: var(--bg);
-  border-left: 4px solid #fff;
+  border-left: 1px solid #fff;
   padding: 0.8rem 1rem;
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
@@ -410,6 +411,8 @@ h1 .review-tag {
 }
 
 .review-disclaimer strong {
+  font-family: var(--font-secondary);
+  font-weight: 400;
   color: #fff;
 }
 
@@ -437,7 +440,7 @@ h1 .review-tag {
    ============================= */
 .review-post-starter-content {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   gap: 2rem;
   width: 100%;
@@ -484,29 +487,29 @@ h1 .review-tag {
 }
 
 .main-rating-card{
-  --rate-color: hsl(var(--h, 0) 100% 62%);
+  --rate-color: #fff;
 
-  border: 1px solid
-    color-mix(in oklab, var(--rate-color) 70%, rgba(255,255,255,0.12));
+  border: 1px solid var(--rate-color);
   background: rgba(255,255,255,0.03);
 
-  border-radius: 18px;          /* was 16px */
-  padding: 20px 22px 18px;      /* more presence */
-  gap: 6px;                     /* nicer vertical rhythm */
+  border-radius: 18px;
+  padding: 20px 22px 18px;
+  gap: 6px;
 }
 
 /* Category label */
 .main-rating-card .category{
-  font-size: 0.85rem;           /* was smaller */
+  font-size: 0.85rem;
+  font-weight: 300;
   letter-spacing: 0.02em;
-  opacity: 0.65;
+  color: #fff;
 }
 
 /* The score itself */
 .main-rating-card .score{
   color: var(--rate-color);
-  font-size: 2.2rem;            /* ⭐ main upgrade (was ~1.6–1.8) */
-  font-weight: 800;
+  font-size: 2.2rem;
+  font-weight: 300;
   line-height: 1;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;

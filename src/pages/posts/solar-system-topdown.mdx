@@ -26,29 +26,21 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
 
 <div class="sim-article">
   <h2 id="about-this-simulation">About this simulation</h2>
-  <p>
-    This scene gives you a clean, bird's-eye view of our Solar System. The orbital spacing is compressed so that every planet fits onscreen,
-    but orbital speeds, ordering, and day lengths stay faithful to real values. Tap the play button beneath the canvas to watch each planet trace its path around the Sun.
-  </p>
-  <p>
-    Planet textures are drawn from spacecraft imagery and shaded by a single, bright point-light anchored at the Sun's center. The result makes it easy to read
-    relative day lengths, axial directions, and how frequently each world swings past the same point in space.
-  </p>
+  <p>This scene gives you a clean, bird's-eye view of our Solar System. The orbital spacing is compressed so that every planet fits onscreen,
+    but orbital speeds, ordering, and day lengths stay faithful to real values. Tap the play button beneath the canvas to watch each planet trace its path around the Sun.</p>
+  <p>Planet textures are drawn from spacecraft imagery and shaded by a single, bright point-light anchored at the Sun's center. The result makes it easy to read
+    relative day lengths, axial directions, and how frequently each world swings past the same point in space.</p>
 
   <h3 id="what-to-look-for">What to look for</h3>
-  <p>
-    Keep an eye on the extremes: Mercury laps the Sun every few seconds while Neptune creeps along the outer edge. Gas giants dominate the
+  <p>Keep an eye on the extremes: Mercury laps the Sun every few seconds while Neptune creeps along the outer edge. Gas giants dominate the
     middle distances with noticeably faster rotation despite their wide orbits. Because the system runs in real time, you can pause to inspect alignments
-    and then resume to watch resonances and conjunctions unfold.
-  </p>
+    and then resume to watch resonances and conjunctions unfold.</p>
   <p><strong>Inner planets</strong> hug the Sun tightly, revealing how orbital period grows with distance. <strong>Gas giants</strong> appear dramatically larger even with scale compression, highlighting their true diameters. <strong>Lighting</strong> shows sunrise and sunset sweeping across each globe as they rotate while orbiting.</p>
 
   <h2 id="tech-notes">Tech notes</h2>
-  <p>
-    The visualization runs in Three.js with an orthographic camera looking straight down on the ecliptic. Planet meshes reuse high-resolution textures with
+  <p>The visualization runs in Three.js with an orthographic camera looking straight down on the ecliptic. Planet meshes reuse high-resolution textures with
     sRGB color mapping and anisotropic filtering so they stay crisp when zoomed out. A seeded pseudo-random phase keeps planetary starting positions consistent
-    between reloads, and a pause-aware animation loop prevents time jumps when you step away from the canvas.
-  </p>
+    between reloads, and a pause-aware animation loop prevents time jumps when you step away from the canvas.</p>
 </div>
 
 <SimPostSchema
