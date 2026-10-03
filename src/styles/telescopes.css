@@ -23,21 +23,10 @@
 
 }
 
-/* First post = big featured card (2 columns × 2 rows) */
-.post-group .post-grid > *:first-child {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
 /* Tablet + mobile → single column */
 @media (max-width: 720px) {
   .post-group .post-grid {
     grid-template-columns: 1fr;
-  }
-
-  /* Reset span on mobile */
-  .post-group .post-grid > *:first-child {
-    grid-column: span 1;
   }
 }
 
@@ -54,20 +43,12 @@
   .post-group .post-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-
-  .post-group .post-grid > *:first-child {
-    grid-column: span 2;
-  }
 }
 
 /* Ultra-wide screens → 4 columns */
 @media (min-width: 1400px) {
   .post-group .post-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .post-group .post-grid > *:first-child {
-    grid-column: span 2;
   }
 }
 
