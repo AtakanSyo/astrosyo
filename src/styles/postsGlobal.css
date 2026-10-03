@@ -433,7 +433,8 @@ h1.review-title {
 .vendor-button {
   padding: 0.7rem 1.25rem;
   border-radius: 8px;
-  font-weight: 900;
+  font-family: var(--font-secondary);
+  font-weight: 400;
   font-size: 0.9rem;
   text-decoration: none;
   color: white;
