@@ -164,13 +164,6 @@
   );
 }
 
-.april-post-card-link--overlay .april-post-card-title {
-  margin-top: 0;
-  text-align: left;
-  justify-content: flex-start;
-  min-height: 2rem; /* always 2 lines tall */
-}
-
 .april-post-card-link--overlay .april-post-card-meta {
   text-align: left;
 }
@@ -182,7 +175,7 @@
 
 .april-post-card-title {
   font-size: clamp(1.08rem, .6vw + 1rem, 1.24rem);
-  font-weight: 900;
+  font-weight: 100;
   margin: 0 0 .25rem;
   color: #f3f4f6;
   height: 3.2em;
@@ -371,7 +364,6 @@
     box-shadow: 0 30px 50px rgba(8, 12, 40, 0.18);
     background: rgba(10,12,30,0.06);
   }
-  .april-post-card-title { color: #0f1320; }
   .april-post-card-meta { color: #4a536b; }
   .april-post-card-desc { color: #69738c; }
 }
