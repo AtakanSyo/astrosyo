@@ -33,6 +33,8 @@ import Header from '../components/Header.astro';
 const pathname = Astro.url.pathname;
 const lang = 'en';
 const isProd = import.meta.env.PROD;
+const gaId = site.gaMeasurementId;
+const gaEnabled = isProd && Boolean(gaId);
 
 const orgJsonLd = JSON.stringify({
   "@context": "https://schema.org",
@@ -108,29 +110,24 @@ const ogLocale = 'en_US';
 
     <script is:inline type="application/ld+json" set:html={orgJsonLd}></script>
 
-    {isProd && (
-      <script
-        is:inline
-        defer
-        src="https://cloud.umami.is/script.js"
-        data-website-id="7f187073-b57a-4268-9c53-94c815af943f"
-        data-host-url="https://cloud.umami.is"
-      ></script>
+    {gaEnabled && (
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
     )}
-    {isProd && (
-      <script is:inline>
-        {`(() => {
-  if (window.__umamiEngaged10Installed) return;
-  window.__umamiEngaged10Installed = true;
+    {gaEnabled && (
+      <script is:inline set:html={`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${gaId}');
+
+(() => {
+  if (window.__gaEngaged10Installed) return;
+  window.__gaEngaged10Installed = true;
 
   setTimeout(() => {
     if (document.visibilityState !== "visible") return;
-    if (window.umami?.track) {
-      window.umami.track("engaged_10s");
-    }
+    gtag('event', 'engaged_10s');
   }, 10000);
-})();`}
-      </script>
+})();`}></script>
     )}
   </head>
   <body class={bodyClasses}>

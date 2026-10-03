@@ -1,5 +1,6 @@
 import { Pause, Play } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { trackEvent } from '../../../lib/analytics/trackEvent.js';
 
 export default function SimStage({
   id,
@@ -56,30 +57,7 @@ export default function SimStage({
   }, [autoplayOnView, autoplayThreshold, containerRef, onToggle, paused]);
 
 	const handleClick = () => {
-	  try {
-	    if (typeof window !== 'undefined' && window.umami?.track) {
-	      const path = window.location.pathname;
-
-      // compact page identifier: just the last segment
-      const slug = path === '/'
-        ? 'home'
-        : path
-            .split('/')
-            .filter(Boolean)
-            .pop(); // "jupiter-vs-earth-size"
-
-      const baseName = paused
-        ? `sim-${id}-play`
-        : `sim-${id}-pause`;
-
-      window.umami.track(baseName, {
-        path,
-        slug,
-      });
-    }
-  } catch (e) {
-    // ignore analytics errors
-  }
+	  trackEvent(paused ? `sim-${id}-play` : `sim-${id}-pause`);
 
   onToggle?.();
 };
