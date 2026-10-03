@@ -57,10 +57,11 @@ h1 .review-tag {
 .review-tag {
   display: inline-block;
   padding: 0.3rem 0.9rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 100;
   border-radius: 0.6rem;
-  border: 2px solid;
+  border: 1px solid;
   background: #1a1a1a;
 }
 
@@ -400,16 +401,16 @@ h1 .review-tag {
 
 .review-disclaimer {
   background-color: var(--bg);
-  border-left: 4px solid rgb(var(--brand-color));
+  border-left: 4px solid #fff;
   padding: 0.8rem 1rem;
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
-  color: rgb(var(--brand-color));
+  color: #fff;
   border-radius: 4px;
 }
 
 .review-disclaimer strong {
-  color: rgb(var(--brand-color));
+  color: #fff;
 }
 
 /* =============================

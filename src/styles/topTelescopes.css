@@ -2,45 +2,20 @@
 .top-ten-section {
 flex-direction: column;
 gap: 2.5rem;
-width: min(900px, 100%);
-padding: 0 1.5rem 4rem;
+width: 100%;
+padding: 0 1rem 4rem;
 margin-left: auto;
 margin-right: auto;
 }
 
-.top-ten-grid {
-width: 100%;
-display: grid;
-gap: clamp(18px, 2.4vw, 26px);
-grid-template-columns: 1fr;
-}
-
-.top-ten-card .post-card-link {
-gap: 0.75rem;
-}
-
-.top-ten-card .post-card-desc {
-    max-width: 100%;
-}
-
-.top-ten-link {
-  position: relative;
-
-}
-
-.top-ten-thumb {
+/* The grid itself is the telescopes page's .post-group .post-grid (telescopes.css) */
+.top-ten-group {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #0b0e15;
-  position: relative;
 }
 
-.top-ten-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.top-ten-item {
+  position: relative;
+  display: flex;
 }
 
 .top-ten-rank {
@@ -59,7 +34,7 @@ gap: 0.75rem;
  font-weight: 700;
  letter-spacing: 0.04em;
  color: rgba(255, 255, 255, 0.9);
- z-index: 2;
+ z-index: 4;
 }
 
 .top-ten-chip {

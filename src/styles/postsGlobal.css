@@ -16,7 +16,13 @@ p {
   align-self: flex-start;
   text-align: left;
   color: #ffffff;
-  font-weight: 900;
+}
+
+/* All post titles and headings: thin Helvetica Neue */
+article.post :is(h1, h2, h3, h4, h5),
+h1.review-title {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 100;
 }
 
 .post h2,
@@ -311,7 +317,7 @@ p {
   }
 
   .simple-table__table tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid #444;
     padding: 0.85rem 1rem;
   }
 

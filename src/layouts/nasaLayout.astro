@@ -3,7 +3,6 @@ import Layout from './Layout.astro';
 import '../styles/infoPost.css';  // ← pulls in your global styles
 import '../styles/postsGlobal.css';  // ← pulls in your global styles
 import '../styles/nasaPost.css'
-import SocialShare from '../components/SocialShare.astro';
 import FeedbackCTA from '../components/FeedbackCTA.astro';
 
 const {
@@ -34,7 +33,6 @@ const {
     <h1 class="nasa-article-title">{title}</h1>
     <p class="post-description">{description}</p>
     <p class="writer">Published by {writer}</p>
-    <SocialShare frontmatter={Astro.props.frontmatter} url={url} />
     <slot />
   </article>
   <FeedbackCTA />

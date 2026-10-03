@@ -2,7 +2,6 @@
 import Layout from './Layout.astro';
 import '../styles/postsGlobal.css';
 import '../styles/reviewPost.css';
-import SocialShare from '../components/SocialShare.astro';
 import FeedbackCTA from '../components/FeedbackCTA.astro';
 
 const { url } = Astro.props;
@@ -23,18 +22,6 @@ const ratingsArray = [
   { category: "Mount", value: rating.mount },
   { category: "Accessories", value: rating.accessories }
 ].filter(r => r.value !== undefined);
-
-// --- NEW: condition for legacy Zane posts ---
-const cutoff = new Date('2025-09-01T00:00:00Z'); // absolute date
-const pubDateObj = pubDate ? new Date(pubDate) : null;
-const isLegacyZane =
-  (String(writer || '').trim().toLowerCase() === 'zane landers') &&
-  (pubDateObj instanceof Date && !Number.isNaN(pubDateObj.getTime()) && pubDateObj < cutoff);
-
-// What to show in the byline
-const writerLine = isLegacyZane
-  ? `Written by ${writer} 2 years ago, for TelescopesToBuy.`
-  : `Written by ${writer}`;
 
 const jsonLdProduct = {
   "@context": "https://schema.org",
@@ -128,9 +115,6 @@ const overallHue = scoreToHue(overallNum);
         <span class="score">{overallText}/10</span>
       </div>
       <p class="post-starter-description">{Astro.props.frontmatter.description}</p>
-      <div class="share-header"><span class="share-label">Share:</span></div>
-      <SocialShare frontmatter={Astro.props.frontmatter} url={url} />
-      <p class="writer">{writerLine}</p>
     </div>
   </div>
 </div>

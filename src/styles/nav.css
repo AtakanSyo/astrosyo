@@ -112,6 +112,8 @@ header {
   cursor: pointer;
   font-size: 1.25rem;
   padding: 1rem;
+  display: inline-flex;
+  align-items: center;
 }
 
 .nav-search-toggle:hover {
@@ -137,11 +139,17 @@ header {
   border: 1px solid #444;
   border-radius: 4px;
   transition: border-color 0.2s;
+  text-align: center;
 }
 
 .nav-search-input:focus {
   outline: none;
   border-color: rgb(var(--brand-color));
+}
+
+/* hide the browser's own clear button; the ✕ below closes the search */
+.nav-search-input::-webkit-search-cancel-button {
+  display: none;
 }
 
 /* the little “✕” close button */
@@ -165,6 +173,41 @@ header {
   display: flex;
   align-items: center;
   flex: 1;
+}
+
+/* Desktop: the whole header bar becomes the search field */
+@media (min-width: 769px) {
+  header:has(.site-nav.search-open) .logo {
+    display: none;
+  }
+  header:has(.site-nav.search-open) .header-inner {
+    max-width: none;
+  }
+  .site-nav.search-open {
+    flex: 1;
+    align-self: stretch;
+    gap: 0;
+  }
+  .site-nav.search-open .nav-search-form {
+    position: relative;
+    height: 100%;
+    margin: 0;
+  }
+  .site-nav.search-open .nav-search-input {
+    width: 100%;
+    height: 100%;
+    padding: 0 3.5rem;
+    font-size: 1.25rem;
+    text-align: center;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+  .site-nav.search-open .nav-search-close {
+    position: absolute;
+    right: 1rem;
+    margin: 0;
+  }
 }
 
 /*─────────────────────────────────────────────────
