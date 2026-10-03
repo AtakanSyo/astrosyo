@@ -18,15 +18,8 @@ p {
   color: #ffffff;
 }
 
-/* All post titles and headings: thin Helvetica Neue */
-article.post :is(h1, h2, h3, h4, h5),
-h1.review-title {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 100;
-}
-
-/* Main post title: Poiret One (loaded by each post layout) */
-article.post h1,
+/* All post titles and headings use the secondary (display) font */
+article.post :is(h1, h2, h3, h4, h5, h6),
 h1.review-title {
   font-family: var(--font-secondary);
   font-weight: 400;
