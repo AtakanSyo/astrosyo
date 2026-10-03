@@ -6,11 +6,7 @@ import '../styles/aprilIndex.css';
 import '../styles/aprilCards.css';
 import '../styles/search.css';
 import '../styles/category.css';
-import '../styles/simGlobal.css';
-import { site } from '../config/site.js';
-import { Instagram, Youtube } from "lucide-react";
 import PostCard from "../components/AprilPostCard.astro"; // ✅ new
-import SinglePlanetSim from "../components/simulations/single-planet/SinglePlanetSim.jsx";
 
 
 // 1) load and sort all posts
@@ -52,73 +48,29 @@ const CATS = [
 <Layout title="Home">
   <section class="centered_flex home-main-section">
     <div class="home-hero-sim">
-      <div class="hero-sim-wrap">
-        <div class="hero-sim-bg" aria-hidden="true">
-          <SinglePlanetSim
-            client:load
-            showPause={false}
-            showStarBackground={true}
-            planet="Mars"
-            cameraPosition={{ x: 0, y: 0, z: 3 }}
-            textureContrast={0.7}
-            tiltDeg={[20, -20, -25]}
-            spinDegPerSec={4}
-            ambientIntensity={0.0}
-          />
-        </div>
-
-        <section class="hero centered_flex fade-up">
-          <span class="hero-kicker">{site.name}</span>
-          <h1 class="home-title">{site.description}</h1>
-          <p class="home-description">Science stories, telescope reviews, and interactive calculators.</p>
-        </section>
-
-	        <a class="home-sim-link" href="/posts/mars">
-	          Go to the latest story <span class="home-sim-arrow" aria-hidden="true">→</span>
-	        </a>
-      </div>
-
+      <h1 class="home-heading">Astrosyo</h1>
           <!-- CTA ROW -->
           <div class="cta-row-wrapper">
             <div class="cta-row">
               <a href="/calculators" class="cta"><span class="cta-label">Calculators</span><span class="cta-arrow">→</span></a>
               <a href="/telescopes" class="cta" onclick="window.umami?.track?.('explore-telescopes-cta')">
-                <span class="cta-label">🪐 Explore Telescopes</span>
+                <span class="cta-label">Explore Telescopes</span>
                 <span class="cta-arrow">→</span>
               </a>
 
               <a href="/top-telescopes" class="cta" onclick="window.umami?.track?.('top-ten-cta')">
-                <span class="cta-label">⭐ Top 10 Telescope Picks</span>
+                <span class="cta-label">Top 10 Telescope Picks</span>
                 <span class="cta-arrow">→</span>
               </a>
 
               <a href="/cosmic-stories" class="cta" onclick="window.umami?.track?.('cosmic-stories-cta')">
-                <span class="cta-label">🌀 Cosmic Stories</span>
+                <span class="cta-label">Cosmic Stories</span>
                 <span class="cta-arrow">→</span>
               </a>
 
               <a href="/about" class="cta" onclick="window.umami?.track?.('about-cta')">
-                <span class="cta-label">ℹ️ About Us</span>
+                <span class="cta-label">About Us</span>
                 <span class="cta-arrow">→</span>
-              </a>
-            </div>
-          </div>
-
-          <!-- SOCIALS -->
-          <div class="global-socials">
-            <div class="global-socials-links">
-              <a href="https://www.instagram.com/astrosyo_" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
-                <Instagram size={36} />
-              </a>
-
-              <a href="https://www.youtube.com/@atakansaracyakupoglu9930" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="YouTube">
-                <Youtube size={36} />
-              </a>
-
-              <a href="https://www.tiktok.com/@astrosyo?_r=1&_t=ZS-917RKCaEM" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="TikTok">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M14.25 4.5c.45.87 1.23 1.59 2.19 2.04.46.22.97.35 1.48.38V9.4c-1.17-.05-2.3-.43-3.3-1.08v5.47c0 3.02-2.45 5.46-5.47 5.46S3.68 16.81 3.68 13.79c0-2.51 1.71-4.65 4.12-5.24.66-.16 1.34-.16 1.99-.04v2.51a2.7 2.7 0 0 0-.99-.19c-1.5 0-2.72 1.22-2.72 2.72s1.22 2.72 2.72 2.72 2.72-1.22 2.72-2.72V3h3.01c.08.52.26 1.02.52 1.5z" />
-                </svg>
               </a>
             </div>
           </div>

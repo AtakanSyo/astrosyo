@@ -122,11 +122,6 @@
 
 .april-post-card-thumb img {
   width: 100%; height: 100%; object-fit: cover;
-  transition: transform .5s ease;
-}
-
-.april-post-card:hover .april-post-card-thumb img { 
-  transform: scale(1.04); 
 }
 
 /* -------- Overlay variant (PostCard.astro) -------- */

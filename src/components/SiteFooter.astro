@@ -1,6 +1,5 @@
 ---
 import { site } from '../config/site.js';
-import { Instagram, Youtube } from "lucide-react";
 
 interface Props {
   currentPath?: string;
@@ -29,22 +28,6 @@ const sitemapLinks = [
       {sitemapLinks.map(({ label, href }) => (
         <a href={href}>{label}</a>
       ))}
-    </div>
-  </div>
-
-  <div class="global-socials footer-socials">
-    <div class="global-socials-links footer-socials-links">
-      <a href="https://www.instagram.com/astrosyo_" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
-        <Instagram size={42} />
-      </a>
-      <a href="https://www.youtube.com/@atakansaracyakupoglu9930" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="YouTube">
-        <Youtube size={42} />
-      </a>
-      <a href="https://www.tiktok.com/@astrosyo?_r=1&_t=ZS-917RKCaEM" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="TikTok">
-        <svg width="42" height="42" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M14.25 4.5c.45.87 1.23 1.59 2.19 2.04.46.22.97.35 1.48.38V9.4c-1.17-.05-2.3-.43-3.3-1.08v5.47c0 3.02-2.45 5.46-5.47 5.46S3.68 16.81 3.68 13.79c0-2.51 1.71-4.65 4.12-5.24.66-.16 1.34-.16 1.99-.04v2.51a2.7 2.7 0 0 0-.99-.19c-1.5 0-2.72 1.22-2.72 2.72s1.22 2.72 2.72 2.72 2.72-1.22 2.72-2.72V3h3.01c.08.52.26 1.02.52 1.5z" />
-        </svg>
-      </a>
     </div>
   </div>
 
