@@ -116,6 +116,8 @@
 }
 
 .icon-button .label {
+  font-family: var(--font-secondary);
+  font-weight: 400;
   font-size: 0.75rem;
   line-height: 1.2;
   color: inherit;
@@ -175,6 +177,11 @@
   font-size: 0.95rem;
   line-height: 1.4;
   color: #aaa; /* muted on dark */
+}
+
+/* No description for the current selection → take up no space */
+.type-description:empty {
+  display: none;
 }
 
 

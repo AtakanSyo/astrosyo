@@ -8,7 +8,6 @@ const allPosts = Object.values(
   import.meta.glob('./posts/*.{md,mdx}', { eager: true })
 ) as any[];
 const telescopePosts = allPosts.filter(p => p.frontmatter.subcategory === 'telescopes');
-const telescopeCount = telescopePosts.length;
 
 // ── SORTED “All” POSTS ──
 const sortedAll = [...telescopePosts].sort(
@@ -90,7 +89,7 @@ function scoreToHue(score: number | null): number {
     </div>
 
     <!-- description placeholder -->
-    <div id="type-description" class="type-description" data-count={telescopeCount}></div>
+    <div id="type-description" class="type-description"></div>
 
     <!-- “All” group -->
     <div class="post-group" data-type="all">
@@ -163,11 +162,8 @@ function scoreToHue(score: number | null): number {
     // define everything in here
 
     const descEl  = document.getElementById('type-description');
-    const TELESCOPE_COUNT = Number(descEl.dataset.count);
-    const formattedCount = new Intl.NumberFormat().format(TELESCOPE_COUNT);
 
     const typeDescriptions = {
-      all: `We have reviews of ${formattedCount} telescopes.`,
       "Astrograph": "Telescopes designed specifically for astrophotography.",
       "Bird-Jones Reflector": "Telescopes with low quality and complex optics. Usually not recommended.",
       "Dobsonian": "Dobsonians are large aperture Newtonian reflectors on simple altazimuth mounts, ideal for sweeping deep sky views. They are the best bang for your buck.",
