@@ -42,6 +42,9 @@
   font-weight: 700;
   text-decoration: none;
   letter-spacing: 0.01em;
+  cursor: pointer;
+  /* stays selectable, so the address can still be copied by hand */
+  user-select: text;
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -54,6 +57,22 @@
 
 .contact-email-link:focus-visible {
   outline: none;
+}
+
+/* "Copied to clipboard" confirmation; keeps its height when empty so the
+   card doesn't jump */
+.contact-copy-status {
+  margin: 0;
+  min-height: 1.4em;
+  color: rgba(232, 234, 241, 0.72);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.contact-copy-status.is-visible {
+  opacity: 1;
 }
 
 @media (max-width: 480px) {

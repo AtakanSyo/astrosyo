@@ -11,9 +11,50 @@ const email = 'astrosyo.contact@gmail.com';
     <section class="contact-card">
       <p class="contact-description">Send an email ↓</p>
 
-      <a href={`mailto:${email}`} class="contact-email-link">
+      <button type="button" class="contact-email-link" data-email={email}>
         {email}
-      </a>
+      </button>
+      <p class="contact-copy-status" role="status" aria-live="polite"></p>
     </section>
   </main>
 </Layout>
+
+<script>
+  // Clicking the email copies it to the clipboard instead of opening a mail app.
+  const button = document.querySelector<HTMLButtonElement>('.contact-email-link');
+  const status = document.querySelector<HTMLElement>('.contact-copy-status');
+  let resetTimer: number | undefined;
+
+  async function copyText(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Older browsers / non-secure contexts: fall back to a hidden textarea.
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      const ok = document.execCommand('copy');
+      area.remove();
+      return ok;
+    }
+  }
+
+  button?.addEventListener('click', async () => {
+    const email = button.dataset.email ?? '';
+    const ok = await copyText(email);
+    if (!status) return;
+    status.textContent = ok ? 'Copied to clipboard' : 'Could not copy. Select the address and copy it manually.';
+    // Fade in now, fade out later. The text itself stays in place so it is
+    // still readable while fading out; the next click simply replaces it.
+    status.classList.add('is-visible');
+    window.clearTimeout(resetTimer);
+    resetTimer = window.setTimeout(() => {
+      status.classList.remove('is-visible');
+    }, 2500);
+  });
+</script>
