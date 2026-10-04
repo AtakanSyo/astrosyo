@@ -4,7 +4,7 @@ title: "Lunar Phases"
 category: simulation
 writer: Astrosyo
 pubDate: '2025-12-01'
-description: "An overview of the phases of our Moon."
+description: ""
 slug: lunar-phases
 thumbnail: /images/lunar-phases/thumbnail.webp
 imageDir: /images/lunar-phases
@@ -18,6 +18,7 @@ lang: en
 ---
 
 import MoonPhasesSim from "../../components/simulations/moon-phases/MoonPhasesSim.jsx";
+import MoonPhaseDiagram from "../../components/simulations/moon-phase-diagram/MoonPhaseDiagram.jsx";
 import SimPostSchema from "../../components/SimPostSchema.astro";
 
 <MoonPhasesSim
@@ -31,13 +32,33 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
   sunIntensity={2.2}
 />
 
-<p>The Moon has been our closest celestial companion for billions of years. Its changing appearance in the night sky — from thin crescents to bright full moons — has inspired calendars, festivals, and myths across human history. Yet the mechanics behind these phases are elegantly simple.</p>
+<p>The Moon has been our closest celestial companion for billions of years. Though, maybe some of you have noticed, 
+  it changes appearance; from 
+  thin crescents to bright full moons. This cycle has inspired calendars, festivals, and myths across human history.</p>
 
-<h2>🌙 <strong>Why Does the Moon Have Phases?</strong></h2>
+<h2>Why Does the Moon Have Phases?</h2>
 
-<p>The Moon doesn’t produce light; it reflects sunlight. As the Moon orbits Earth, we see different portions of its sunlit half, depending on the geometry between the Sun, the Earth (our viewpoint), and the Moon itself. Even though the Moon always shows the same face toward Earth due to tidal locking, the illuminated fraction changes continuously over roughly 29.53 days — the duration of a synodic month.</p>
+<p>The Moon doesn’t produce light; it reflects sunlight. As the Moon orbits Earth, we see different portions of its sunlit 
+  half, depending on the geometry between the Sun, the Earth (our viewpoint), and the Moon itself. Even though the 
+  Moon always shows the same face toward Earth due to tidal locking, the illuminated fraction changes continuously 
+  over roughly 29.53 days.</p>
 
-<p>In essence, the phase we see is determined by the angle between the Sun and the Earth as viewed from the Moon. This shifting geometry creates the gradual transition we observe from thin crescents to full illumination.</p>
+<p>In essence, the phase we see is determined by the angle between the Sun and the Earth as viewed from the Moon. 
+  This shifting 
+  geometry creates the gradual transition we observe from thin crescents to full illumination.</p>
+
+<MoonPhaseDiagram client:visible />
+
+<p>The diagram looks down on the Earth and the Moon from above the north pole. Seen from up there, the Moon is always
+  half lit: the side facing the Sun. What changes is how much of that lit half is turned toward the Earth. The small
+  box in the corner shows the Moon as it looks from the Earth at that moment, and the triangle marks the angle
+  between the Sun and the Moon in our sky. When the angle is zero we get a New Moon, at a right angle a Quarter Moon,
+  and when the Moon is opposite the Sun, a Full Moon.</p>
+
+<p>The diagram is not to scale. The real Sun is about 400 times farther away than the Moon, so its light reaches both
+  as parallel rays. It also looks as if the Earth should block the sunlight at Full Moon. It usually does not, because
+  the Moon's orbit is tilted by about 5 degrees and the Moon passes above or below the Earth's shadow. When it does
+  pass through the shadow, we see a lunar eclipse.</p>
 
 <figure>
    <img class="post-image post-image-lg" src={frontmatter.imageDir + '/lunar-phases.webp'} alt="Phases of the Moon"></img>
@@ -46,21 +67,17 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
     30 October 2018.</figcaption>
 </figure>
 
-<h2>🌗 <strong>The Eight Classic Phases</strong></h2>
+<h2>The Eight Phases</h2>
 
-<p>During a full lunar cycle, the Moon transitions through eight commonly recognized stages. These include the New Moon, where the Moon lies between Earth and the Sun and appears completely dark; the Waxing Crescent, when a thin arc of sunlight begins to appear on the right; the First Quarter, in which half of the lunar face becomes illuminated; and the Waxing Gibbous phase, where the bright region grows larger.</p>
+<p>During a full lunar cycle, the Moon transitions through eight commonly recognized stages. These include the New Moon, 
+  where the Moon lies between Earth and the Sun and appears completely dark; the Waxing Crescent, when a thin arc of 
+  sunlight begins to appear on the right; the First Quarter, in which half of the lunar face becomes illuminated; 
+  and the Waxing Gibbous phase, where the bright region grows larger.</p>
 
-<p>At the midpoint lies the Full Moon, when the Earth is positioned between the Sun and the Moon and the entire near side reflects sunlight. After this, the cycle reverses: the Waning Gibbous phase brings a gradual shrink in brightness, followed by the Last Quarter, where the left half is illuminated, and finally the Waning Crescent, the final thin arc before returning to the New Moon.</p>
-
-<p>Although these phases are given distinct names, the transition between them is entirely continuous. The simulation allows you to see this smooth progression with complete clarity.</p>
-
-<h2>🛰️ <strong>How the Simulation Works</strong></h2>
-
-<p>This 3D visualization is designed to show the Moon’s phases exactly as we experience them from Earth. The model uses high-resolution NASA lunar textures that reveal mountains, maria, and craters with realistic shading and depth.</p>
-
-<h2>📡 <strong>Sources</strong></h2>
-
-<p>High-resolution lunar textures and scientific data used in this simulation are provided by NASA’s Scientific Visualization Studio and the USGS Astrogeology Science Center.</p>
+<p>At the midpoint lies the Full Moon, when the Earth is positioned between the Sun and the Moon and the entire near 
+  side reflects sunlight. After this, the cycle reverses: the Waning Gibbous phase brings 
+  a gradual shrink in brightness, followed by the Last Quarter, where the left half is illuminated, 
+  and finally the Waning Crescent, the final thin arc before returning to the New Moon.</p>
 
 <SimPostSchema
   title="Moon Phases Simulation"
