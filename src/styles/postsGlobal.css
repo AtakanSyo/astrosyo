@@ -484,10 +484,6 @@ h1.review-title {
   border-radius: 8px;
   max-height: 50vh;
   max-width: 90vw;
-  background: #1f1f1f;
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-  padding: 0.5rem; 
 }
 
 /* Size variants */
