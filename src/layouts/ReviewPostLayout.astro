@@ -73,7 +73,7 @@ const overallHue = scoreToHue(overallNum);
 ---
 
 <head>
-  <script type="application/ld+json">{JSON.stringify(jsonLdProduct, null, 2)}</script>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLdProduct).replace(/</g, "\\u003c")}></script>
   {cover_image && <link rel="preload" as="image" href={cover_image} />}
 </head>
 
