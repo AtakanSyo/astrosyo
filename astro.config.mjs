@@ -12,7 +12,7 @@ import rehypeKatex from 'rehype-katex';
 import forceUtf8ForHtml from "./src/plugins/vite-plugin-force-utf8.js";
 
 export default defineConfig({
-  site: 'https://astrosyo.com',
+  site: 'https://www.astrosyo.com',
   redirects: {
     '/cosmic-stories': '/stories',
   },
