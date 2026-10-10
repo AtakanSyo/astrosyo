@@ -33,26 +33,6 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
   orthoExtent={1.4}
 />
 
-<h2>What the simulation shows</h2>
-<p>This visualization places Earth and the Moon next to each other at their real physical diameters and true 3D geometry. The Moon appears as a cratered, airless world, while Earth shows its oceans, continents, and atmospheric clouds. In illustrations and diagrams, the Moon is often drawn much larger than reality, making it easy to underestimate how small it actually is. When the two bodies rotate side by side, the true scale becomes visually obvious.</p>
-
-
-<PlanetSizeComparison
-  client:load
-  primaryTexture="/textures/earth-texture-nasa.webp"
-  secondaryTexture="/interactive/moon/moon_texture.jpg"
-  options={{
-    rotationHours: 30,  // slower base spin (default ~16.11)
-    axialTiltDeg: 0,
-  }}
-  primaryRadius={6371}
-  secondaryRadius={1737}
-  planetDistance={1.1}
-  primaryContrast={0.9}
-  secondaryContrast={0.9}
-  orthoExtent={0.4}
-/>
-
 <h2>The numbers behind the scale</h2>
 <p>Earth’s diameter is approximately 12,742 km. The Moon has a diameter of about 3,474 km. The ratio of their diameters is:</p>
 
@@ -73,6 +53,24 @@ $$
 $$
 
 <p>So Earth’s visible disk is more than thirteen times larger than the Moon’s. The simulation preserves these exact proportions, letting you experience the scale difference directly instead of imagining it from numbers.</p>
+
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/earth-texture-nasa.webp"
+  secondaryTexture="/interactive/moon/moon_texture.jpg"
+  options={{
+    rotationHours: 30,  // slower base spin (default ~16.11)
+    axialTiltDeg: 0,
+  }}
+  primaryRadius={6371}
+  secondaryRadius={1737}
+  planetDistance={1.1}
+  primaryContrast={0.9}
+  secondaryContrast={0.9}
+  orthoExtent={0.4}
+/>
+
 
 <SimPostSchema
   title="Earth and Moon Size Comparison"
