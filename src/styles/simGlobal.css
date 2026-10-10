@@ -361,3 +361,119 @@ canvas { width: 100%; height: 100%; display: block; }
     max-width: 70vw;
   }
 }
+
+/* Earth–Moon distance simulation: label sitting above the dashed line */
+.emd-label {
+  position: absolute;
+  z-index: 1;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  pointer-events: none;
+  text-align: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.emd-label.is-revealed {
+  opacity: 1;
+}
+
+.emd-label-distance {
+  font-size: clamp(0.95rem, 2.2vw, 1.5rem);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.emd-label-note {
+  font-family: var(--font-secondary);
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emd-label {
+    transition: none;
+  }
+}
+
+/* Body dimensions simulation: diameter label under the dashed line, facts beside the body */
+.bd-dimension,
+.bd-facts {
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  pointer-events: none;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.bd-dimension.is-revealed,
+.bd-facts.is-revealed {
+  opacity: 1;
+}
+
+.bd-dimension {
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  white-space: nowrap;
+}
+
+.bd-facts {
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 2.4vw, 1.6rem);
+}
+
+.bd-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.bd-fact dd,
+.bd-fact dt {
+  margin: 0;
+}
+
+.bd-value {
+  font-size: clamp(0.95rem, 2.2vw, 1.5rem);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.bd-value sup {
+  font-size: 0.6em;
+  line-height: 0;
+  vertical-align: super;
+}
+
+.bd-caption {
+  font-family: var(--font-secondary);
+  font-size: clamp(0.65rem, 1.3vw, 0.85rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.bd-note {
+  font-family: var(--font-secondary);
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-dimension,
+  .bd-facts {
+    transition: none;
+  }
+}

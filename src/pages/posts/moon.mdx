@@ -14,6 +14,8 @@ lang: en
 ---
 
 import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
+import EarthMoonDistance from "../../components/simulations/earth-moon-distance/EarthMoonDistance.jsx";
+import BodyDimensions from "../../components/simulations/body-dimensions/BodyDimensions.jsx";
 import SimPostSchema from "../../components/SimPostSchema.astro";
 
 <SinglePlanetSim
@@ -26,19 +28,31 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
   ambientIntensity="0.1"
   lightIntensity="1.5"
 />
-<h2>What you’re seeing</h2>
-<p>This simulation shows the Moon as a sphere with an accurate global texture. Features such as maria, highlands, impact craters, and the far side differences are visible. No atmosphere is rendered, reflecting the Moon’s exposed rocky surface.</p>
-
 <h2>Discovery</h2>
 <p>The Moon is the only celestial body visible in such detail from Earth without instruments. It has been observed since prehistory and served as humanity’s first astronomical reference. Telescopic observations in the 1600s revealed cratered terrain and mountains, leading to the first scientific maps.</p>
 
 <h2>Distance from Earth</h2>
+
+<EarthMoonDistance client:visible />
+
 <p>The Moon is Earth’s <strong>only natural satellite</strong>. It orbits at an average distance of about 384,400 km. Because its orbit is elliptical, this distance varies between perigee (closest) and apogee (farthest), producing “supermoons” and “micromoons” as seen from Earth.</p>
 
 <h2>Special qualities</h2>
 <p>The Moon keeps the same face toward Earth due to tidal locking; one hemisphere is permanently turned toward us, while the far side remained unseen until spacecraft imagery. The Moon stabilizes Earth’s axial tilt, moderates climate, and drives ocean tides.</p>
 
 <h2>Size and mass</h2>
+
+<BodyDimensions
+  client:visible
+  id="moon-size"
+  texture="/textures/moon_texture.webp"
+  diameterKm={3474}
+  facts={[
+    { value: "7.35 × 10²² kg", label: "Mass", note: "1.2% of Earth’s" },
+    { value: "1.62 m/s²", label: "Surface gravity", note: "About one-sixth of Earth’s" },
+  ]}
+/>
+
 <p>The Moon has a diameter of 3,474 km, making it the fifth-largest moon in the Solar System. Its mass is about 1.2% of Earth’s, and gravity at the surface is roughly one-sixth that of Earth, influencing dust transport and human movement during Apollo missions.</p>
 
 <h2>Chemistry and surface</h2>
