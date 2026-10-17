@@ -51,6 +51,7 @@ quickSpecs:
 lang: en
 ---
 import Affiliates from '../../components/Affiliates.astro'
+import GenericTable from '../../components/GenericTable.astro'
 import Ratings from '../../components/Ratings.astro'
 import ProsCons from '../../components/ProsCons.astro'
 import QuickSpecs from '../../components/QuickSpecs.astro'
@@ -79,14 +80,14 @@ import QuickSpecs from '../../components/QuickSpecs.astro'
 <p>The particle board construction of the scope’s mount is quite heavy; fortunately Celestron has added cutouts to reduce weight and act as handles.</p>
 <h2>Accessories</h2>
 
-<section class="accessory-box">
-  <h3>Included Accessories</h3>
-  <ul>
-    <li><strong>25mm 1.25″ Plössl eyepiece</strong> – Provides 48× magnification</li>
-    <li><strong>Red dot finder</strong> – For manually aiming the telescope</li>
-    <li><strong>StarSense Explorer dock</strong> – Holds your smartphone for object-finding</li>
-  </ul>
-</section>
+<GenericTable
+  headers={['Accessory', 'Notes']}
+  rows={[
+    ['25mm 1.25″ Plössl eyepiece', 'Provides 48× magnification'],
+    ['Red dot finder', 'For manually aiming the telescope'],
+    ['StarSense Explorer dock', 'Holds your smartphone for object-finding'],
+  ]}
+/>
 
 <p>While the included 25mm Plossl is sufficient for low-power viewing, a variety of low- and high-magnification eyepieces of varying focal lengths (including, almost certainly, a big 2” low-power eyepiece) are pretty much mandatory for viewing the Moon and planets and varying your magnification for different types of deep-sky objects and different conditions - along with perhaps a nebula filter and coma corrector. Plan on spending at least a couple hundred dollars extra to equip the StarSense Explorer 10” adequately.</p>
 <img class="post-image post-image-lg" src={frontmatter.imageDir + '/optics-2.webp'} alt="Optics 2"></img>

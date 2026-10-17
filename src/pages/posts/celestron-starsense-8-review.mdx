@@ -51,6 +51,7 @@ quickSpecs:
 lang: en
 ---
 import Affiliates from '../../components/Affiliates.astro'
+import GenericTable from '../../components/GenericTable.astro'
 import Ratings from '../../components/Ratings.astro'
 import ProsCons from '../../components/ProsCons.astro'
 import QuickSpecs from '../../components/QuickSpecs.astro'
@@ -76,14 +77,14 @@ import QuickSpecs from '../../components/QuickSpecs.astro'
 <p>The StarSense Explorer 8” is pretty simple to set up - just plop the scope on the base, collimate it if you need to, and configure your phone with the StarSense Explorer app and bracket. The StarSense Explorer App is pretty straightforward in its guidance and will be able to aim you at thousands of objects such as galaxies, nebulae, star clusters, and Solar System objects with ease. There’s little else to say about it - it works very accurately and you’re unlikely to want to view something that isn’t in the app’s database. You push and pull the scope around the sky as with any Dobsonian, making small nudges to track objects at high magnification if needed.</p>
 <img class="post-image post-image-lg" src={frontmatter.imageDir + '/focuser.webp'} alt="Accessories"></img>
 <h2>Accessories</h2>
-<section class="accessory-box">
-  <h3>Included Accessories</h3>
-  <ul>
-    <li><strong>25mm 1.25″ Plössl eyepiece</strong> – Provides 48× magnification</li>
-    <li><strong>Red dot finder</strong> – For manually aiming the telescope</li>
-    <li><strong>StarSense Explorer dock</strong> – Holds your smartphone for object-finding</li>
-  </ul>
-</section>
+<GenericTable
+  headers={['Accessory', 'Notes']}
+  rows={[
+    ['25mm 1.25″ Plössl eyepiece', 'Provides 48× magnification'],
+    ['Red dot finder', 'For manually aiming the telescope'],
+    ['StarSense Explorer dock', 'Holds your smartphone for object-finding'],
+  ]}
+/>
 
 <p>The included 25mm Plossl is good for low-power viewing of deep-sky objects, but you’ll need additional eyepieces for higher magnifications, which is useful for lunar and planetary viewing as well as smaller deep-sky objects and double stars. A wide-angle 2” eyepiece for low-power viewing might also be a good idea. So plan on upgrading this scope almost immediately after purchasing or just order some additional accessories at the same time.</p>
 <h2>What can you see?</h2>
