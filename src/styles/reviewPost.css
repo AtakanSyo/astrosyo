@@ -514,3 +514,17 @@ h1 .review-tag {
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
+
+/* The article is a centered flex column, so short one-line paragraphs and
+   headings would shrink to their text and sit in the middle. Make them span
+   the text column (still capped by their max-width) so they stay left-aligned. */
+.review-post > p {
+  width: calc(100% - 2rem);
+}
+
+.review-post > h2,
+.review-post > h3,
+.review-post > h4 {
+  width: 100%;
+  box-sizing: border-box;
+}
