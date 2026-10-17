@@ -6,6 +6,7 @@ import '../styles/postsGlobal.css';  // ← pulls in your global styles
 import '../styles/simGlobal.css';  // ← pulls in your global styles
 import SocialShare from '../components/SocialShare.astro';
 import FeedbackCTA from '../components/FeedbackCTA.astro';
+import { calculatorSlugs } from '../config/calculatorSlugs.js';
 
 const {
   title,
@@ -16,6 +17,12 @@ const {
 // `hideDescription: true` in a post's frontmatter drops the line under the
 // title; the description is still used for search engines and link previews.
 const hideDescription = Astro.props.frontmatter?.hideDescription === true;
+
+// Stories = simulation posts that aren't calculators (same rule as /stories).
+const categories = [].concat(Astro.props.frontmatter?.category ?? Astro.props.frontmatter?.categories ?? [])
+  .map((c) => String(c).toLowerCase());
+const slug = Astro.url.pathname.replace(/^\/(zh\/)?posts\//, '').replace(/\/$/, '');
+const isStory = categories.includes('simulation') && !calculatorSlugs.includes(slug);
 
 const rawPostColor = typeof Astro.props.frontmatter?.postColor === "string"
   ? Astro.props.frontmatter.postColor.trim()
@@ -66,7 +73,7 @@ const articleStyle = [
 </head>
 
 <Layout title={title} description={description} category={Astro.props.frontmatter?.category}>
-  <article class="post sim-post centered_flex" style={articleStyle}>
+  <article class:list={["post sim-post centered_flex", { "story-post": isStory }]} style={articleStyle}>
 
     <div class="post-entrance centered_flex" style={entranceStyle}>
       <h1 class="sim-article-title fade-up">{title}</h1>
