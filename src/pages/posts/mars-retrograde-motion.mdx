@@ -1,0 +1,140 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Retrograde Motion of Mars"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-10-17'
+description: "Why Mars seems to stop and move backwards across the sky, shown with an interactive simulation."
+hideDescription: true
+slug: mars-retrograde-motion
+imageDir: /images/mars-retrograde-motion
+thumbnail: /images/mars-retrograde-motion/thumbnail.webp
+keywords:
+  - retrograde motion
+  - mars retrograde
+  - apparent retrograde motion
+  - mars opposition
+  - planetary motion
+  - astronomy simulation
+lang: en
+---
+
+import MarsRetrogradeSim from "../../components/simulations/mars-retrograde/MarsRetrogradeSim.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+
+<MarsRetrogradeSim client:visible />
+
+<p>Watch Mars for a few months and it does something strange. Night after night it creeps eastward against the
+  stars, then it slows down, stops, and drifts back west for about two and a half months. Then it stops again and
+  carries on east as if nothing happened. This backward stretch is called retrograde motion, and it puzzled
+  astronomers for thousands of years.</p>
+
+<p>Mars is not actually reversing. The loop is an effect of where we are watching from: a planet that is itself
+  moving, and moving faster than Mars.</p>
+
+<h2>How to read the simulation</h2>
+
+<p>The view looks down on the Solar System from above the north pole. Earth and Mars orbit the Sun
+  counter-clockwise at their real periods (365 days and 687 days) and real relative distances. The solid line from
+  Earth to Mars is our line of sight.</p>
+
+<p>The ring of stars around Earth stands in for Earth's sky, so it is centred on Earth and travels with it.
+  Real stars are so far away that Earth's motion doesn't shift them at all, and keeping the ring centred on Earth
+  preserves that: every direction from Earth points at the right place on the ring. The dashed line continues our
+  line of sight past Mars to the stars, and where it lands, Mars
+  leaves a trail. The trail is white while Mars moves east as normal
+  (prograde) and turns red while it moves west (retrograde).</p>
+
+<h2>Why Mars seems to move backwards</h2>
+
+<p>Earth is closer to the Sun, so it moves faster on a shorter track. Every 26 months or so, Earth catches up with
+  Mars and passes it on the inside, like a car overtaking a slower one on a curved highway.</p>
+
+<p>Most of the time, the line from Earth to Mars swings eastward because Mars's own motion carries it that way. But
+  for a couple of months around the overtaking, Earth's speed dominates. As we pull ahead, the line of sight to Mars
+  swings backward, and Mars appears to slide west against the far-off stars. Once Earth rounds the curve and the
+  geometry changes, the line swings east again and Mars resumes its usual direction.</p>
+
+<p>The moment Earth sits exactly between the Sun and Mars is called opposition. It always falls in the middle of
+  the retrograde stretch, and it is also when Mars is closest, brightest and up all night, which makes it the best
+  time to observe it.</p>
+
+<h2>Why is it a loop and not a straight line?</h2>
+
+<p>If Earth and Mars orbited in exactly the same plane, Mars would just slide back and forth along a line. But
+  Mars's orbit is tilted by about 1.85 degrees relative to Earth's. While we overtake it, Mars also drifts a little
+  above or below the plane, so its path on the sky opens up into a loop, or sometimes a Z-shaped zigzag, depending
+  on where in its tilted orbit the overtaking happens. In the simulation, that small north-south drift pushes the
+  trail slightly outward or inward (exaggerated so you can see it), which is why the red section opens into a loop
+  instead of retracing the white line.</p>
+
+<h2>How long does Mars retrograde last?</h2>
+
+<p>Mars spends roughly 70 to 80 days in retrograde, and it happens once every synodic period of about 780 days
+  (about 2 years and 2 months). The exact length changes from one opposition to the next because Mars's orbit is
+  noticeably elliptical: when Earth overtakes Mars near its closest point to the Sun, the loop is larger and
+  faster.</p>
+
+<h2>When is the next Mars retrograde?</h2>
+
+<p>The next one runs from about <strong>January 10 to April 1, 2027</strong>, with opposition on
+  <strong>February 19, 2027</strong>. Mars will be in Leo, retreating westward through the evening sky. It is a
+  distant opposition, because Mars will be near the far point of its orbit, so the planet will look smaller than
+  during the close oppositions of 2003 or 2018, but its backward drift is easy to follow with the naked eye over a
+  few weeks. After that, the next opposition is on March 25, 2029.</p>
+
+<h2>Do other planets go retrograde?</h2>
+
+<p>Yes, all of them do, as seen from Earth. Jupiter, Saturn, Uranus and Neptune go retrograde once a year, each
+  time Earth overtakes them, and the farther out a planet is, the longer its retrograde lasts. Mercury and Venus
+  are faster than us, so for them it is the other way around: they appear to go backwards when they overtake Earth
+  on the inside. Mercury does this three or four times a year, which is why "Mercury retrograde" comes up so often.</p>
+
+<h2>A puzzle that shaped astronomy</h2>
+
+<p>Ancient astronomers who put Earth at the center of everything had to explain these loops somehow. In Ptolemy's
+  model, each planet moved on a small circle (an epicycle) that rode on a larger circle around Earth, so the planet
+  would loop backwards at regular intervals. It worked reasonably well for predictions, but it needed more and more
+  circles to keep up with observations.</p>
+
+<p>In the 16th century Copernicus showed that if Earth and the planets all orbit the Sun, retrograde motion
+  appears on its own, with no extra circles needed: it is simply what overtaking looks like. That simple explanation
+  was one of the strongest arguments for the Sun-centered model, and it is exactly the geometry the simulation
+  above shows.</p>
+
+<h2>Related</h2>
+
+<p>See the planets' relative speeds in the <a href="/posts/solar-system-topdown">top-down Solar System
+  simulation</a>, learn more about the planet itself on the <a href="/posts/mars">Mars</a> page, compare its size
+  with ours in <a href="/posts/mars-earth-size-comparison">Mars vs. Earth</a>, or work out orbital periods with the
+  <a href="/posts/kepler-third-law-calculator">Kepler's third law calculator</a>.</p>
+
+<SimPostSchema
+  title="Retrograde Motion of Mars"
+  description="An interactive simulation of Mars's apparent retrograde motion: Earth overtakes Mars and its path against the stars loops backwards."
+  url="https://astrosyo.com/posts/mars-retrograde-motion"
+  datePublished="2026-10-17"
+  authorName="Astrosyo"
+  keywords={[
+    "retrograde motion",
+    "mars retrograde",
+    "apparent retrograde motion",
+    "mars opposition",
+    "astronomy",
+    "webgl"
+  ]}
+  image="/images/mars-retrograde-motion/cover.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Mars Retrograde Motion Simulator",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL",
+    "url": "https://astrosyo.com/posts/mars-retrograde-motion",
+    "description": "Earth and Mars orbit the Sun at their real periods while Mars's trail against the stars loops backwards."
+  }}
+/>
