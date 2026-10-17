@@ -528,3 +528,22 @@ h1 .review-tag {
   width: 100%;
   box-sizing: border-box;
 }
+
+/* Quoted verdict under a review's title, e.g. "Don't fall into the trap."
+   Set with `tagline:` in the post's frontmatter; the quotes are added here. */
+.review-tagline {
+  font-family: var(--font-secondary);
+  font-weight: 400;
+  font-size: clamp(1rem, 0.6vw + 0.85rem, 1.15rem);
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-align: center;
+  max-width: 1000px;
+  /* pull it up under the title (the h1 has a large bottom margin) */
+  margin: -2.2rem auto 2.5rem;
+  padding: 0 1rem;
+  opacity: 0.75;
+}
+
+.review-tagline::before { content: "\201C"; }
+.review-tagline::after { content: "\201D"; }

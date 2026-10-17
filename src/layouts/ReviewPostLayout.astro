@@ -95,6 +95,9 @@ const overallHue = scoreToHue(overallNum);
       </span>
     )}
   </h1>
+  {Astro.props.frontmatter.tagline && (
+    <p class="fade-up review-tagline">{Astro.props.frontmatter.tagline}</p>
+  )}
 
 <div class="review-post-starter">
 
