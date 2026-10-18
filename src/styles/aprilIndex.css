@@ -284,7 +284,7 @@
 
   grid-template-columns: none;
   grid-auto-flow: column;
-  grid-auto-columns: 72%;
+  grid-auto-columns: 62%;
   gap: var(--gap);
 
   overflow-x: auto;
@@ -306,10 +306,10 @@
   scroll-snap-align: start;
 }
 
-/* Tablets: two cards and a bit */
+/* Tablets: two and a half cards */
 @media (min-width: 600px) {
   .latest-section .april-post-grid {
-    grid-auto-columns: 42%;
+    grid-auto-columns: 36%;
   }
 }
 
@@ -320,10 +320,11 @@
   }
 }
 
-/* Desktop: four cards and a bit */
+/* Desktop: five full cards, with a 2rem sliver of the sixth peeking in at the
+   right edge (inside the bleed) so the row reads as scrollable. */
 @media (min-width: 900px) {
   .latest-section .april-post-grid {
-    grid-auto-columns: calc((100% - 3 * var(--gap)) / 4.3);
+    grid-auto-columns: calc((100% + var(--bleed) - 5 * var(--gap) - 2rem) / 5);
   }
 
   /* image cards are square at this size instead of a fixed 280px tall */
