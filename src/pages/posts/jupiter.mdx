@@ -21,9 +21,12 @@ import PlanetSizeComparison from "../../components/simulations/planet-size-compa
   planet="Jupiter"
   client:visible
   cameraPosition={{ x: 0, y: 0, z: 2.4 }}
-  textureContrast={1.2}
-  tiltDeg={[20, 20, -25]}
-  ambientIntensity={0.0}
+  textureContrast={1.03}
+  tiltDeg={[8, 0, 3]}
+  initialSpinDeg={-42}
+  lightPosition={[6, 1.5, 3]}
+  lightIntensity={2.4}
+  ambientIntensity={0.1}
 />
 
 <p>Jupiter was discovered by ancient civilizations in ancient times. 
@@ -98,11 +101,21 @@ He laid out sketches of what he saw, 4 bright dots next to the large
   secondaryTexture="/textures/earth-texture-nasa.webp"
   primaryRadius={139822}
   secondaryRadius={12742}
-  planetDistance={1.2}
-  primaryContrast={1.05}
+  planetDistance={1.35}
+  primaryContrast={1.03}
   secondaryContrast={0.95}
-  orthoExtent={1}
-  options={{ rotationHours: 24 }}
+  orthoExtent={1.05}
+  lightPosition={[4, 1.5, 5]}
+  directionalLightIntensity={2.4}
+  ambientLightIntensity={0.12}
+  options={{
+    rotationHours: 24,
+    axialTiltDeg: 3,
+    planetSat: 1.0,
+    starDim: 0.25,
+    cameraPosition: [-0.4, 0, 5],
+    cameraLookAt: [-0.4, 0, 0],
+  }}
 />
 
 <p>Jupiter’s scale is almost overwhelming, its diameter 
@@ -130,8 +143,18 @@ Its size is so immense that it can engulf the entire Earth
 <figure class="post-figure">
   <JupiterMoonsSim
     client:visible
-    cameraPosition={{ x: 0, y: 0, z: 40 }}
-    moonsOptions={{ layout: 'line', distanceScale: 1.0, sizeScale: 10.0 }}
+    orthographic
+    orthographicExtent={8}
+    cameraPosition={{ x: 13.2, y: 0, z: 40 }}
+    cameraLookAt={{ x: 13.2, y: 0, z: 0 }}
+    cameraUp={{ x: 0, y: 1, z: 0 }}
+    textureContrast={1.03}
+    tiltDeg={[8, 0, 3]}
+    initialSpinDeg={-42}
+    lightPosition={[6, 1.5, 3]}
+    lightIntensity={2.4}
+    ambientIntensity={0.1}
+    moonsOptions={{ layout: 'line', distanceScale: 1.0, sizeScale: 10.0, labels: true }}
   />
   <figcaption>Jupiter's 4 largest moons (sizes scaled up 10× for visibility).</figcaption>
 </figure>

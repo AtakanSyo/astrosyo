@@ -3,6 +3,8 @@ import * as THREE from 'three';
 import SimStage from '../lib/simStage.jsx';
 import { prepareScene, createTopDownOrthoCamera } from '../lib/threeCore.js';
 
+const DEFAULT_LIGHT_POSITION = [5, 2, 3];
+
 export default function PlanetSizeComparison({
   id = 'planet-size-comparison',
   aspect = '16 / 9',
@@ -19,10 +21,12 @@ export default function PlanetSizeComparison({
   options = {},
   directionalLightIntensity = 2.2,
   ambientLightIntensity = 0.32,
+  lightPosition = DEFAULT_LIGHT_POSITION, // [x, y, z] direction the light comes from
 }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const simControlsRef = useRef(null);
+  const lightKey = lightPosition.join(',');
 
   // Memoize options so re-renders (e.g. play/pause) don't recreate the scene unless a field actually changed.
   const memoOptions = useMemo(() => options ?? {}, [
@@ -247,7 +251,7 @@ export default function PlanetSizeComparison({
     scene.add(stars);
 
     const sun = new THREE.DirectionalLight(0xffffff, directionalLightIntensity);
-    sun.position.set(5, 2, 3).normalize();
+    sun.position.set(lightPosition[0] ?? 5, lightPosition[1] ?? 2, lightPosition[2] ?? 3).normalize();
     scene.add(sun);
     scene.add(new THREE.AmbientLight(0xffffff, ambientLightIntensity));
 
@@ -310,6 +314,7 @@ export default function PlanetSizeComparison({
     orthoExtent,
     directionalLightIntensity,
     ambientLightIntensity,
+    lightKey,
   ]);
 
   const onToggle = () => {

@@ -53,6 +53,45 @@ const PLANET_CONFIG = {
   },
 };
 
+const DEFAULT_LIGHT_POSITION = [3, 2, 4];
+
+// Darken the parts of Saturn's rings that sit in the planet's shadow. The light is
+// directional, so a ring point is shadowed when the ray from it toward the light
+// passes through the planet's sphere.
+function applyRingShadow(material, { center, radius, lightDir }) {
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.uPlanetCenter = { value: center };
+    shader.uniforms.uPlanetRadius = { value: radius };
+    shader.uniforms.uLightDir = { value: lightDir };
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vRingWorldPos;')
+      .replace(
+        '#include <begin_vertex>',
+        '#include <begin_vertex>\nvRingWorldPos = (modelMatrix * vec4(transformed, 1.0)).xyz;',
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        '#include <common>',
+        `#include <common>
+        varying vec3 vRingWorldPos;
+        uniform vec3 uPlanetCenter;
+        uniform float uPlanetRadius;
+        uniform vec3 uLightDir;`,
+      )
+      .replace(
+        '#include <map_fragment>',
+        `#include <map_fragment>
+        vec3 toPoint = vRingWorldPos - uPlanetCenter;
+        float along = dot(toPoint, uLightDir);
+        // Only points on the far side of the planet from the light can be shadowed.
+        float missBy = length(toPoint - along * uLightDir);
+        float inShadow = (1.0 - smoothstep(uPlanetRadius * 0.97, uPlanetRadius * 1.03, missBy)) * step(along, 0.0);
+        diffuseColor.rgb *= mix(1.0, 0.08, inShadow);`,
+      );
+  };
+  material.needsUpdate = true;
+}
+
 function applyContrastMaterial(material, contrast) {
   if (!material || typeof contrast !== 'number') return;
   material.userData.uContrast = { value: contrast };
@@ -96,11 +135,15 @@ export default function SinglePlanetSim({
   textureContrast,
   tiltDeg,
   lightIntensity = 1.7,
+  lightPosition = DEFAULT_LIGHT_POSITION, // [x, y, z]; the default lights the planet mostly from the front
+  ringColor, // optional tint multiplied into Saturn's ring texture
+  ringShadow = false, // cast the planet's shadow onto Saturn's rings
   ambientIntensity = 0.6,
   scrollZoom = false,
   scrollZoomOptions = {},
   orthographic = false,
   orthographicExtent = 2,
+  cameraUp, // optional {x, y, z} up vector for the orthographic camera (its default looks straight down)
   showStarBackground = false,
 }) {
   const containerRef = useRef(null);
@@ -111,6 +154,7 @@ export default function SinglePlanetSim({
   const madeVisibleRef = useRef(false);
 
   const planetKey = planet.toLowerCase();
+  const lightPositionKey = lightPosition.join(',');
   const config = useMemo(() => PLANET_CONFIG[planetKey], [planetKey]);
 
   useEffect(() => {
@@ -127,6 +171,7 @@ export default function SinglePlanetSim({
           height: cameraPos.y ?? 0,
           position: cameraPos,
           lookAt: cameraLookAt ? (Array.isArray(cameraLookAt) ? cameraLookAt : [cameraLookAt.x, cameraLookAt.y, cameraLookAt.z]) : [0, 0, 0],
+          ...(cameraUp ? { up: [cameraUp.x ?? 0, cameraUp.y ?? 1, cameraUp.z ?? 0] } : {}),
         })
       : undefined;
 
@@ -146,7 +191,7 @@ export default function SinglePlanetSim({
 
     const ambient = new THREE.AmbientLight(0xffffff, ambientIntensity);
     const keyLight = new THREE.DirectionalLight(0xffffff, lightIntensity);
-    keyLight.position.set(3, 2, 4);
+    keyLight.position.set(lightPosition[0] ?? 3, lightPosition[1] ?? 2, lightPosition[2] ?? 4);
     scene.add(ambient, keyLight);
 
     let stars = null;
@@ -183,6 +228,7 @@ export default function SinglePlanetSim({
           ringAngle,
           ringInnerScale: config.ringInnerScale,
           ringOuterScale: config.ringOuterScale,
+          ringMaterialOptions: ringColor !== undefined ? { color: new THREE.Color(ringColor) } : {},
           tiltDeg:
             tiltDeg ??
             (Array.isArray(config.tiltDeg) ? config.tiltDeg : [0, 0.0, 26.7]),
@@ -197,6 +243,14 @@ export default function SinglePlanetSim({
           textureLoader,
           tiltDeg: tiltDeg ?? config.tiltDeg ?? 0,
         });
+
+    if (planetKey === 'saturn' && ringShadow && simHandle.ringMesh) {
+      applyRingShadow(simHandle.ringMesh.material, {
+        center: new THREE.Vector3(0, 0, 0),
+        radius,
+        lightDir: keyLight.position.clone().normalize(),
+      });
+    }
 
     if (typeof textureContrast === 'number') {
       const material =
@@ -275,9 +329,13 @@ export default function SinglePlanetSim({
     textureContrast,
     tiltDeg,
     lightIntensity,
+    lightPositionKey,
+    ringColor,
+    ringShadow,
     ambientIntensity,
     orthographic,
     orthographicExtent,
+    cameraUp,
     showStarBackground,
   ]);
 

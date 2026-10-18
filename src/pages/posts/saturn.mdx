@@ -4,8 +4,8 @@ title: "Saturn"
 category: simulation
 writer: Astrosyo
 pubDate: '2025-11-11'
-description: "The ringed giant."
-hideDescription: true
+subtitle: "The ringed giant: a world lighter than water, circled by rings of ice."
+description: "Explore Saturn in 3D: its icy rings and the planet's shadow across them, its banded atmosphere, Titan and Enceladus, and why it's less dense than water."
 slug: saturn
 imageDir: /images/saturn
 thumbnail: /images/saturn/thumbnail.webp
@@ -22,10 +22,19 @@ lang: en
 import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
 import SimPostSchema from "../../components/SimPostSchema.astro";
 
-<SinglePlanetSim planet="Saturn" client:visible cameraPosition={{ x: 0, y: 0, z: 2.5 }} textureContrast={1.4} />
+<SinglePlanetSim
+  planet="Saturn"
+  client:visible
+  cameraPosition={{ x: 0, y: 0, z: 4.1 }}
+  tiltDeg={[18, 0, 8]}
+  textureContrast={1.05}
+  lightPosition={[6, 1.5, 2.5]}
+  lightIntensity={2.6}
+  ambientIntensity={0.1}
+  ringColor="#f3e6d0"
+  ringShadow
+/>
 
-<h2>What you’re seeing</h2>
-<p>This simulation shows Saturn as a planetary sphere using a true-color texture highlighting its muted bands and subtle storms. To keep the comparison clean and performant, the famous rings and moons are not rendered here; the focus is the planet’s disk and atmospheric tones.</p>
 
 <h2>Discovery</h2>
 <p>Saturn has been known since antiquity, tracked by Babylonian, Greco-Roman, Indian, and Chinese astronomers. Telescopic observations from the 17th century revealed the ring system’s true nature and later uncovered a family of diverse moons, transforming Saturn from a bright wanderer into a complex mini-system.</p>
@@ -33,7 +42,20 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
 <h2>Distance from the Sun</h2>
 <p>Saturn is the <strong>6th planet from the Sun</strong>. Its average orbital distance is about 1.43 billion km (9.58 AU). One Saturnian year lasts roughly 29.5 Earth years, while the planet rotates quickly, completing a day in about 10.7 hours.</p>
 
-<SinglePlanetSim planet="Saturn" client:visible cameraPosition={{ x: 0, y: 0, z: 10 }} />
+<SinglePlanetSim
+  id="saturn-distant"
+  planet="Saturn"
+  client:visible
+  cameraPosition={{ x: 0, y: 0, z: 7 }}
+  tiltDeg={[12, 0, -6]}
+  textureContrast={1.05}
+  lightPosition={[-6, 1.5, 2.5]}
+  lightIntensity={2.6}
+  ambientIntensity={0.08}
+  ringColor="#f3e6d0"
+  ringShadow
+  showStarBackground
+/>
 
 
 <h2>Special qualities</h2>
@@ -45,7 +67,19 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
 <h2>Size and mass</h2>
 <p>Saturn’s equatorial diameter is about 120,536 km. Its mass is approximately 5.7 × 10^26 kg, around 95 times Earth’s. Despite its size, the low mean density reflects a hydrogen-helium interior with increasing pressure and temperature toward the center.</p>
 
-<SinglePlanetSim planet="Saturn" client:visible cameraPosition={{ x: 0, y: 0, z: 4 }} />
+<SinglePlanetSim
+  id="saturn-backlit"
+  planet="Saturn"
+  client:visible
+  cameraPosition={{ x: 0, y: 0, z: 4.3 }}
+  tiltDeg={[24, 0, 14]}
+  textureContrast={1.05}
+  lightPosition={[5, 2.5, -1.2]}
+  lightIntensity={2.8}
+  ambientIntensity={0.14}
+  ringColor="#f3e6d0"
+  ringShadow
+/>
 
 
 <h2>Chemistry and atmosphere</h2>
