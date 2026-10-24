@@ -1,0 +1,182 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "TON 618 Size Comparison"
+subtitle: "The biggest black holes and stars, drawn to true scale against the Solar System"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-10-24'
+description: "A true-scale 3D tour from the Sun to TON 618: see how big Sagittarius A*, M87* and TON 618 really are next to the largest stars, UY Scuti and Stephenson 2-18, with the planets' orbits drawn for reference."
+postColor: rgba(0, 0, 0, 1)
+slug: ton-618-size-comparison
+imageDir: /images/ton-618-size-comparison
+thumbnail: /images/ton-618-size-comparison/thumbnail.webp
+keywords:
+  - TON 618 size comparison
+  - black hole size comparison
+  - black hole size compared to solar system
+  - TON 618 compared to solar system
+  - Sagittarius A size compared to sun
+  - Stephenson 2-18 compared to solar system
+  - UY Scuti compared to solar system
+  - largest star compared to black hole
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import ViewSource from "../../components/ViewSource.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import BlackHoleScale from "../../components/simulations/black-hole-scale/BlackHoleScale.jsx";
+
+<figure class="post-figure post-figure-md" id="simulation">
+  <BlackHoleScale client:visible />
+</figure>
+
+Size comparison videos usually stack objects side by side and let you guess
+the distances. This one puts every object where the Sun is and draws the
+planets' orbits around it, so you can read its size directly against the
+Solar System. Nothing is exaggerated: every circle is to scale, and each step
+zooms out to the next object. Press play for the guided tour, or jump to any
+object with the buttons.
+
+## Every object at a glance
+
+<div class="post-table">
+
+| Object | What it is | Radius | If it replaced the Sun, it would reach… |
+|---|---|---|---|
+| The Sun | Our star | 695,700 km | — |
+| Sagittarius A\* | Black hole, 4.3 million M☉ | 12.7 million km (0.085 AU) | about a fifth of the way to Mercury |
+| UY Scuti | Red supergiant | 632 million km (4.2 AU) | past Mars, most of the way to Jupiter |
+| Stephenson 2-18 | Red supergiant | 1.28 billion km (8.6 AU) | between Jupiter and Saturn |
+| M87\* | Black hole, 6.5 billion M☉ | 19.2 billion km (128 AU) | about 4 times Neptune's orbit |
+| TON 618 | Black hole, 40.7 billion M☉ | 120 billion km (803 AU) | about 27 times Neptune's orbit |
+
+</div>
+
+For black holes, "radius" means the event horizon: the boundary beyond which
+nothing, not even light, can escape. For stars, it is the visible surface.
+One AU is the average distance between Earth and the Sun, about 150 million km.
+
+## How big is TON 618 compared to the Solar System?
+
+TON 618 is a quasar about 10 billion light-years away, powered by one of the
+most massive black holes known, roughly **40.7 billion times the mass of the
+Sun**. Its event horizon has a radius of about **803 AU**. Put it where the Sun
+is and the entire planetary system, out to Neptune at 30 AU, would fit inside
+it about 27 times over in width. Voyager 1, the most distant spacecraft, is
+about 170 AU from the Sun in 2026; it would still be deep inside the horizon.
+
+Two numbers make the scale tangible:
+
+- **Light takes about 9 days** to cross TON 618's event horizon from one
+  side to the other. It crosses the whole Solar System out to Neptune in
+  about 8 hours.
+- **Its average density is about 100 times lower than air** at sea level
+  (about 0.01 kg/m³ if you spread its mass evenly through the horizon).
+  Bigger black holes are less dense, because their radius grows in step with
+  their mass while their volume grows with its cube.
+
+You will often see TON 618 quoted at **66 billion solar masses** and **1,300
+AU**. That is an older estimate based on a different emission line in the
+quasar's spectrum; a 2019 reanalysis of the same data gave the lower 40.7
+billion figure used here. Either way, it dwarfs everything else on this page.
+
+## Black hole size compared to the Sun and Earth
+
+A black hole's size depends only on its mass. For a non-rotating black hole
+the event horizon sits at the Schwarzschild radius:
+
+$$
+r_s = \frac{2GM}{c^2}
+$$
+
+The radius grows in exact proportion to the mass, so the same formula covers
+everything from a marble to TON 618:
+
+- **Earth's mass** as a black hole: about **9 mm**, the size of a marble.
+- **The Sun's mass**: about **3 km**, small enough to fit inside a city.
+- **Sagittarius A\***, the Milky Way's central black hole (4.3 million Suns):
+  about **12.7 million km**, roughly 18 times the Sun's radius.
+- **TON 618** (40.7 billion Suns): about **120 billion km**, nearly 9,500
+  times wider than Sagittarius A\*.
+
+Try any mass in the [Schwarzschild Radius Calculator](/posts/schwarzschild-radius-calculator),
+which uses the same function as this tour, so the two always agree.
+
+## Sagittarius A\* size compared to the Sun
+
+Sagittarius A\* is the supermassive black hole at the center of our galaxy,
+about 26,000 light-years away. Its event horizon is about **18 times the Sun's
+radius** (0.085 AU). That sounds enormous, but placed where the Sun is, it
+would reach only about a fifth of the way to Mercury's orbit. In the tour, the
+Sun stays drawn as a small outline inside it.
+
+## The largest stars: UY Scuti and Stephenson 2-18
+
+The largest known stars are cool, swollen red supergiants. Their sizes are
+hard to pin down, because they depend on the stars' distances, which are
+uncertain, and on where you put the edge of a fuzzy, extended atmosphere.
+
+- **UY Scuti:** about **909 times the Sun's radius** (4.2 AU), based on the
+  Gaia DR3 distance. The long-quoted 1,708 R☉ assumed the star was much
+  farther away. At 909 R☉ it would engulf Mercury, Venus, Earth and Mars.
+- **Stephenson 2-18:** about **1,840 times the Sun's radius** (8.6 AU), from
+  a 2026 study, with a range of roughly 1,480 to 2,150 R☉. The widely repeated
+  2,150 R☉ would put its surface just past Saturn; the newer value puts it
+  between Jupiter and Saturn. Its distance alone may be uncertain by up to 50%.
+
+Even the largest star is tiny next to the biggest black holes. TON 618's event
+horizon is about **94 times wider** than Stephenson 2-18.
+
+## Why black holes and stars are drawn differently
+
+In the tour, stars are glowing spheres and black holes are black discs with
+a thin bright ring. The black disc is the event horizon at its true size.
+The ring marks its edge; it is not an accretion disc, which in real black holes
+can extend much farther out. A real black hole also casts a shadow about 2.6
+times its event horizon radius, which is what the Event Horizon Telescope
+images show, so these discs are smaller than those famous orange rings.
+
+Real black holes spin, and a spinning black hole's horizon is smaller, down
+to half the Schwarzschild radius at maximum spin. The
+[Black Hole ISCO Calculator](/posts/black-hole-isco-calculator) shows how
+spin changes the horizon and the innermost stable orbit. For how long these
+giants would take to evaporate through Hawking radiation, see the
+[Black Hole Evaporation Time Calculator](/posts/black-hole-evaporation-time-calculator).
+
+## Sources
+
+- **TON 618:** 4.07 × 10¹⁰ M☉ (Ge et al. 2019, C IV line); older 6.6 × 10¹⁰ M☉ from the Hβ line.
+- **M87\*:** 6.5 × 10⁹ M☉, Event Horizon Telescope Collaboration (2019).
+- **Sagittarius A\*:** 4.297 × 10⁶ M☉, GRAVITY Collaboration (2022).
+- **UY Scuti:** 909 R☉, Healy et al., photometry with the Gaia DR3 distance; older 1,708 R☉ from Arroyo-Torres et al. (2013).
+- **Stephenson 2-18:** 1,840 (+310/−360) R☉, Siebert et al. (2026); older 2,150 R☉.
+- **Orbits:** NASA planetary fact sheets. Voyager 1's distance is approximate for late 2026.
+
+<SimPostSchema
+  title="TON 618 Size Comparison"
+  description="A true-scale 3D tour from the Sun to TON 618: see how big Sagittarius A*, M87* and TON 618 really are next to the largest stars, UY Scuti and Stephenson 2-18, with the planets' orbits drawn for reference."
+  url="https://astrosyo.com/posts/ton-618-size-comparison"
+  datePublished="2026-10-24"
+  authorName="Astrosyo"
+  keywords={["TON 618 size comparison", "black hole size comparison", "black hole size compared to solar system", "Sagittarius A size compared to sun", "Stephenson 2-18 compared to solar system", "UY Scuti compared to solar system"]}
+  image="/images/ton-618-size-comparison/thumbnail.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.svg"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Black Hole and Giant Star Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL",
+    "url": "https://astrosyo.com/posts/ton-618-size-comparison#simulation",
+    "description": "Interactive true-scale 3D tour comparing the Sun, Sagittarius A*, UY Scuti, Stephenson 2-18, M87* and TON 618 against the Solar System's planetary orbits."
+  }}
+/>
+
+<ViewSource path="src/components/simulations/black-hole-scale/BlackHoleScale.jsx" />
+
+<Changelog entries={["2026-10-24: Published."]} />
