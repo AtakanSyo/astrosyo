@@ -4,12 +4,10 @@ import SimStage from '../lib/simStage.jsx';
 import { prepareScene } from '../lib/threeCore.js';
 import {
   createAtmosphereShell,
-  createBarycentricDisc,
-  createEllipticalOrbit,
   createOrthoTopDownCamera,
-  createStar,
   computeEllipticalPosition,
 } from '../lib/starSystemCore.js';
+import { createGlowSprite, makeGlowTexture } from '../lib/glow.js';
 
 const EMPTY_OPTS = Object.freeze({});
 const DEFAULT_SYSTEM = Object.freeze({
@@ -52,8 +50,12 @@ export default function SinglePlanetSystem({
       orbitSegments: opts.orbitSegments ?? 256,
       daysPerSecond: opts.daysPerSecond ?? 6,
       planetScale: opts.planetScale ?? 1.2,
-      planetTexture: opts.planetTexture ?? null,
-      atmosphereColor: opts.atmosphereColor ?? 0x74d2ff,
+      planetTexture: opts.planetTexture ?? '/textures/mars_texture.webp',
+      atmosphereColor: opts.atmosphereColor ?? 0xff8a6a,
+      ambientIntensity: opts.ambientIntensity ?? 0.06,
+      trailSpan: opts.trailSpan ?? Math.PI * 0.6, // radians of orbit the planet's fading trail covers
+      lightBoost: opts.lightBoost ?? 1.5, // scales the star's light so it reaches the planet's orbit
+      spinScale: opts.spinScale ?? 0.01, // slows the planet's day relative to its orbit, so the spin reads calmly
       orbitSemiMajor: Math.max(
         0.1,
         opts.orbitSemiMajor ?? system.semiMajor ?? DEFAULT_SYSTEM.semiMajor,
@@ -74,7 +76,8 @@ export default function SinglePlanetSystem({
       cfg.starRadius * cfg.planetScale * (system.radiusEarth ?? 1),
     );
 
-    const frustumExtent = semiMajor + cfg.starRadius * 4;
+    // Fit the planet's whole orbit (plus the planet itself) with a little room.
+    const frustumExtent = semiMajor + focusOffset + planetRadius * 1.5;
     const core = prepareScene({
       canvas,
       container,
@@ -86,64 +89,96 @@ export default function SinglePlanetSystem({
         createOrthoTopDownCamera({
           extent: () => frustumExtent,
           height: 40,
-          margin: 1.2,
+          margin: 1.08,
         }),
     });
 
-    const { scene, start, stop, renderOnce, dispose: disposeCore } = core;
+    const { scene, textureLoader, renderer, start, stop, renderOnce, dispose: disposeCore } = core;
+    const disposables = [];
+    const track = (...items) => {
+      disposables.push(...items);
+      return items[0];
+    };
 
-    const starEntry = createStar({
-      radius: cfg.starRadius,
-      color: cfg.starColor,
-      intensity: cfg.starIntensity,
-      glowStrength: 1.6,
-    });
-    scene.add(starEntry.mesh);
-    const rimLight = new THREE.DirectionalLight(0x3f95ff, 0.6);
-    rimLight.position.set(-10, 20, -10);
-    scene.add(rimLight);
-
-    const discEntry = createBarycentricDisc({
-      inner: 0,
-      outer: semiMajor + cfg.starRadius * 0.6,
-      opacity: 0.06,
-    });
-    scene.add(discEntry.mesh);
-
-    const planetOrbitEntry = createEllipticalOrbit({
-      semiMajor,
-      semiMinor,
-      offsetX: -focusOffset,
-      dashSize: 1,
-      gapSize: 0.8,
-      opacity: 0.6,
-      segments: cfg.orbitSegments,
-    });
-    scene.add(planetOrbitEntry.line);
-
-    // ---------- Planet ----------
-    const planetGeo = new THREE.SphereGeometry(planetRadius, 64, 32);
-    const planetMat = new THREE.MeshStandardMaterial({
-      color: system.color,
-      roughness: 0.55,
-      metalness: 0.1,
-      map: null,
-    });
-    let texture;
-    if (cfg.planetTexture) {
-      texture = new THREE.TextureLoader().load(cfg.planetTexture, () => {
-        texture.colorSpace = THREE.SRGBColorSpace;
-        planetMat.map = texture;
-        planetMat.needsUpdate = true;
+    const loadTexture = (url) => {
+      const tex = textureLoader.load(url, () => {
+        if (pausedRef.current) renderOnce();
       });
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      return track(tex);
+    };
+
+    if (cfg.ambientIntensity > 0) {
+      scene.add(new THREE.AmbientLight(0xffffff, cfg.ambientIntensity));
     }
 
-    const planetMesh = new THREE.Mesh(planetGeo, planetMat);
+    // ---------- Star ----------
+    // Over-bright, unlit disc (so its colour survives tone mapping), a soft
+    // corona, and a point light in the star's colour.
+    const glowTexture = track(makeGlowTexture());
+    {
+      const tint = new THREE.Color(cfg.starColor);
+      const star = new THREE.Group();
+      const body = new THREE.Mesh(
+        track(new THREE.SphereGeometry(cfg.starRadius, 48, 24)),
+        track(new THREE.MeshBasicMaterial({ color: tint.clone().multiplyScalar(1.6), toneMapped: false })),
+      );
+      const inner = createGlowSprite(glowTexture, { color: tint, scale: cfg.starRadius * 4, opacity: 0.55 });
+      const outer = createGlowSprite(glowTexture, { color: tint, scale: cfg.starRadius * 10, opacity: 0.14 });
+      track(inner.material, outer.material);
+      star.add(body, inner, outer, new THREE.PointLight(tint, cfg.starIntensity * cfg.lightBoost, 0, 2));
+      scene.add(star);
+    }
+
+    // ---------- Orbit path and trail ----------
+    const ellipsePoint = (angle) =>
+      computeEllipticalPosition({ angle, semiMajor, semiMinor, focusOffset });
+    {
+      const pts = [];
+      for (let i = 0; i < cfg.orbitSegments; i += 1) {
+        const p = ellipsePoint((i / cfg.orbitSegments) * Math.PI * 2);
+        pts.push(new THREE.Vector3(p.x, 0, p.z));
+      }
+      scene.add(
+        new THREE.LineLoop(
+          track(new THREE.BufferGeometry().setFromPoints(pts)),
+          track(new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.14, depthWrite: false })),
+        ),
+      );
+    }
+
+    // An arc of the orbit behind the planet that fades out, rebuilt each frame
+    // because the orbit is an ellipse.
+    const trailSegments = 72;
+    const trailPositions = new Float32Array((trailSegments + 1) * 3);
+    const trailColors = new Float32Array((trailSegments + 1) * 3);
+    const trailTint = new THREE.Color(cfg.atmosphereColor).lerp(new THREE.Color(0xffffff), 0.4);
+    for (let i = 0; i <= trailSegments; i += 1) {
+      const fade = Math.pow(1 - i / trailSegments, 1.6) * 0.9;
+      trailColors[i * 3] = trailTint.r * fade;
+      trailColors[i * 3 + 1] = trailTint.g * fade;
+      trailColors[i * 3 + 2] = trailTint.b * fade;
+    }
+    const trailGeo = track(new THREE.BufferGeometry());
+    trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+    trailGeo.setAttribute('color', new THREE.BufferAttribute(trailColors, 3));
+    scene.add(
+      new THREE.Line(
+        trailGeo,
+        track(new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })),
+      ),
+    );
+
+    // ---------- Planet ----------
+    const planetMat = track(new THREE.MeshStandardMaterial({ map: loadTexture(cfg.planetTexture), roughness: 1, metalness: 0 }));
+    const planetMesh = new THREE.Mesh(track(new THREE.SphereGeometry(planetRadius, 64, 32)), planetMat);
     const atmosphereEntry = createAtmosphereShell({
-      radius: planetRadius * 1.04,
+      radius: planetRadius * 1.06,
       color: cfg.atmosphereColor,
-      opacity: 0.18,
+      opacity: 0.14,
     });
+    track(atmosphereEntry.geometry, atmosphereEntry.material);
     planetMesh.add(atmosphereEntry.mesh);
     scene.add(planetMesh);
 
@@ -163,13 +198,14 @@ export default function SinglePlanetSystem({
     };
 
     const updatePlanet = () => {
-      const { x, z } = computeEllipticalPosition({
-        angle: planetState.angle,
-        semiMajor,
-        semiMinor,
-        focusOffset,
-      });
+      const { x, z } = ellipsePoint(planetState.angle);
       planetMesh.position.set(x, 0, z);
+      for (let i = 0; i <= trailSegments; i += 1) {
+        const p = ellipsePoint(planetState.angle - (i / trailSegments) * cfg.trailSpan);
+        trailPositions[i * 3] = p.x;
+        trailPositions[i * 3 + 2] = p.z;
+      }
+      trailGeo.attributes.position.needsUpdate = true;
     };
 
     const tick = (delta) => {
@@ -177,17 +213,13 @@ export default function SinglePlanetSystem({
       const dt = Math.min(delta ?? 0, 0.05);
       const deltaDays = dt * cfg.daysPerSecond;
       planetState.angle += planetState.orbitSpeed * deltaDays;
-      planetMesh.rotation.y += rotationSpeed * deltaDays;
+      planetMesh.rotation.y += rotationSpeed * cfg.spinScale * deltaDays;
       updatePlanet();
     };
 
     updatePlanet();
 
-    coreHandleRef.current = {
-      api: core,
-      tick,
-      disposeTexture: () => texture?.dispose?.(),
-    };
+    coreHandleRef.current = { api: core, tick };
     if (pausedRef.current) {
       renderOnce();
     } else {
@@ -197,19 +229,8 @@ export default function SinglePlanetSystem({
     return () => {
       stop();
       disposeCore();
-      coreHandleRef.current?.disposeTexture?.();
       coreHandleRef.current = null;
-      starEntry.dispose();
-      discEntry.geometry.dispose();
-      discEntry.material.dispose();
-      scene.remove(discEntry.mesh);
-      planetOrbitEntry.geometry.dispose();
-      planetOrbitEntry.material.dispose();
-      scene.remove(planetOrbitEntry.line);
-      atmosphereEntry.geometry.dispose();
-      atmosphereEntry.material.dispose();
-      planetGeo.dispose();
-      planetMat.dispose();
+      disposables.forEach((item) => item?.dispose?.());
     };
   }, [dprCap, opts]);
 

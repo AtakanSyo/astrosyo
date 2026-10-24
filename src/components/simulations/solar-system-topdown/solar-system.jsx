@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import SimStage from '../lib/simStage.jsx';
+import { applyRingShadow } from '../lib/ringShadow.js';
+import { makeGlowTexture } from '../lib/glow.js';
+
+const RING_INNER = 1.4; // Saturn's rings, in Saturn radii (same as the other Saturn views)
+const RING_OUTER = 2.6;
+
 
 const PLANET_DATA = [
   {
@@ -101,19 +107,16 @@ export default function SolarSystemTopDown({
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
-    const sunRadius = opts.sunRadius ?? 2.5;
-
     const cfg = {
       backgroundColor: opts.backgroundColor ?? 0x000000,
-      auScale: opts.auScale ?? 3.2,
-      radiusScale: opts.radiusScale ?? 0.24,
-      sunRadius,
-      sunColor: opts.sunColor ?? 0xffffff,
-      sunIntensity: opts.sunIntensity ?? 9.0,
+      sunRadius: opts.sunRadius ?? 2.1,
+      planetScale: opts.planetScale ?? 0.75, // Earth's display radius
+      sizeExponent: opts.sizeExponent ?? 0.3, // compress real radii so all eight stay readable
+      orbitGap: opts.orbitGap ?? 0.75, // clear space between neighbouring planets' orbits
+      sunIntensity: opts.sunIntensity ?? 3.2,
       daysPerSecond: opts.daysPerSecond ?? 5,
       orbitSegments: opts.orbitSegments ?? 256,
-      planetRadius: opts.planetRadius ?? sunRadius * 0.5,
-      orbitSpacing: opts.orbitSpacing ?? sunRadius * 1.0,
+      trailSpan: opts.trailSpan ?? Math.PI * 0.55, // length of each fading orbit trail, in radians
     };
 
     // ---------- Renderer ----------
@@ -126,9 +129,6 @@ export default function SolarSystemTopDown({
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0;
-    renderer.physicallyCorrectLights = true;
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     const texLoader = new THREE.TextureLoader();
     const maxAniso = renderer.capabilities.getMaxAnisotropy?.() ?? 1;
@@ -142,7 +142,7 @@ export default function SolarSystemTopDown({
     };
     const texturePaths = {
       Sun: '/interactive/sun/sun_texture.jpg',
-      Mercury: '/interactive/mercury/mercury_texture.jpg',
+      Mercury: '/textures/mercury_texture.webp',
       Venus: '/textures/2k_venus_atmosphere.webp',
       Earth: '/textures/earth-texture-1.webp',
       Mars: '/textures/mars_texture.webp',
@@ -150,10 +150,13 @@ export default function SolarSystemTopDown({
       Saturn: '/textures/saturn_texture.webp',
       Uranus: '/textures/uranus_texture.webp',
       Neptune: '/textures/neptune_texture.webp',
+      Rings: '/textures/saturns_rings_texture.webp',
+      Stars: '/textures/stars_texture.webp',
     };
     const textures = Object.fromEntries(
       Object.entries(texturePaths).map(([key, url]) => [key, loadTexture(url)])
     );
+    textures.Rings.flipY = false;
 
     // ---------- Scene & Camera ----------
     const scene = new THREE.Scene();
@@ -164,79 +167,78 @@ export default function SolarSystemTopDown({
     camera.up.set(0, 0, -1);
     camera.lookAt(0, 0, 0);
 
-    // ---------- Sun ----------
-    const sunRadiusScaled = cfg.sunRadius * 0.75;
-    const planetRadiusScaled = cfg.planetRadius * 0.75;
-
-    const sunGeo = new THREE.SphereGeometry(sunRadiusScaled, 64, 64);
-    const sunMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff,
-      map: textures.Sun,
-      emissive: new THREE.Color(cfg.sunColor),
-      emissiveIntensity: 3.6,
-      roughness: 0.2,
-      metalness: 0.0,
-      clearcoat: 0.1,
+    // ---------- Layout ----------
+    // Display radii follow the real ones, compressed; orbits are spaced by size
+    // so every planet (and Saturn's rings) gets clear room.
+    const sizes = PLANET_DATA.map((p) => cfg.planetScale * Math.pow(p.radiusEarth, cfg.sizeExponent));
+    const reach = (i) => (PLANET_DATA[i].name === 'Saturn' ? sizes[i] * RING_OUTER : sizes[i]);
+    const orbitRadii = [];
+    PLANET_DATA.forEach((_, i) => {
+      const inner = i === 0 ? cfg.sunRadius * 1.9 : orbitRadii[i - 1] + reach(i - 1);
+      orbitRadii.push(inner + cfg.orbitGap * (i === 0 ? 0.6 : 1) + reach(i));
     });
+    const maxDistance = orbitRadii[orbitRadii.length - 1] + reach(PLANET_DATA.length - 1);
+
+    // ---------- Background ----------
+    const stars = new THREE.Mesh(
+      new THREE.PlaneGeometry(maxDistance * 6, maxDistance * 6),
+      new THREE.MeshBasicMaterial({ map: textures.Stars, toneMapped: false }),
+    );
+    stars.material.color.setScalar(0.12);
+    stars.rotation.x = -Math.PI / 2;
+    stars.position.y = -10;
+    scene.add(stars);
+
+    // ---------- Sun ----------
+    const sunGeo = new THREE.SphereGeometry(cfg.sunRadius, 64, 64);
+    const sunMat = new THREE.MeshBasicMaterial({ map: textures.Sun, toneMapped: false });
+    sunMat.color.setRGB(1.7, 1.25, 0.75); // over-bright warm tint, so the texture still shows
     const sun = new THREE.Mesh(sunGeo, sunMat);
-    sun.castShadow = false;
-    sun.receiveShadow = false;
     scene.add(sun);
 
-    const maxDistance = cfg.orbitSpacing * PLANET_DATA.length + sunRadiusScaled * 3;
-
-    const sunlight = new THREE.PointLight(cfg.sunColor, cfg.sunIntensity, 0, 2);
-    sunlight.castShadow = true;
-    sunlight.shadow.mapSize.set(2048, 2048);
-    sunlight.shadow.bias = -0.0002;
-    sunlight.shadow.radius = 2;
-    sunlight.decay = 0.6; // keep illumination across the wide orbital scale
-    sunlight.shadow.camera.near = 0.5;
-    sunlight.shadow.camera.far = Math.max(120, maxDistance * 2);
-    sun.add(sunlight);
-
-    scene.add(new THREE.AmbientLight(0xffffff, opts.ambientIntensity ?? 0.16));
-    // ---------- Ecliptic plane ----------
-    const eclipticGeo = new THREE.RingGeometry(
-      Math.max(sunRadiusScaled * 1.1, planetRadiusScaled * 1.2),
-      maxDistance + cfg.auScale * 0.5,
-      256
-    );
-    const eclipticMat = new THREE.MeshStandardMaterial({
-      color: 0x0a1020,
-      transparent: true,
-      opacity: 0.35,
-      roughness: 1.0,
-      metalness: 0.0,
-      side: THREE.DoubleSide,
-      depthWrite: false,
+    // Corona: two additive sprites, a tight bright glow and a wide faint one.
+    const glowTexture = makeGlowTexture();
+    const coronas = [
+      { scale: cfg.sunRadius * 3.4, color: 0xffc27a, opacity: 0.75 },
+      { scale: cfg.sunRadius * 9, color: 0xff9a4a, opacity: 0.22 },
+    ].map(({ scale, color, opacity }) => {
+      const sprite = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+          map: glowTexture,
+          color,
+          opacity,
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+          toneMapped: false,
+        }),
+      );
+      sprite.scale.setScalar(scale);
+      scene.add(sprite);
+      return sprite;
     });
-    const ecliptic = new THREE.Mesh(eclipticGeo, eclipticMat);
-    ecliptic.receiveShadow = false;
-    ecliptic.renderOrder = -1;
-    ecliptic.rotation.x = -Math.PI / 2;
-    scene.add(ecliptic);
+
+    const sunlight = new THREE.PointLight(0xfff1dc, cfg.sunIntensity, 0, 0); // no falloff: outer planets stay lit
+    sun.add(sunlight);
+    scene.add(new THREE.AmbientLight(0xffffff, opts.ambientIntensity ?? 0.14));
 
     // ---------- Planets ----------
     const planets = [];
     PLANET_DATA.forEach((planet, index) => {
-      const radius = Math.max(0.05, planetRadiusScaled);
-      const orbitRadius = cfg.orbitSpacing * (index + 1) + sunRadiusScaled * 1.25;
+      const radius = sizes[index];
+      const orbitRadius = orbitRadii[index];
+      const tint = new THREE.Color(planet.color);
 
       const geo = new THREE.SphereGeometry(radius, 48, 48);
       const mat = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
         map: textures[planet.name],
-        emissive: new THREE.Color(0x000000),
-        emissiveIntensity: 0.0,
-        roughness: 0.48,
-        metalness: 0.1,
+        roughness: 1,
+        metalness: 0,
       });
       const mesh = new THREE.Mesh(geo, mat);
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
       scene.add(mesh);
 
+      // Faint full orbit in the planet's colour.
       const orbitPositions = new Float32Array(cfg.orbitSegments * 3);
       for (let i = 0; i < cfg.orbitSegments; i += 1) {
         const t = (i / cfg.orbitSegments) * Math.PI * 2;
@@ -247,23 +249,93 @@ export default function SolarSystemTopDown({
       const orbitGeo = new THREE.BufferGeometry();
       orbitGeo.setAttribute('position', new THREE.BufferAttribute(orbitPositions, 3));
       const orbitMat = new THREE.LineBasicMaterial({
-        color: 0xffffff,
+        color: tint.clone().lerp(new THREE.Color(0xffffff), 0.35),
         transparent: true,
-        opacity: 0.45,
+        opacity: 0.16,
+        depthWrite: false,
       });
       const orbit = new THREE.LineLoop(orbitGeo, orbitMat);
       scene.add(orbit);
 
+      // Trail: an arc behind the planet that fades out, rotated to follow it.
+      const trailSegments = 64;
+      const trailPositions = new Float32Array((trailSegments + 1) * 3);
+      const trailColors = new Float32Array((trailSegments + 1) * 3);
+      const trailTint = tint.clone().lerp(new THREE.Color(0xffffff), 0.25);
+      for (let i = 0; i <= trailSegments; i += 1) {
+        const k = i / trailSegments; // 0 at the planet, 1 at the tail
+        const t = -k * cfg.trailSpan;
+        trailPositions[i * 3] = Math.cos(t) * orbitRadius;
+        trailPositions[i * 3 + 2] = Math.sin(t) * orbitRadius;
+        const fade = Math.pow(1 - k, 1.6) * 0.85;
+        trailColors[i * 3] = trailTint.r * fade;
+        trailColors[i * 3 + 1] = trailTint.g * fade;
+        trailColors[i * 3 + 2] = trailTint.b * fade;
+      }
+      const trailGeo = new THREE.BufferGeometry();
+      trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+      trailGeo.setAttribute('color', new THREE.BufferAttribute(trailColors, 3));
+      const trailMat = new THREE.LineBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+      const trail = new THREE.Line(trailGeo, trailMat);
+      scene.add(trail);
+
+      // Saturn's rings, tilted by its axial tilt, with the planet's shadow on them.
+      let rings = null;
+      let ringCenter = null;
+      let ringLightDir = null;
+      if (planet.name === 'Saturn') {
+        const ringGeo = new THREE.RingGeometry(radius * RING_INNER, radius * RING_OUTER, 128, 1);
+        // Map the ring texture radially (its u runs inner → outer edge).
+        const pos = ringGeo.attributes.position;
+        const uv = ringGeo.attributes.uv;
+        const v3 = new THREE.Vector3();
+        for (let i = 0; i < pos.count; i += 1) {
+          v3.fromBufferAttribute(pos, i);
+          const u = (v3.length() - radius * RING_INNER) / (radius * (RING_OUTER - RING_INNER));
+          uv.setXY(i, u, 0.5);
+        }
+        // Unlit: from above, the Sun grazes the rings almost edge-on and would leave them black.
+        const ringMat = new THREE.MeshBasicMaterial({
+          map: textures.Rings,
+          color: new THREE.Color(0xf3e6d0).multiplyScalar(0.8),
+          transparent: true,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        });
+        ringCenter = new THREE.Vector3();
+        ringLightDir = new THREE.Vector3(1, 0, 0);
+        applyRingShadow(ringMat, { center: ringCenter, radius, lightDir: ringLightDir });
+        rings = new THREE.Mesh(ringGeo, ringMat);
+        rings.rotation.x = -Math.PI / 2 + THREE.MathUtils.degToRad(26.7);
+        scene.add(rings);
+      }
+
       const orbitAngularSpeed = (Math.PI * 2) / planet.orbitDays;
       const angle = seededAngle(planet.name); // stable per-planet
 
-      // place the planet immediately so paused frames are correct
-      const x0 = Math.cos(angle) * orbitRadius;
-      const z0 = Math.sin(angle) * orbitRadius;
-      mesh.position.set(x0, 0, z0);
-
-      planets.push({ name: planet.name, mesh, orbit, orbitRadius, orbitAngularSpeed, angle });
+      planets.push({ name: planet.name, mesh, orbit, trail, rings, ringCenter, ringLightDir, orbitRadius, orbitAngularSpeed, angle });
     });
+
+    // Position planets, trails and Saturn's rings for the current angles.
+    const place = () => {
+      planets.forEach((planet) => {
+        const x = Math.cos(planet.angle) * planet.orbitRadius;
+        const z = Math.sin(planet.angle) * planet.orbitRadius;
+        planet.mesh.position.set(x, 0, z);
+        planet.trail.rotation.y = -planet.angle;
+        if (planet.rings) {
+          planet.rings.position.set(x, 0, z);
+          planet.ringCenter.set(x, 0, z);
+          planet.ringLightDir.set(-x, 0, -z).normalize(); // toward the Sun
+        }
+      });
+    };
+    place(); // so paused frames are correct
 
     // ---------- Resize ----------
     const fit = () => {
@@ -273,7 +345,7 @@ export default function SolarSystemTopDown({
       const height = Math.max(1, container.clientHeight | 0);
       renderer.setSize(width, height, false);
 
-      const frustumSize = maxDistance * 1.3;
+      const frustumSize = maxDistance * 1.06;
       const aspectRatio = width / height || 1;
       camera.left = -frustumSize * aspectRatio;
       camera.right = frustumSize * aspectRatio;
@@ -301,10 +373,9 @@ export default function SolarSystemTopDown({
       if (dt > 0) {
         planets.forEach((planet) => {
           planet.angle += planet.orbitAngularSpeed * deltaDays;
-          const x = Math.cos(planet.angle) * planet.orbitRadius;
-          const z = Math.sin(planet.angle) * planet.orbitRadius;
-          planet.mesh.position.set(x, 0, z);
         });
+        place();
+        sun.rotation.y += dt * 0.05;
       }
 
       renderer.render(scene, camera);
@@ -324,12 +395,18 @@ export default function SolarSystemTopDown({
         planet.mesh.material.dispose();
         planet.orbit.geometry.dispose();
         planet.orbit.material.dispose();
+        planet.trail.geometry.dispose();
+        planet.trail.material.dispose();
+        planet.rings?.geometry.dispose();
+        planet.rings?.material.dispose();
       });
 
       sunGeo.dispose();
       sunMat.dispose();
-      eclipticGeo.dispose();
-      eclipticMat.dispose();
+      coronas.forEach((sprite) => sprite.material.dispose());
+      glowTexture.dispose();
+      stars.geometry.dispose();
+      stars.material.dispose();
 
       renderer.dispose();
       Object.values(textures).forEach((tex) => tex?.dispose?.());

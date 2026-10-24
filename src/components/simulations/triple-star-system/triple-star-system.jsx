@@ -4,13 +4,10 @@ import SimStage from '../lib/simStage.jsx';
 import { prepareScene } from '../lib/threeCore.js';
 import {
   createAtmosphereShell,
-  createBarycentricDisc,
-  createEllipticalOrbit,
-  createOrbitRing,
   createOrthoTopDownCamera,
-  createStar,
   computeEllipticalPosition,
 } from '../lib/starSystemCore.js';
+import { createGlowSprite, makeGlowTexture } from '../lib/glow.js';
 
 const EMPTY_OPTS = Object.freeze({});
 const DEFAULT_SYSTEM = Object.freeze({
@@ -107,23 +104,65 @@ export default function TripleStarSystem({
     const planetEnabled = (opts.showPlanet ?? showPlanet) !== false;
 
     const cfg = {
-      backgroundColor: opts.backgroundColor ?? 0x010207,
+      backgroundColor: opts.backgroundColor ?? 0x000000,
       daysPerSecond: opts.daysPerSecond ?? 5,
       orbitSegments: opts.orbitSegments ?? 256,
       planetScale: opts.planetScale ?? 0.9,
-      glowStrength: opts.glowStrength ?? 1.8,
-      ambientIntensity: opts.ambientIntensity ?? 0.5,
-      planetColor: opts.planetColor ?? mergedPlanet.color ?? 0x62dce7,
-      atmosphereColor: opts.atmosphereColor ?? 0x7ce7ff,
-      baryDiscThickness: opts.baryDiscThickness ?? 1.15,
-      baryDiscOpacity: opts.baryDiscOpacity ?? 0.05,
+      planetTexture: opts.planetTexture ?? '/textures/mars_texture.webp',
+      ambientIntensity: opts.ambientIntensity ?? 0.06,
+      atmosphereColor: opts.atmosphereColor ?? 0xff8a6a,
+      trailSpan: opts.trailSpan ?? Math.PI * 0.6, // radians of orbit the planet's fading trail covers
+      lightBoost: opts.lightBoost ?? 2, // scales the stars' light so it reaches the planet's orbit
+      spinScale: opts.spinScale ?? 0.01, // slows the planet's day relative to its orbit, so the spin reads calmly
     };
 
     const distanceFactorRaw = opts.cameraDistance ?? cameraDistance ?? 1;
     const distanceFactor = Number.isFinite(distanceFactorRaw) ? Math.max(0.25, distanceFactorRaw) : 1;
 
-    const largestOrbit = Math.max(...mergedStars.map((star) => star.orbitRadius ?? 1));
-    const frustumExtent = largestOrbit * cfg.baryDiscThickness * 1.4 + 10;
+    const starData = mergedStars.map((star) => {
+      const orbitRadius =
+        opts.starOrbitRadii?.[star.key] ??
+        star.orbitRadius ??
+        THREE.MathUtils.clamp(star.orbitRadius ?? 6, 0.5, 60);
+      const orbitShiftConfig = opts.starOrbitShifts?.[star.key] ?? {};
+      const orbitShift = {
+        x: orbitShiftConfig.x ?? star.orbitShiftX ?? 0,
+        z: orbitShiftConfig.z ?? star.orbitShiftZ ?? 0,
+      };
+      return {
+        key: star.key,
+        radius: star.radius ?? 1.2,
+        color: star.color,
+        intensity: star.intensity ?? 12,
+        orbitRadius,
+        orbitShift,
+        angularSpeed: (Math.PI * 2) / Math.max(1, star.orbitDays ?? 240),
+        angle: star.phaseOffset ?? 0,
+      };
+    });
+
+    const hostIndex = Math.max(0, starData.findIndex((star) => star.key === mergedPlanet.hostKey));
+    const hostStar = starData[hostIndex];
+
+    // Planet orbit geometry (only used when the planet is shown).
+    const planetSemiMajor =
+      opts.orbitSemiMajor ?? mergedPlanet.semiMajor ?? DEFAULT_SYSTEM.planet.semiMajor;
+    const planetEcc = THREE.MathUtils.clamp(
+      opts.orbitEccentricity ?? mergedPlanet.eccentricity ?? DEFAULT_SYSTEM.planet.eccentricity ?? 0,
+      0,
+      0.85,
+    );
+    const semiMajor = Math.max(0.5, planetSemiMajor);
+    const semiMinor = semiMajor * Math.sqrt(1 - planetEcc * planetEcc);
+    const planetFocus = Math.sqrt(Math.max(0, semiMajor * semiMajor - semiMinor * semiMinor));
+    const planetRadius = Math.max(hostStar.radius, hostStar.radius * cfg.planetScale * (mergedPlanet.radiusEarth ?? 1));
+
+    // Fit every star's orbit, and the planet's orbit wherever its host carries it.
+    const reach = (star) => Math.hypot(star.orbitShift.x, star.orbitShift.z) + star.orbitRadius;
+    const frustumExtent = Math.max(
+      ...starData.map((star) => reach(star) * 1.04 + star.radius * 4),
+      planetEnabled ? reach(hostStar) + semiMajor + planetFocus + planetRadius * 1.5 : 0,
+    );
 
     const core = prepareScene({
       canvas,
@@ -142,120 +181,118 @@ export default function TripleStarSystem({
         }),
     });
 
-    const { scene, start, stop, renderOnce, dispose: disposeCore } = core;
+    const { scene, textureLoader, renderer, start, stop, renderOnce, dispose: disposeCore } = core;
+    const disposables = [];
+    const track = (...items) => {
+      disposables.push(...items);
+      return items[0];
+    };
+
+    const loadTexture = (url) => {
+      const tex = textureLoader.load(url, () => {
+        if (pausedRef.current) renderOnce();
+      });
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      return track(tex);
+    };
 
     if (cfg.ambientIntensity > 0) {
       scene.add(new THREE.AmbientLight(0xffffff, cfg.ambientIntensity));
     }
 
-    const starData = mergedStars.map((star) => {
-      const orbitRadius =
-        opts.starOrbitRadii?.[star.key] ??
-        star.orbitRadius ??
-        THREE.MathUtils.clamp(star.orbitRadius ?? 6, 0.5, 60);
-      const orbitShiftConfig = opts.starOrbitShifts?.[star.key] ?? {};
-      const orbitShift = {
-        x: orbitShiftConfig.x ?? star.orbitShiftX ?? 0,
-        z: orbitShiftConfig.z ?? star.orbitShiftZ ?? 0,
-      };
-      const phaseOffset = star.phaseOffset ?? 0;
-      const angularSpeed = (Math.PI * 2) / Math.max(1, star.orbitDays ?? 240);
+    // ---------- Stars ----------
+    // Over-bright, unlit discs (so their colour survives tone mapping), a soft
+    // corona each, a point light in the star's colour, and a faint tinted orbit.
+    const glowTexture = track(makeGlowTexture());
+    const makeLoop = (pointAt, color, opacity, parent = scene) => {
+      const pts = [];
+      for (let i = 0; i < cfg.orbitSegments; i += 1) {
+        const p = pointAt((i / cfg.orbitSegments) * Math.PI * 2);
+        pts.push(new THREE.Vector3(p.x, 0, p.z));
+      }
+      const line = new THREE.LineLoop(
+        track(new THREE.BufferGeometry().setFromPoints(pts)),
+        track(new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false })),
+      );
+      parent.add(line);
+      return line;
+    };
+    starData.forEach((star) => {
+      const tint = new THREE.Color(star.color);
+      const group = new THREE.Group();
+      const body = new THREE.Mesh(
+        track(new THREE.SphereGeometry(star.radius, 48, 24)),
+        track(new THREE.MeshBasicMaterial({ color: tint.clone().multiplyScalar(1.6), toneMapped: false })),
+      );
+      const inner = createGlowSprite(glowTexture, { color: tint, scale: star.radius * 4, opacity: 0.55 });
+      const outer = createGlowSprite(glowTexture, { color: tint, scale: star.radius * 10, opacity: 0.14 });
+      track(inner.material, outer.material);
+      group.add(body, inner, outer, new THREE.PointLight(tint, star.intensity * cfg.lightBoost, 0, 2));
+      scene.add(group);
+      star.group = group;
 
-      const starEntry = createStar({
-        radius: star.radius ?? 1.2,
-        color: star.color,
-        intensity: star.intensity ?? 12,
-        glowStrength: cfg.glowStrength,
-      });
-      scene.add(starEntry.mesh);
-
-      const orbitEntry = createOrbitRing({
-        radius: orbitRadius,
-        dashSize: 0.8,
-        gapSize: 0.6,
-        opacity: 0.4,
-      });
-      orbitEntry.line.position.set(orbitShift.x, 0, orbitShift.z);
-      scene.add(orbitEntry.line);
-
-      return {
-        key: star.key,
-        entry: starEntry,
-        orbitEntry,
-        orbitRadius,
-        orbitShift,
-        angularSpeed,
-        angle: phaseOffset,
-      };
+      const orbit = makeLoop((t) => ({ x: Math.cos(t) * star.orbitRadius, z: Math.sin(t) * star.orbitRadius }), star.color, 0.28);
+      orbit.position.set(star.orbitShift.x, 0, star.orbitShift.z);
     });
 
-    const orbitRadii = starData.map((s) => s.orbitRadius);
-    const discEntry = createBarycentricDisc({
-      inner: 0,
-      outer: Math.max(...orbitRadii) * cfg.baryDiscThickness,
-      opacity: cfg.baryDiscOpacity,
-    });
-    scene.add(discEntry.mesh);
+    // Barycentre marker: a small faint cross at the centre of mass.
+    {
+      const s = Math.min(...starData.map((star) => star.orbitRadius)) * 0.18;
+      scene.add(
+        new THREE.LineSegments(
+          track(new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(-s, 0, 0), new THREE.Vector3(s, 0, 0),
+            new THREE.Vector3(0, 0, -s), new THREE.Vector3(0, 0, s),
+          ])),
+          track(new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 })),
+        ),
+      );
+    }
 
+    // ---------- Planet ----------
+    // Its orbit and trail ride along with the host star.
     const orbitAnchor = new THREE.Object3D();
     scene.add(orbitAnchor);
+    const ellipsePoint = (angle) =>
+      computeEllipticalPosition({ angle, semiMajor, semiMinor, focusOffset: planetFocus });
 
-    const hostIndex =
-      starData.findIndex((star) => star.key === mergedPlanet.hostKey) !== -1
-        ? starData.findIndex((star) => star.key === mergedPlanet.hostKey)
-        : 0;
-    const hostStar = starData[hostIndex];
-
-    let planetOrbitEntry = null;
-    let planetGeo = null;
-    let planetMat = null;
     let planetMesh = null;
-    let atmosphereEntry = null;
-    let semiMajor = 0;
-    let semiMinor = 0;
-    let planetFocus = 0;
     let rotationSpeed = 0;
     let planetAngularSpeed = 0;
+    const trailSegments = 72;
+    const trailPositions = new Float32Array((trailSegments + 1) * 3);
+    let trailGeo = null;
 
     if (planetEnabled) {
-      const planetSemiMajor =
-        opts.orbitSemiMajor ?? mergedPlanet.semiMajor ?? DEFAULT_SYSTEM.planet.semiMajor;
-      const planetEcc = THREE.MathUtils.clamp(
-        opts.orbitEccentricity ?? mergedPlanet.eccentricity ?? DEFAULT_SYSTEM.planet.eccentricity ?? 0,
-        0,
-        0.85,
-      );
-      semiMajor = Math.max(0.5, planetSemiMajor);
-      semiMinor = semiMajor * Math.sqrt(1 - planetEcc * planetEcc);
-      planetFocus = Math.sqrt(Math.max(0, semiMajor * semiMajor - semiMinor * semiMinor));
-      const planetRadius = Math.max(
-        hostStar?.mesh?.geometry?.parameters?.radius ?? 1,
-        (hostStar?.mesh?.geometry?.parameters?.radius ?? 1) * cfg.planetScale * (mergedPlanet.radiusEarth ?? 1),
+      makeLoop(ellipsePoint, 0xffffff, 0.14, orbitAnchor);
+
+      const trailColors = new Float32Array((trailSegments + 1) * 3);
+      const trailTint = new THREE.Color(cfg.atmosphereColor).lerp(new THREE.Color(0xffffff), 0.4);
+      for (let i = 0; i <= trailSegments; i += 1) {
+        const fade = Math.pow(1 - i / trailSegments, 1.6) * 0.9;
+        trailColors[i * 3] = trailTint.r * fade;
+        trailColors[i * 3 + 1] = trailTint.g * fade;
+        trailColors[i * 3 + 2] = trailTint.b * fade;
+      }
+      trailGeo = track(new THREE.BufferGeometry());
+      trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+      trailGeo.setAttribute('color', new THREE.BufferAttribute(trailColors, 3));
+      orbitAnchor.add(
+        new THREE.Line(
+          trailGeo,
+          track(new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })),
+        ),
       );
 
-      planetOrbitEntry = createEllipticalOrbit({
-        semiMajor,
-        semiMinor,
-        offsetX: -planetFocus,
-        dashSize: 1,
-        gapSize: 0.8,
-        opacity: 0.65,
-        segments: cfg.orbitSegments,
-      });
-      orbitAnchor.add(planetOrbitEntry.line);
-
-      planetGeo = new THREE.SphereGeometry(planetRadius, 64, 32);
-      planetMat = new THREE.MeshStandardMaterial({
-        color: cfg.planetColor,
-        roughness: 0.5,
-        metalness: 0.08,
-      });
-      planetMesh = new THREE.Mesh(planetGeo, planetMat);
-      atmosphereEntry = createAtmosphereShell({
-        radius: planetRadius * 1.04,
+      const planetMat = track(new THREE.MeshStandardMaterial({ map: loadTexture(cfg.planetTexture), roughness: 1, metalness: 0 }));
+      planetMesh = new THREE.Mesh(track(new THREE.SphereGeometry(planetRadius, 64, 32)), planetMat);
+      const atmosphereEntry = createAtmosphereShell({
+        radius: planetRadius * 1.06,
         color: cfg.atmosphereColor,
-        opacity: 0.18,
+        opacity: 0.14,
       });
+      track(atmosphereEntry.geometry, atmosphereEntry.material);
       planetMesh.add(atmosphereEntry.mesh);
       scene.add(planetMesh);
 
@@ -271,34 +308,32 @@ export default function TripleStarSystem({
     }
 
     const state = {
-      starAngles: starData.map((star) => star.angle ?? 0),
+      starAngles: starData.map((star) => star.angle),
       planetAngle: 0,
     };
 
     const updateTransforms = () => {
       starData.forEach((star, idx) => {
         const angle = state.starAngles[idx];
-        const cosA = Math.cos(angle);
-        const sinA = Math.sin(angle);
-        star.entry.mesh.position.set(
-          cosA * star.orbitRadius + star.orbitShift.x,
+        star.group.position.set(
+          Math.cos(angle) * star.orbitRadius + star.orbitShift.x,
           0,
-          sinA * star.orbitRadius + star.orbitShift.z,
+          Math.sin(angle) * star.orbitRadius + star.orbitShift.z,
         );
       });
 
-      const hostMesh = starData.find((star) => star.key === mergedPlanet.hostKey)?.entry.mesh ?? starData[0].entry.mesh;
-      const hostPos = hostMesh.position;
+      const hostPos = hostStar.group.position;
       orbitAnchor.position.copy(hostPos);
 
       if (planetMesh) {
-        const planetPos = computeEllipticalPosition({
-          angle: state.planetAngle,
-          semiMajor,
-          semiMinor,
-          focusOffset: planetFocus,
-        });
+        const planetPos = ellipsePoint(state.planetAngle);
         planetMesh.position.set(hostPos.x + planetPos.x, 0, hostPos.z + planetPos.z);
+        for (let i = 0; i <= trailSegments; i += 1) {
+          const p = ellipsePoint(state.planetAngle - (i / trailSegments) * cfg.trailSpan);
+          trailPositions[i * 3] = p.x;
+          trailPositions[i * 3 + 2] = p.z;
+        }
+        trailGeo.attributes.position.needsUpdate = true;
       }
     };
 
@@ -311,10 +346,10 @@ export default function TripleStarSystem({
       });
       if (planetMesh) {
         state.planetAngle += planetAngularSpeed * deltaDays;
-        planetMesh.rotation.y += rotationSpeed * deltaDays;
+        planetMesh.rotation.y += rotationSpeed * cfg.spinScale * deltaDays;
       }
       updateTransforms();
-	   };
+    };
 
     updateTransforms();
 
@@ -329,28 +364,7 @@ export default function TripleStarSystem({
       stop();
       disposeCore();
       coreHandleRef.current = null;
-      if (atmosphereEntry) {
-        atmosphereEntry.geometry.dispose();
-        atmosphereEntry.material.dispose();
-      }
-      starData.forEach((star) => {
-        scene.remove(star.entry.mesh);
-        star.entry.dispose();
-        star.orbitEntry.geometry.dispose();
-        star.orbitEntry.material.dispose();
-        scene.remove(star.orbitEntry.line);
-      });
-      discEntry.geometry.dispose();
-      discEntry.material.dispose();
-      scene.remove(discEntry.mesh);
-      scene.remove(orbitAnchor);
-      if (planetOrbitEntry) {
-        planetOrbitEntry.geometry.dispose();
-        planetOrbitEntry.material.dispose();
-        scene.remove(planetOrbitEntry.line);
-      }
-      if (planetGeo) planetGeo.dispose();
-      if (planetMat) planetMat.dispose();
+      disposables.forEach((item) => item?.dispose?.());
     };
   }, [dprCap, opts]);
 

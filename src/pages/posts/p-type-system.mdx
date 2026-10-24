@@ -1,6 +1,6 @@
 ---
 layout: ../../layouts/simLayout.astro
-title: "P-Type Star System Simulation"
+title: "P-Type Star System"
 category: simulation
 writer: Astrosyo
 pubDate: '2025-11-10'
@@ -27,8 +27,8 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
   <p>P-type, or circumbinary, systems host planets that orbit a pair of stars instead of just one. In this visualization, both stars chase
     each other along concentric loops while a planet glides along a stable orbit that encloses the pair. You can see the barycenter sit at the
     center of the scene: the heavier star wobbles less, the lighter one swings wider, and the planet responds to the combined pull.</p>
-  <p>Lighting is shared between the suns so the planet inherits highlights from each star as they sweep overhead. A thin circumbinary disk gives
-    you a reference plane, and dashed path markers keep the orbital geometry easy to read from the top-down camera.</p>
+  <p>Lighting is shared between the suns so the planet inherits highlights from each star as they sweep overhead. Thin orbit lines and a fading trail
+    behind the planet keep the orbital geometry easy to read from the top-down camera.</p>
 
   <h3 id="what-to-look-for">What to look for</h3>
   <p>Track how the stellar pair never collide—their separation stays constant while the barycenter remains fixed. The planet’s motion stays smooth,
@@ -39,7 +39,7 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
 </div>
 
 <SimPostSchema
-  title="P-Type Star System Simulation"
+  title="P-Type Star System"
   description="Interact with a circumbinary star system where twin suns orbit their barycenter and a planet trails both on a glowing ellipse."
   url="https://astrosyo.com/posts/p-type-system"
   datePublished="2025-11-10"
