@@ -15,6 +15,7 @@ export default defineConfig({
   site: 'https://www.astrosyo.com',
   redirects: {
     '/cosmic-stories': '/stories',
+    '/posts/solar-system-planets-in-order': '/posts/solar-system-row',
   },
   integrations: [
     mdx({
