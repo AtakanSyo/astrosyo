@@ -118,31 +118,31 @@ starting from pure noise.
 </figure>
 
 <h3>Self-attention over pixels</h3>
-<p>Modern diffusion U-Nets often mix convolutions with self-attention so distant pixels can influence each other. Click any pixel below to make it the query; the white lines show attention weights fading with distance, controlled by the σ slider.</p>
+<p>Modern diffusion U-Nets often mix convolutions with self-attention so distant pixels can influence each other. Hover or tap any patch of the image below to make it the query; the glowing arcs carry information from the other patches into it, and the map on the right shows how the attention weights fade with distance, controlled by the σ slider.</p>
 
 <figure class="post-figure post-figure-md">
   <SelfPixelAttentionExplainer client:load gridSize={7} />
 </figure>
 
 <h3>U-Net backbone</h3>
-<p>Diffusion models commonly use a U-Net: an encoder that downsamples to a bottleneck, then a decoder that upsamples while fusing skip connections. Slide to see the forward (left) and reverse (right) halves light up.</p>
+<p>Diffusion models commonly use a U-Net: an encoder that downsamples to a bottleneck, then a decoder that upsamples while fusing skip connections. Press play or drag the slider to follow one pass: the noisy image shrinks to a coarse bottleneck, then grows back to full resolution as the predicted noise, while skip connections carry fine detail straight across.</p>
 
 <figure class="post-figure post-figure-md">
   <UNetExplainer client:load depth={4} />
 </figure>
 
 <h3>Training dynamics</h3>
-<p>Diffusion models are optimized with gradient descent. The plot below shows steps on a simple quadratic: small learning rates creep toward the minimum; larger rates move faster but can overshoot.</p>
+<p>Diffusion models are optimized with gradient descent. The plot below shows steps on a simple quadratic loss, with the loss after each step on the right: small learning rates creep toward the minimum, larger ones get there faster, past a point they zig-zag across the valley, and too large a step makes the loss blow up.</p>
 
 <figure class="post-figure post-figure-md">
   <GradientDescentExplainer client:load steps={18} />
 </figure>
 
 <h3>Single gate intuition</h3>
-<p>A neural network is built from simple gates. Here is one ReLU-style gate with two inputs and one output—signals flow left to right in monochrome.</p>
+<p>A neural network is built from simple units like this one. It multiplies each input by a weight, adds a bias, and passes the sum z through an activation function. Warm wires add to z and cool wires subtract from it; drag the sliders to see when the ReLU switches on, or try sigmoid and tanh.</p>
 
 <figure class="post-figure post-figure-md">
-  <GateExplainer client:load gate="ReLU" inputs={[1, 0]} />
+  <GateExplainer client:load gate="ReLU" inputs={[1, 0.6]} />
 </figure>
 
 <SimPostSchema
