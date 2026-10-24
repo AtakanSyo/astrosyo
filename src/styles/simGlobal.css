@@ -59,6 +59,12 @@
   padding-right: 1rem;
 }
 
+/* The global `p { width: 100% }` plus `.post p { margin: 1rem }` overflows a
+   plain block like .sim-article; auto width fits the paragraph inside its margins. */
+.sim-article p {
+  width: auto;
+}
+
 .sim-container {
   margin-bottom: 3rem;
 }
