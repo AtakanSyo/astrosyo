@@ -24,12 +24,21 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
   client:load
   primaryTexture="/textures/neptune_texture.webp"
   secondaryTexture="/textures/earth-texture-nasa.webp"
+  options={{ planetPosition: [-0.45, 0, 0], secondPosition: [1.3, 0, 0] }}
   primaryRadius={24.622}
   secondaryRadius={6.371}
-  planetDistance={2.0}
   primaryContrast={1.0}
-  secondaryContrast={0.9}
-  orthoExtent={1.4}
+  secondaryContrast={1.0}
+  orthoExtent={1.2}
+  lightPosition={[3.5, 1.2, 4]}
+  directionalLightIntensity={4}
+  ambientLightIntensity={0.06}
+  primaryTiltDeg={-28.3}
+  secondaryTiltDeg={-23.4}
+  primaryAtmosphere={{ color: "#6a93ff", strength: 0.9 }}
+  secondaryAtmosphere
+  secondaryNightLights
+  secondaryInitialSpinDeg={180}
 />
 
 <p>This visualization places Earth and Neptune next to each other using their exact physical diameters and true 3D geometry. Earth shows its familiar dynamic surface with oceans, continents, and clouds, while Neptune appears as a cold, deep-blue world with high-altitude methane ice clouds. Textbook diagrams rarely capture the true size difference between the two. Earth looks small and compact, while Neptune feels like a massive, layered sphere of atmosphere and fluid interior. Seeing both planets rotating in the same frame makes the physical scale intuitive rather than abstract.</p>
@@ -57,16 +66,47 @@ $$
   client:load
   primaryTexture="/textures/neptune_texture.webp"
   secondaryTexture="/textures/earth-texture-nasa.webp"
-  options={{ cameraPosition: [0, 6, 0] }}
+  options={{ cameraPosition: [0, 6, 0], planetPosition: [-0.45, 0, 0], secondPosition: [1.3, 0, 0] }}
   primaryRadius={24.622}
   secondaryRadius={6.371}
-  planetDistance={2.0}
   primaryContrast={1.0}
-  secondaryContrast={0.9}
-  orthoExtent={2.0}
+  secondaryContrast={1.0}
+  orthoExtent={1.6}
+  lightPosition={[3.5, 4, 1.2]}
+  directionalLightIntensity={4}
+  ambientLightIntensity={0.06}
+  primaryTiltDeg={-28.3}
+  secondaryTiltDeg={-23.4}
+  primaryAtmosphere={{ color: "#6a93ff", strength: 0.9 }}
+  secondaryAtmosphere
+  secondaryNightLights
+  secondaryInitialSpinDeg={180}
 />
 
 <p>So Neptune’s visible face is nearly fifteen times larger than Earth's. These exact proportions are preserved in the simulation, allowing the scale difference to be experienced visually rather than interpreted numerically.</p>
+
+<PlanetSizeComparison
+  client:load
+  primaryTexture="/textures/neptune_texture.webp"
+  secondaryTexture="/textures/earth-texture-nasa.webp"
+  options={{
+    rotationHours: 30,  // slower base spin (default ~16.11)
+    axialTiltDeg: 0,
+  }}
+  primaryRadius={24.622}
+  secondaryRadius={6.371}
+  planetDistance={1.1}
+  primaryContrast={1.0}
+  secondaryContrast={1.0}
+  orthoExtent={0.4}
+  lightPosition={[2.5, 1.2, 4.5]}
+  directionalLightIntensity={4}
+  ambientLightIntensity={0.12}
+  primaryAtmosphere={{ color: "#6a93ff", strength: 0.45, haloScale: 1.05 }}
+  secondaryAtmosphere={{ strength: 0.5, haloScale: 1.08 }}
+  secondaryNightLights
+  secondaryInitialSpinDeg={180}
+/>
 
 <SimPostSchema
   title="Neptune and Earth Size Comparison"

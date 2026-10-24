@@ -3,6 +3,8 @@ import * as THREE from 'three';
 import { prepareScene, addSpinningPlanet, addSaturn, createTopDownOrthoCamera } from '../lib/threeCore';
 import SimStage from '../lib/simStage.jsx';
 import { useScrollZoom } from '../lib/useScrollZoom.js';
+import { applyRingShadow } from '../lib/ringShadow.js';
+import { applyEarthSurface, createAtmosphere } from '../lib/earthEffects.js';
 
 const PLANET_CONFIG = {
   mercury: {
@@ -54,43 +56,6 @@ const PLANET_CONFIG = {
 };
 
 const DEFAULT_LIGHT_POSITION = [3, 2, 4];
-
-// Darken the parts of Saturn's rings that sit in the planet's shadow. The light is
-// directional, so a ring point is shadowed when the ray from it toward the light
-// passes through the planet's sphere.
-function applyRingShadow(material, { center, radius, lightDir }) {
-  material.onBeforeCompile = (shader) => {
-    shader.uniforms.uPlanetCenter = { value: center };
-    shader.uniforms.uPlanetRadius = { value: radius };
-    shader.uniforms.uLightDir = { value: lightDir };
-    shader.vertexShader = shader.vertexShader
-      .replace('#include <common>', '#include <common>\nvarying vec3 vRingWorldPos;')
-      .replace(
-        '#include <begin_vertex>',
-        '#include <begin_vertex>\nvRingWorldPos = (modelMatrix * vec4(transformed, 1.0)).xyz;',
-      );
-    shader.fragmentShader = shader.fragmentShader
-      .replace(
-        '#include <common>',
-        `#include <common>
-        varying vec3 vRingWorldPos;
-        uniform vec3 uPlanetCenter;
-        uniform float uPlanetRadius;
-        uniform vec3 uLightDir;`,
-      )
-      .replace(
-        '#include <map_fragment>',
-        `#include <map_fragment>
-        vec3 toPoint = vRingWorldPos - uPlanetCenter;
-        float along = dot(toPoint, uLightDir);
-        // Only points on the far side of the planet from the light can be shadowed.
-        float missBy = length(toPoint - along * uLightDir);
-        float inShadow = (1.0 - smoothstep(uPlanetRadius * 0.97, uPlanetRadius * 1.03, missBy)) * step(along, 0.0);
-        diffuseColor.rgb *= mix(1.0, 0.08, inShadow);`,
-      );
-  };
-  material.needsUpdate = true;
-}
 
 function applyContrastMaterial(material, contrast) {
   if (!material || typeof contrast !== 'number') return;
@@ -145,6 +110,8 @@ export default function SinglePlanetSim({
   orthographicExtent = 2,
   cameraUp, // optional {x, y, z} up vector for the orthographic camera (its default looks straight down)
   showStarBackground = false,
+  nightLights = false, // Earth only: city lights on the night side and a glint on the oceans
+  atmosphere, // true, a CSS colour, or { color, strength, haloScale }: a glowing atmosphere around the planet
 }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -258,6 +225,28 @@ export default function SinglePlanetSim({
       applyContrastMaterial(material, textureContrast);
     }
 
+    // Night lights and the atmosphere shade by the sun's direction in view space;
+    // the camera never rotates, so that direction is fixed.
+    camera.updateMatrixWorld();
+    const sunDirView = keyLight.position.clone().normalize().transformDirection(camera.matrixWorldInverse);
+    let nightTexture = null;
+    if (nightLights && planetKey === 'earth' && simHandle.material) {
+      nightTexture = textureLoader.load('/textures/earth_nighttime_texture.webp');
+      nightTexture.colorSpace = THREE.SRGBColorSpace;
+      nightTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      applyEarthSurface(simHandle.material, { nightMap: nightTexture, lightDirView: sunDirView });
+    }
+    let atmosphereHandle = null;
+    if (atmosphere) {
+      atmosphereHandle = createAtmosphere({
+        radius,
+        lightDirView: sunDirView,
+        ...(typeof atmosphere === 'string' ? { color: atmosphere } : {}),
+        ...(typeof atmosphere === 'object' ? atmosphere : {}),
+      });
+      scene.add(atmosphereHandle.group);
+    }
+
     const extensionFns = Array.isArray(extensions) ? extensions : [];
     const extensionHandles = extensionFns
       .filter(Boolean)
@@ -305,6 +294,11 @@ export default function SinglePlanetSim({
         }
       }
       simHandle.dispose();
+      nightTexture?.dispose?.();
+      if (atmosphereHandle) {
+        scene.remove(atmosphereHandle.group);
+        atmosphereHandle.dispose();
+      }
       if (stars) {
         scene.remove(stars);
         stars.geometry.dispose();
@@ -337,6 +331,8 @@ export default function SinglePlanetSim({
     orthographicExtent,
     cameraUp,
     showStarBackground,
+    nightLights,
+    atmosphere,
   ]);
 
   // Enable scroll-based zoom if requested

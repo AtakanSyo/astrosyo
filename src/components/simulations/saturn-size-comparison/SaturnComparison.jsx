@@ -6,6 +6,7 @@ import {
   createTopDownOrthoCamera,
   addSaturn,
 } from '../lib/threeCore.js';
+import { applyRingShadow } from '../lib/ringShadow.js';
 
 function applyContrastMaterial(material, contrast = 1) {
   if (!material) return;
@@ -48,8 +49,16 @@ export default function SaturnComparison({
   saturnTiltDeg,
   planetDistance,
   orthoExtent,
+  lightPosition = [5, 2, 3], // [x, y, z] direction of the sunlight
+  lightIntensity = 2.1,
+  ambientIntensity = 0.28,
+  ringColor, // optional tint multiplied into Saturn's ring texture
+  ringShadow = false, // cast Saturn's shadow onto its rings
+  ringInnerScale, // ring radii in Saturn radii; addSaturn's defaults when omitted
+  ringOuterScale,
   options = {},
 }) {
+  const lightPositionKey = lightPosition.join(',');
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const simControlsRef = useRef(null);
@@ -164,6 +173,9 @@ export default function SaturnComparison({
       textureLoader,
       renderer,
       materialOptions: {},
+      ...(ringInnerScale !== undefined ? { ringInnerScale } : {}),
+      ...(ringOuterScale !== undefined ? { ringOuterScale } : {}),
+      ringMaterialOptions: ringColor !== undefined ? { color: new THREE.Color(ringColor) } : {},
     });
     applyContrastMaterial(saturn.planetMaterial, saturnContrast);
 
@@ -174,10 +186,18 @@ export default function SaturnComparison({
     stars.material.color.setScalar(options.starDim ?? 0.05);
     scene.add(stars);
 
-    const sun = new THREE.DirectionalLight(0xffffff, 2.1);
-    sun.position.set(5, 2, 3).normalize();
+    const sun = new THREE.DirectionalLight(0xffffff, lightIntensity);
+    sun.position.set(lightPosition[0] ?? 5, lightPosition[1] ?? 2, lightPosition[2] ?? 3).normalize();
     scene.add(sun);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.28));
+    scene.add(new THREE.AmbientLight(0xffffff, ambientIntensity));
+
+    if (ringShadow && saturn.ringMesh) {
+      applyRingShadow(saturn.ringMesh.material, {
+        center: new THREE.Vector3(...saturnPosition),
+        radius: saturnRadiusNorm,
+        lightDir: sun.position.clone().normalize(),
+      });
+    }
 
     const animate = (delta = 0) => {
       saturn.update(delta);
@@ -220,6 +240,13 @@ export default function SaturnComparison({
     saturnTiltDeg,
     planetDistance,
     orthoExtent,
+    lightPositionKey,
+    lightIntensity,
+    ambientIntensity,
+    ringColor,
+    ringShadow,
+    ringInnerScale,
+    ringOuterScale,
   ]);
 
   const onToggle = () => {

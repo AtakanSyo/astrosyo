@@ -27,11 +27,18 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
   secondaryTexture="/textures/uranus_texture.webp"
   saturnRadius={58232}
   secondaryRadius={25362}
-  planetDistance={2.3}
-  saturnContrast={1.65}
+  saturnContrast={1.05}
   secondaryContrast={1.2}
-  saturnTiltDeg={[0, 25, 26]}
-  orthoExtent={1.2}
+  saturnTiltDeg={[18, 0, 8]}
+  orthoExtent={1.6}
+  options={{ saturnPosition: [-0.62, 0, 0], secondaryPosition: [2.78, 0, 0] }}
+  lightPosition={[6, 1.5, 2.5]}
+  lightIntensity={2.6}
+  ambientIntensity={0.1}
+  ringColor="#f3e6d0"
+  ringShadow
+  ringInnerScale={1.4}
+  ringOuterScale={2.6}
 />
 
 <p>This visualization places Saturn and Uranus side by side using their exact physical diameters and real 3D geometry. Saturn appears as a huge golden world with banded cloud structures and subtle storms, while Uranus shows up as a smooth pale-blue sphere with almost no visible atmospheric contrast. The rings are not used to exaggerate Saturn’s size here—only the planet’s sphere is considered. When the two planets rotate next to each other, the scale difference becomes immediately obvious.</p>

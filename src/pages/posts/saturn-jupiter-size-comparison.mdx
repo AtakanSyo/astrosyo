@@ -27,14 +27,20 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
   saturnTexture="/textures/saturn_texture.webp"
   saturnRingTexture="/textures/saturns_rings_texture.webp"
   secondaryTexture="/textures/jupiter_texture.webp"
-  options={{ cameraPosition: [0, 0, 7] }}
+  options={{ cameraPosition: [0, 0, 7], saturnPosition: [-1.35, 0, 0], secondaryPosition: [2.75, 0, 0] }}
   saturnRadius={58232}
   secondaryRadius={69911}
-  planetDistance={3.4}
   saturnContrast={1.05}
   secondaryContrast={1.0}
-  saturnTiltDeg={[0, 10, -26.7]}
-  orthoExtent={1.4}
+  saturnTiltDeg={[18, 0, 8]}
+  orthoExtent={1.9}
+  lightPosition={[6, 1.5, 2.5]}
+  lightIntensity={2.6}
+  ambientIntensity={0.1}
+  ringColor="#f3e6d0"
+  ringShadow
+  ringInnerScale={1.4}
+  ringOuterScale={2.6}
 />
 
 <h2>What the visualization shows</h2>
@@ -49,14 +55,20 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
   saturnTexture="/textures/saturn_texture.webp"
   saturnRingTexture="/textures/saturns_rings_texture.webp"
   secondaryTexture="/textures/jupiter_texture.webp"
-  options={{ cameraPosition: [0, 12, 0] }}
+  options={{ cameraPosition: [0, 12, 0], saturnPosition: [-1.35, 0, 0], secondaryPosition: [2.75, 0, 0] }}
   saturnRadius={58232}
   secondaryRadius={69911}
-  planetDistance={4}
   saturnContrast={1.05}
   secondaryContrast={1.0}
   saturnTiltDeg={[0, 0, 0]}
-  orthoExtent={2.4}
+  orthoExtent={2.85}
+  lightPosition={[6, 1.5, 2.5]}
+  lightIntensity={2.6}
+  ambientIntensity={0.1}
+  ringColor="#f3e6d0"
+  ringShadow
+  ringInnerScale={1.4}
+  ringOuterScale={2.6}
 />
 
 <h2>The numbers behind the scale</h2>
@@ -85,14 +97,20 @@ $$
   saturnTexture="/textures/saturn_texture.webp"
   saturnRingTexture="/textures/saturns_rings_texture.webp"
   secondaryTexture="/textures/jupiter_texture.webp"
-  options={{ cameraPosition: [0, -6, -6] }}
+  options={{ cameraPosition: [0, -6, -6], saturnPosition: [-1.35, 0, 0], secondaryPosition: [2.75, 0, 0] }}
   saturnRadius={58232}
   secondaryRadius={69911}
-  planetDistance={4}
   saturnContrast={1.05}
   secondaryContrast={1.0}
   saturnTiltDeg={[0, 0, 0]}
   orthoExtent={2.4}
+  lightPosition={[6, 1.5, 2.5]}
+  lightIntensity={2.6}
+  ambientIntensity={0.1}
+  ringColor="#f3e6d0"
+  ringShadow
+  ringInnerScale={1.4}
+  ringOuterScale={2.6}
 />
 
 Beyond raw size, the contrast between Jupiter and Saturn reflects how differently they shaped the Solar System around them. Jupiter’s immense gravity influenced the orbits of nearby material, likely limiting the mass available for other planets to grow and helping sculpt the asteroid belt. Saturn, while still dominant on a planetary scale, played a more localized role. Their size difference is therefore not just a numerical curiosity, but a record of how the early Solar System evolved under competing gravitational giants.

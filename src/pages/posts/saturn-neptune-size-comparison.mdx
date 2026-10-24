@@ -28,11 +28,18 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
   secondaryTexture="/textures/neptune_texture.webp"
   saturnRadius={58232}
   secondaryRadius={24622}
-  planetDistance={2.4}
   saturnContrast={1.05}
   secondaryContrast={0.95}
-  saturnTiltDeg={[0, 25, 26.7]}
-  orthoExtent={1.2}
+  saturnTiltDeg={[18, 0, 8]}
+  orthoExtent={1.6}
+  options={{ saturnPosition: [-0.62, 0, 0], secondaryPosition: [2.78, 0, 0] }}
+  lightPosition={[6, 1.5, 2.5]}
+  lightIntensity={2.6}
+  ambientIntensity={0.1}
+  ringColor="#f3e6d0"
+  ringShadow
+  ringInnerScale={1.4}
+  ringOuterScale={2.6}
 />
 
 <h2>What the simulation shows</h2>

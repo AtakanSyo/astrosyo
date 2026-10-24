@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import SimStage from '../lib/simStage.jsx';
 import { prepareScene, createTopDownOrthoCamera } from '../lib/threeCore.js';
+import { applyEarthSurface, createAtmosphere } from '../lib/earthEffects.js';
 
 const DEFAULT_LIGHT_POSITION = [5, 2, 3];
 
@@ -22,7 +23,16 @@ export default function PlanetSizeComparison({
   directionalLightIntensity = 2.2,
   ambientLightIntensity = 0.32,
   lightPosition = DEFAULT_LIGHT_POSITION, // [x, y, z] direction the light comes from
+  primaryTiltDeg, // per-planet axial tilt (degrees); both default to options.axialTiltDeg
+  secondaryTiltDeg,
+  primaryInitialSpinDeg = 0,
+  secondaryInitialSpinDeg = 0,
+  primaryAtmosphere, // true, a CSS colour, or { color, strength, haloScale }
+  secondaryAtmosphere,
+  primaryNightLights = false, // Earth texture only: city lights on the night side and an ocean glint
+  secondaryNightLights = false,
 }) {
+  const atmosKey = JSON.stringify([primaryAtmosphere ?? null, secondaryAtmosphere ?? null]);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const simControlsRef = useRef(null);
@@ -217,9 +227,10 @@ export default function PlanetSizeComparison({
       return mat;
     }
 
-    function makePlanet(radius, material, tiltDeg, position) {
+    function makePlanet(radius, material, tiltDeg, position, initialSpinDeg = 0) {
       const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 96, 96), material);
       mesh.rotation.z = THREE.MathUtils.degToRad(tiltDeg);
+      mesh.rotation.y = THREE.MathUtils.degToRad(initialSpinDeg);
       mesh.position.set(...position);
       scene.add(mesh);
       return mesh;
@@ -240,8 +251,8 @@ export default function PlanetSizeComparison({
       brightness: cfg.secondBrightness,
     });
 
-    const planetA = makePlanet(R_PLANET, matPlanet, cfg.axialTiltDeg, cfg.planetPosition);
-    const planetB = makePlanet(R_PLANET_2, matSecond, cfg.axialTiltDeg, cfg.secondPosition);
+    const planetA = makePlanet(R_PLANET, matPlanet, primaryTiltDeg ?? cfg.axialTiltDeg, cfg.planetPosition, primaryInitialSpinDeg);
+    const planetB = makePlanet(R_PLANET_2, matSecond, secondaryTiltDeg ?? cfg.axialTiltDeg, cfg.secondPosition, secondaryInitialSpinDeg);
 
     const stars = new THREE.Mesh(
       new THREE.SphereGeometry(cfg.starRadius, 64, 64),
@@ -254,6 +265,33 @@ export default function PlanetSizeComparison({
     sun.position.set(lightPosition[0] ?? 5, lightPosition[1] ?? 2, lightPosition[2] ?? 3).normalize();
     scene.add(sun);
     scene.add(new THREE.AmbientLight(0xffffff, ambientLightIntensity));
+
+    // Night lights and atmospheres shade by the sun's direction in view space
+    // (the camera never moves, so it is fixed).
+    sceneCtx.camera.updateMatrixWorld();
+    const sunDirView = sun.position.clone().transformDirection(sceneCtx.camera.matrixWorldInverse);
+    const extras = [];
+    [
+      { material: matPlanet, night: primaryNightLights, atmosphere: primaryAtmosphere, radius: R_PLANET, position: cfg.planetPosition },
+      { material: matSecond, night: secondaryNightLights, atmosphere: secondaryAtmosphere, radius: R_PLANET_2, position: cfg.secondPosition },
+    ].forEach(({ material, night, atmosphere, radius, position }) => {
+      if (night) {
+        const nightMap = loadMap('/textures/earth_nighttime_texture.webp');
+        applyEarthSurface(material, { nightMap, lightDirView: sunDirView });
+        extras.push({ dispose: () => nightMap.dispose() });
+      }
+      if (atmosphere) {
+        const atmo = createAtmosphere({
+          radius,
+          lightDirView: sunDirView,
+          ...(typeof atmosphere === 'string' ? { color: atmosphere } : {}),
+          ...(typeof atmosphere === 'object' ? atmosphere : {}),
+        });
+        atmo.group.position.set(...position);
+        scene.add(atmo.group);
+        extras.push({ dispose: () => { scene.remove(atmo.group); atmo.dispose(); } });
+      }
+    });
 
     const degPerSec = 360.0 / (cfg.rotationHours * 3600.0);
 
@@ -299,6 +337,7 @@ export default function PlanetSizeComparison({
       mapPlanet?.dispose?.();
       mapSecond?.dispose?.();
       mapStars?.dispose?.();
+      extras.forEach((extra) => extra.dispose());
       dispose();
     };
   }, [
@@ -315,6 +354,13 @@ export default function PlanetSizeComparison({
     directionalLightIntensity,
     ambientLightIntensity,
     lightKey,
+    primaryTiltDeg,
+    secondaryTiltDeg,
+    primaryInitialSpinDeg,
+    secondaryInitialSpinDeg,
+    atmosKey,
+    primaryNightLights,
+    secondaryNightLights,
   ]);
 
   const onToggle = () => {
