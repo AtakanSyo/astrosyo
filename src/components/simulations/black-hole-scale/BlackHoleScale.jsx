@@ -4,19 +4,27 @@ import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { prepareScene, createTopDownOrthoCamera } from '../lib/threeCore.js';
 import { createGlowSprite, makeGlowTexture } from '../lib/glow.js';
 import { OBJECTS, ORBITS, AU_KM, R_EARTH_AU, formatDistance } from './scaleData.js';
+import { LENS_QUAD_SCALE, createBlackHoleMaterial, createStarSurfaceMaterial } from './shaders.js';
 
 /**
  * A true-scale tour from the Sun to TON 618.
  *
- * Every object sits where the Sun is, seen from above, with the planets'
- * orbits drawn around it, so its size reads directly against the Solar
- * System. Each stage zooms out to the next object; smaller objects stay as
- * outlines inside it. Nothing is exaggerated: radii come from scaleData.js,
- * black holes at their Schwarzschild radius.
+ * Every object sits where the Sun is, with the planets' orbits drawn around
+ * it, so its size reads directly against the Solar System. The camera looks
+ * down at the orbital plane from a slight tilt; spheres and their outlines are
+ * camera-facing, so their sizes stay exact. Each stage zooms out to the next
+ * object; smaller objects stay as outlines inside it. Nothing is exaggerated:
+ * radii come from scaleData.js, black holes at their Schwarzschild radius.
+ *
+ * Black holes are drawn at their event horizon and bend a faint star field
+ * around it (see shaders.js).
+ * The orbits, outlines and labels are drawn on top, unbent, as annotations.
  */
 
 const TOUR_SECONDS = 4.5; // per stage while the tour plays
 const EARTH_OFFSET = 1.45; // Earth's distance from the Sun's centre on the first stage, in Sun radii (not its real orbit)
+const TILT_DEG = 32; // camera tilt away from straight down onto the orbital plane
+const BACKGROUND_LAYER = 1; // the star field, rendered separately for lensing
 
 // Half-height of the view for a stage: the object fills about two thirds of
 // it. Sagittarius A* zooms out further so Mercury's orbit is in frame.
@@ -26,6 +34,10 @@ const stageExtent = (index) => {
   if (key === 'sgra') return 0.3;
   return r * 1.5;
 };
+
+// TON 618 is so large that the Solar System is a speck inside it, so that
+// step shows only M87* (the previous object) inside the event horizon.
+const showsOnlyPrevious = (index) => OBJECTS[index].key === 'ton618';
 
 const circlePoints = (radius, segments = 256) => {
   const pts = [];
@@ -60,8 +72,15 @@ export default function BlackHoleScale({ id = 'black-hole-scale', aspect = '16 /
     const canvas = canvasRef.current;
     if (!container || !canvas) return undefined;
 
+    // Background render target the black holes sample for lensing; sized to
+    // the drawing buffer on each frame.
+    const backgroundTarget = new THREE.WebGLRenderTarget(1, 1, { colorSpace: THREE.LinearSRGBColorSpace });
+    const bufferSize = new THREE.Vector2();
+    let lensing = false; // true while a black hole is on screen
+
     let extent = stageExtent(stageRef.current);
     let camHandle = null;
+    const tilt = THREE.MathUtils.degToRad(TILT_DEG);
     const core = prepareScene({
       canvas,
       container,
@@ -71,27 +90,44 @@ export default function BlackHoleScale({ id = 'black-hole-scale', aspect = '16 /
         camHandle = createTopDownOrthoCamera({
           extent: () => extent,
           margin: 1,
-          position: [0, 0, 10],
+          position: [0, -Math.sin(tilt) * 50, Math.cos(tilt) * 50],
           up: [0, 1, 0],
           lookAt: [0, 0, 0],
-          near: 0.1,
-          far: 100,
+          near: 1,
+          far: 200,
         });
         return camHandle;
       },
+      // Two passes when a black hole is on screen: the star field alone into
+      // the background target, then the full scene (whose black hole samples it).
+      renderOverride: ({ renderer, scene: s, camera }) => {
+        if (lensing) {
+          renderer.getDrawingBufferSize(bufferSize);
+          if (backgroundTarget.width !== bufferSize.x || backgroundTarget.height !== bufferSize.y) {
+            backgroundTarget.setSize(bufferSize.x, bufferSize.y);
+          }
+          camera.layers.set(BACKGROUND_LAYER);
+          renderer.setRenderTarget(backgroundTarget);
+          renderer.clear();
+          renderer.render(s, camera);
+          renderer.setRenderTarget(null);
+          camera.layers.set(0);
+        }
+        renderer.render(s, camera);
+      },
     });
-    const { scene, textureLoader, start, stop, dispose: disposeCore } = core;
+    const { scene, camera, renderer, textureLoader, start, stop, dispose: disposeCore } = core;
+    camera.updateMatrixWorld();
+    const facing = camera.quaternion.clone(); // camera-facing orientation for spheres' outlines and quads
 
-    const disposables = [];
+    const disposables = [backgroundTarget];
     const track = (...items) => {
       disposables.push(...items);
       return items[0];
     };
-    const sunTexture = track(textureLoader.load('/interactive/sun/sun_texture.jpg'));
-    sunTexture.colorSpace = THREE.SRGBColorSpace;
     const glowTexture = track(makeGlowTexture());
 
-    const lineLoop = (radius, color, opacity, order, dashed = false) => {
+    const lineLoop = (radius, color, opacity, order, { dashed = false, faceCamera = false } = {}) => {
       const geo = track(new THREE.BufferGeometry().setFromPoints(circlePoints(radius)));
       const mat = track(
         dashed
@@ -100,57 +136,68 @@ export default function BlackHoleScale({ id = 'black-hole-scale', aspect = '16 /
       );
       const line = new THREE.LineLoop(geo, mat);
       if (dashed) line.computeLineDistances();
+      if (faceCamera) line.quaternion.copy(facing);
       line.renderOrder = order;
       scene.add(line);
       return line;
     };
 
+    // ---------- Star field (only behind black holes, where it is lensed) ----------
+    const starsTexture = track(textureLoader.load('/textures/stars_texture.webp'));
+    starsTexture.colorSpace = THREE.SRGBColorSpace;
+    starsTexture.wrapS = starsTexture.wrapT = THREE.RepeatWrapping;
+    const starsMat = track(new THREE.MeshBasicMaterial({ map: starsTexture, transparent: true, opacity: 0, depthWrite: false, toneMapped: false }));
+    starsMat.color.setScalar(0.9);
+    const stars = new THREE.Mesh(track(new THREE.PlaneGeometry(1, 1)), starsMat);
+    stars.quaternion.copy(facing);
+    stars.position.copy(new THREE.Vector3(0, 0, -1).applyQuaternion(facing).multiplyScalar(60)); // far behind everything
+    stars.layers.enable(BACKGROUND_LAYER);
+    stars.renderOrder = -1;
+    scene.add(stars);
+
     // ---------- Objects ----------
-    // Each has a filled look (when it is the current stage) and an outline
-    // (when a bigger object is on screen).
-    const objects = OBJECTS.map((obj) => {
+    // Each has a filled look (when it is the current stage) and a camera-facing
+    // outline at its true radius (when a bigger object is on screen).
+    const objects = OBJECTS.map((obj, index) => {
       const r = obj.radiusAu;
       const fill = new THREE.Group();
       let outlineColor;
+      let material = null;
       if (obj.kind === 'star') {
+        // Stars are plain glowing spheres (no texture). The Sun has a crisp
+        // edge; a red supergiant a soft, fuzzy one.
         const tint = new THREE.Color(obj.color);
-        const body = new THREE.Mesh(
-          track(new THREE.SphereGeometry(r, 64, 32)),
-          track(new THREE.MeshBasicMaterial({ map: sunTexture, color: tint.clone().multiplyScalar(1.35), toneMapped: false })),
-        );
+        const isSun = obj.key === 'sun';
+        material = track(createStarSurfaceMaterial(isSun
+          ? { deep: 0xd4561a, bright: 0xfff1c8, limb: 0.9 }
+          : {
+              deep: tint.clone().multiplyScalar(0.35),
+              bright: tint.clone().lerp(new THREE.Color(0xffc070), 0.4),
+              limb: 1.0,
+              edge: 0.3,
+            }));
+        const body = new THREE.Mesh(track(new THREE.SphereGeometry(r, 96, 48)), material);
         body.renderOrder = 1;
-        const inner = createGlowSprite(glowTexture, { color: tint, scale: r * 2.7, opacity: 0.5 });
-        const outer = createGlowSprite(glowTexture, { color: tint, scale: r * 5, opacity: 0.12 });
+        const glowTint = isSun ? new THREE.Color(0xffd9a0) : tint;
+        const inner = createGlowSprite(glowTexture, { color: glowTint, scale: r * (isSun ? 2.7 : 2.5), opacity: isSun ? 0.5 : 0.55 });
+        const outer = createGlowSprite(glowTexture, { color: glowTint, scale: r * (isSun ? 5 : 4.4), opacity: isSun ? 0.12 : 0.14 });
         track(inner.material, outer.material);
         fill.add(outer, inner, body);
-        outlineColor = tint;
+        outlineColor = glowTint;
       } else {
-        // Black hole: the event horizon as a black disc with a thin bright
-        // photon ring and a faint warm glow around it.
-        const glow = createGlowSprite(glowTexture, { color: 0xff9a4a, scale: r * 3.2, opacity: 0.28 });
-        const disc = new THREE.Mesh(
-          track(new THREE.CircleGeometry(r, 160)),
-          // Transparent (at full opacity) so it is drawn after the glow sprite and hides it.
-          track(new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 1, depthTest: false })),
-        );
-        disc.renderOrder = 1;
-        const ring = new THREE.Mesh(
-          track(new THREE.RingGeometry(r, r * 1.02, 160)),
-          track(new THREE.MeshBasicMaterial({ color: 0xffd9a8, transparent: true, opacity: 0.9, depthTest: false, blending: THREE.AdditiveBlending, toneMapped: false })),
-        );
-        ring.renderOrder = 2;
-        const haze = new THREE.Mesh(
-          track(new THREE.RingGeometry(r * 1.02, r * 1.09, 160)),
-          track(new THREE.MeshBasicMaterial({ color: 0xff9a4a, transparent: true, opacity: 0.1, depthTest: false, blending: THREE.AdditiveBlending, toneMapped: false })),
-        );
-        haze.renderOrder = 2;
-        track(glow.material);
-        fill.add(glow, disc, ring, haze);
+        // Black hole: one camera-facing quad; the shader draws the lensed sky,
+        // the event horizon and the photon ring at its edge.
+        material = track(createBlackHoleMaterial(backgroundTarget.texture));
+        const size = r * LENS_QUAD_SCALE * 2;
+        const quad = new THREE.Mesh(track(new THREE.PlaneGeometry(size, size)), material);
+        quad.quaternion.copy(facing);
+        quad.renderOrder = 2;
+        fill.add(quad);
         outlineColor = new THREE.Color(0xffc18a);
       }
       scene.add(fill);
-      const outline = lineLoop(r, outlineColor, 0.85, 5);
-      return { obj, fill, outline };
+      const outline = lineLoop(r, outlineColor, 0.85, 5, { faceCamera: true });
+      return { obj, fill, outline, material };
     });
 
     // Earth beside the Sun on the first stage, to scale.
@@ -162,10 +209,10 @@ export default function BlackHoleScale({ id = 'black-hole-scale', aspect = '16 /
     earth.renderOrder = 6;
     scene.add(earth);
 
-    // ---------- Orbits and planets ----------
+    // ---------- Orbits and planets (in the orbital plane) ----------
     const orbits = ORBITS.map((orbit, i) => {
       const tint = new THREE.Color(orbit.color).lerp(new THREE.Color(0xffffff), 0.3);
-      const line = lineLoop(orbit.au, tint, orbit.faint ? 0.3 : 0.32, 3, orbit.faint);
+      const line = lineLoop(orbit.au, tint, orbit.faint ? 0.3 : 0.32, 3, { dashed: orbit.faint });
       let dot = null;
       if (!orbit.faint) {
         const geo = track(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3()]));
@@ -184,38 +231,51 @@ export default function BlackHoleScale({ id = 'black-hole-scale', aspect = '16 /
     });
 
     // ---------- Per-frame update ----------
+    const projected = new THREE.Vector3();
     const placeLabels = (w, h, scale, current) => {
-      const toScreen = (x, y) => [w / 2 + x * scale, h / 2 - y * scale];
+      const toScreen = (x, y, z = 0) => {
+        projected.set(x, y, z).project(camera);
+        return [(projected.x * 0.5 + 0.5) * w, (0.5 - projected.y * 0.5) * h];
+      };
       const currentRadius = OBJECTS[current].radiusAu;
 
-      // Orbit labels sit up and to the right on each ring; skip rings that are
-      // too small, off screen, or too close to the last labelled one.
+      // Orbit labels sit up and to the right on each (tilted) ring; skip rings
+      // that are too small, off screen, or too close to the last labelled one.
       let lastShown = -Infinity;
+      const shownOrbitLabels = []; // screen boxes, so outline labels can avoid them
       const angle = THREE.MathUtils.degToRad(38);
       orbits.forEach((orbit, i) => {
         const el = orbitLabelRefs.current[i];
         if (!el) return;
         const rPx = orbit.au * scale;
         const [x, y] = toScreen(Math.cos(angle) * orbit.au, Math.sin(angle) * orbit.au);
-        const show = rPx > 30 && rPx - lastShown > 32 && x < w - 40 && y > 14;
+        const show = !showsOnlyPrevious(current) && rPx > 30 && rPx - lastShown > 32 && x < w - 40 && y > 14;
         el.style.opacity = show ? '1' : '0';
         if (show) {
           lastShown = rPx;
+          shownOrbitLabels.push({ x, y, w: el.offsetWidth });
           el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
           el.classList.toggle('is-inside', orbit.au < currentRadius);
         }
       });
 
-      // Smaller objects' outline labels, just above each outline.
+      // Smaller objects' outline labels, just above each camera-facing outline.
       objects.forEach(({ obj }, i) => {
         const el = outlineLabelRefs.current[i];
         if (!el) return;
         const rPx = obj.radiusAu * scale;
-        const show = i < current && rPx > 20; // tiny outlines get no label, so it can't sit on the orbit labels
+        // Big outlines are always labelled. The object just before the current
+        // one keeps its label even when small (e.g. M87* inside TON 618), as
+        // long as it would not sit on top of a visible orbit label.
+        const x = w / 2;
+        const y = h / 2 - rPx - 4;
+        const half = el.offsetWidth / 2;
+        const collides = shownOrbitLabels.some((b) => x + half > b.x && x - half < b.x + b.w && Math.abs(y - b.y) < 18);
+        const show = i < current && (rPx > 20 || (i === current - 1 && rPx > 3 && !collides))
+          && (!showsOnlyPrevious(current) || i === current - 1);
         el.style.opacity = show ? '1' : '0';
         if (show) {
-          const [x, y] = toScreen(0, obj.radiusAu);
-          el.style.transform = `translate(${x.toFixed(1)}px, ${(y - 4).toFixed(1)}px)`;
+          el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
         }
       });
 
@@ -229,7 +289,8 @@ export default function BlackHoleScale({ id = 'black-hole-scale', aspect = '16 /
         }
       }
 
-      // Scale bar: a round distance about 110 px long.
+      // Scale bar along the screen's horizontal, which the tilt leaves
+      // untouched: a round distance about 110 px long.
       const bar = scaleBarRef.current;
       if (bar) {
         const rawAu = 110 / scale;
@@ -248,13 +309,15 @@ export default function BlackHoleScale({ id = 'black-hole-scale', aspect = '16 /
       }
     };
 
-    let visible = false;
     let last = performance.now();
+    let starsOpacity = 0;
     const animate = () => {
       const now = performance.now();
       const dt = Math.min(0.1, (now - last) / 1000);
       last = now;
+      const time = now / 1000;
       const current = stageRef.current;
+      const currentObj = OBJECTS[current];
 
       // Ease the zoom in log space so each order of magnitude takes equal time.
       const target = stageExtent(current);
@@ -263,22 +326,47 @@ export default function BlackHoleScale({ id = 'black-hole-scale', aspect = '16 /
       const w = container.clientWidth;
       const h = container.clientHeight;
       camHandle.onResize({ width: w, height: h });
+      camera.updateMatrixWorld();
       const scale = h / (2 * extent); // px per AU
+      const dpr = renderer.getPixelRatio();
 
-      objects.forEach(({ fill, outline }, i) => {
+      // Star field: fills the view at any zoom with constant star density, and
+      // fades in only for black holes.
+      const viewW = 2 * extent * (w / h);
+      stars.scale.set(viewW * 1.1, 2 * extent * 1.1, 1);
+      starsTexture.repeat.set((w * 1.1) / 900, (h * 1.1) / 900);
+      const isHole = currentObj.kind === 'blackhole';
+      starsOpacity += ((isHole ? 1 : 0) - starsOpacity) * (1 - Math.exp(-dt * 4));
+      starsMat.opacity = starsOpacity;
+      stars.visible = starsOpacity > 0.01;
+      lensing = isHole;
+
+      renderer.getDrawingBufferSize(bufferSize);
+      objects.forEach(({ obj, fill, outline, material }, i) => {
         fill.visible = i === current;
-        outline.visible = i < current;
+        outline.visible = i < current && (!showsOnlyPrevious(current) || i === current - 1);
+        if (!material || !fill.visible) return;
+        if (material.uniforms.uTime) material.uniforms.uTime.value = time;
+        if (obj.kind === 'blackhole') {
+          const u = material.uniforms;
+          u.uResolution.value.copy(bufferSize);
+          u.uCenter.value.set(bufferSize.x / 2, bufferSize.y / 2);
+          u.uHorizonPx.value = obj.radiusAu * scale * dpr;
+          u.uDpr.value = dpr;
+        }
       });
       earth.visible = current === 0;
 
-      const currentRadius = OBJECTS[current].radiusAu;
+      const currentRadius = currentObj.radiusAu;
+      const onlyPrevious = showsOnlyPrevious(current);
       orbits.forEach((orbit) => {
+        orbit.line.visible = !onlyPrevious;
         orbit.line.material.opacity = (orbit.faint ? 0.3 : 0.32) * (orbit.au < currentRadius ? 0.55 : 1);
         if (orbit.dot) {
           orbit.angle += orbit.speed * dt;
           orbit.dot.position.set(Math.cos(orbit.angle) * orbit.au, Math.sin(orbit.angle) * orbit.au, 0);
           orbit.dot.material.opacity = orbit.au < currentRadius ? 0.35 : 1;
-          orbit.dot.visible = current > 0;
+          orbit.dot.visible = current > 0 && !onlyPrevious;
         }
       });
 
@@ -286,8 +374,7 @@ export default function BlackHoleScale({ id = 'black-hole-scale', aspect = '16 /
     };
 
     const io = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      if (visible) {
+      if (entry.isIntersecting) {
         last = performance.now();
         start(animate);
       } else {
@@ -386,6 +473,12 @@ export default function BlackHoleScale({ id = 'black-hole-scale', aspect = '16 /
           {obj.kind === 'blackhole' ? 'Event horizon radius' : 'Radius'}: <b>{radiusText}</b>
         </div>
         <p className="bhs-info-fact">{obj.fact}</p>
+        {obj.kind === 'blackhole' && (
+          <p className="bhs-info-legend">
+            The dark disc is the event horizon, the black hole’s true size. A telescope would see a larger dark shadow, about 2.6
+            times wider, because gravity magnifies the image. Starlight behind it is bent around the disc.
+          </p>
+        )}
       </div>
 
       <style>{`
@@ -419,6 +512,7 @@ export default function BlackHoleScale({ id = 'black-hole-scale', aspect = '16 /
         .bhs-info-size { font-size: 0.9rem; color: rgba(255,255,255,0.75); font-variant-numeric: tabular-nums; }
         .bhs-info-size b { color: #ffd9b0; font-weight: 500; }
         .bhs .bhs-info-fact { margin: 0; padding: 0; width: auto; max-width: none; font-size: 0.92rem; line-height: 1.5; color: rgba(255,255,255,0.8); text-align: left; }
+        .bhs .bhs-info-legend { margin: 0; padding: 0; width: auto; max-width: none; font-size: 0.8rem; line-height: 1.5; color: rgba(255,255,255,0.5); text-align: left; }
         @media (max-width: 640px) {
           .bhs-chips button { padding: 0.25rem 0.55rem; font-size: 0.7rem; }
           .bhs-step { display: none; }
