@@ -1,0 +1,173 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Milky Way and Andromeda Collision Simulation"
+subtitle: "Will our galaxy really crash into Andromeda? Watch three possible futures."
+category: simulation
+writer: Astrosyo
+pubDate: '2026-10-25'
+description: "An interactive 3D simulation of the Milky Way and Andromeda galaxies over the next 10 billion years: a direct hit, a close pass and a near miss, plus the view of Andromeda growing in our night sky."
+postColor: rgba(0, 0, 0, 1)
+slug: milky-way-andromeda-collision-simulation
+imageDir: /images/milky-way-andromeda-collision-simulation
+thumbnail: /images/milky-way-andromeda-collision-simulation/thumbnail.webp
+keywords:
+  - Andromeda collision simulation
+  - Milky Way Andromeda collision
+  - will the Milky Way and Andromeda collide
+  - when will Andromeda collide with the Milky Way
+  - Andromeda collision night sky
+  - Milkomeda
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import ViewSource from "../../components/ViewSource.astro";
+import Changelog from "../../components/Changelog.astro";
+import GalaxyCollision from "../../components/simulations/galaxy-collision/GalaxyCollision.jsx";
+
+<figure class="post-figure post-figure-md" id="simulation">
+  <GalaxyCollision client:visible />
+</figure>
+
+Andromeda, the nearest large galaxy to ours, is about 2.5 million
+light-years away and closing in at roughly 110 km/s, close to 400,000 km/h.
+For years the standard story was simple: in about 4 billion years the two
+galaxies collide, and a few billion years later they merge into one. Newer
+measurements say the future is far less certain. This simulation lets you
+watch three possible outcomes, from today to 10 billion years from now.
+
+Drag to rotate the view, use the buttons to zoom, and switch between
+scenarios at any time; the timeline keeps its place, so you can compare the
+same moment in each future.
+
+## Will the Milky Way and Andromeda collide?
+
+**Maybe.** Andromeda is definitely heading towards us; its light is shifted
+towards blue by its approach. What decides the outcome is how fast it is
+also drifting sideways, and that motion is very hard to measure from 2.5
+million light-years away.
+
+- **2012:** Hubble measurements suggested almost no sideways motion, so the
+  galaxies would meet nearly head-on in about 4 billion years and merge
+  about 2 billion years after that.
+- **2019:** Gaia data pointed to more sideways motion, which pushes the
+  first encounter later and makes it less direct.
+- **2025:** A study combining Hubble and Gaia data, led by Till Sawala and
+  published in *Nature Astronomy*, ran thousands of simulations across the
+  measurement uncertainties. It found **roughly even odds of a merger within
+  the next 10 billion years**. Part of the change comes from including the
+  pull of the Large Magellanic Cloud, a satellite galaxy of the Milky Way.
+
+The three scenarios in the simulation are illustrative paths across that
+range of possibilities, not predictions:
+
+- **Direct hit:** a nearly head-on encounter, as the 2012 measurements
+  suggested. A first pass in a bit over 4 billion years, then a merger about
+  a billion years later.
+- **Close pass, later merger:** a wider first pass that throws out long
+  tidal tails, a long swing back out, and a merger nearer 8 billion years.
+- **Near miss:** a faster sideways drift. The galaxies pass hundreds of
+  thousands of light-years apart and don't merge within 10 billion years.
+
+## When will Andromeda collide with the Milky Way?
+
+If it happens, the first close encounter is most likely **4 to 5 billion
+years from now**. That part of the timeline is fairly robust, because it
+depends mostly on Andromeda's well-measured approach speed. Whether that
+first encounter is a direct hit, a glancing pass or a miss, and whether a
+merger follows, is what remains uncertain.
+
+If the galaxies do merge, the result will be a single large, roughly
+elliptical galaxy, sometimes nicknamed **Milkomeda**. In the direct-hit and
+close-pass scenarios you can watch the two spiral disks being torn into
+tails and arcs, then settling into one round, featureless swarm of stars.
+
+## What happens to the Sun and Earth?
+
+Almost certainly **nothing violent**. Galaxies are mostly empty space: the
+nearest star to the Sun is more than 4 light-years away, while the Sun is
+less than 5 light-seconds across. When two galaxies collide, their stars
+pass between each other, and direct star-to-star collisions are vanishingly
+rare. What changes is the Sun's orbit. In many simulations, including the
+ones here, the Sun is flung to a different distance from the new galactic
+centre, often farther out. The panel under the simulation tracks the Sun's
+distance from the centre of mass as time runs.
+
+The timing has a twist, though. In about 5 billion years the Sun itself will
+swell into a red giant, and Earth will become uninhabitable long before that
+as the Sun slowly brightens. So no one on Earth is likely to watch the
+collision.
+
+## What will the night sky look like?
+
+Switch to **Night sky from the Sun** to see the view from the star standing
+in for the Sun, looking towards Andromeda. Today Andromeda spans about 3°,
+roughly six full Moons, although only its bright core is easy to see without
+a telescope. As the galaxies approach it grows across the sky, and around
+the first encounter it fills a large part of it, crossing the band of the
+Milky Way. After a merger, the band of our own disk is replaced by the
+diffuse glow of the merged galaxy.
+
+## How this simulation works
+
+A full simulation of colliding galaxies, where every star pulls on every
+other star, takes a supercomputer. This one uses a much cheaper method,
+the one Alar and Juri Toomre used in 1972 to show how tidal tails form:
+
+- **Only the two galaxy cores have gravity.** Each galaxy is modelled as a
+  massive halo of dark matter (a Hernquist profile), which holds most of a
+  galaxy's mass. The Milky Way is set to 1.0 trillion and Andromeda to 1.3
+  trillion solar masses, within the published range. The two halos pull on
+  each other, and **dynamical friction**, the drag a moving mass feels as it
+  plows through the other halo, lets them lose energy and merge.
+- **The stars are test particles.** Each one orbits in the combined pull of
+  both halos but does not pull on the other stars. That lets about 100,000
+  of them (about 33,000 on phones) be moved in parallel on your graphics
+  card, at full frame rate.
+- **The starting conditions** are today's real values: Andromeda about 785
+  kiloparsecs away and approaching at 110 km/s. Only the uncertain
+  sideways speed differs between the scenarios.
+
+It is a model, not a research simulation. It leaves out gas and new star
+formation, the two galaxies' disk orientations are illustrative, and the
+merged galaxy's final shape is approximate. What it does capture is the
+part that matters here: how the galaxies' orbits and tidal forces shape
+the encounter, and how much the outcome depends on a sideways speed of a
+few dozen kilometres per second.
+
+For a sense of scale on a different extreme, see the
+[TON 618 size comparison](/posts/ton-618-size-comparison), which puts the
+largest known black holes next to the Solar System.
+
+## Sources
+
+- **Andromeda's distance and approach:** van der Marel et al. (2012, 2019), from Hubble and Gaia proper motions.
+- **2025 merger odds:** Sawala et al., *Nature Astronomy* (2025); see the [ESA](https://www.esa.int/Science_Exploration/Space_Science/Hubble_and_Gaia_revisit_fate_of_our_galaxy) and [ESA/Hubble](https://esahubble.org/news/heic2508/) releases.
+- **Method:** Toomre & Toomre (1972), restricted three-body simulations of tidal tails; Chandrasekhar (1943), dynamical friction.
+
+<SimPostSchema
+  title="Milky Way and Andromeda Collision Simulation"
+  description="An interactive 3D simulation of the Milky Way and Andromeda galaxies over the next 10 billion years: a direct hit, a close pass and a near miss, plus the view of Andromeda growing in our night sky."
+  url="https://astrosyo.com/posts/milky-way-andromeda-collision-simulation"
+  datePublished="2026-10-25"
+  authorName="Astrosyo"
+  keywords={["Andromeda collision simulation", "Milky Way Andromeda collision", "will the Milky Way and Andromeda collide", "when will Andromeda collide with the Milky Way", "Andromeda collision night sky", "Milkomeda"]}
+  image="/images/milky-way-andromeda-collision-simulation/thumbnail.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.svg"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Milky Way and Andromeda Collision Simulation",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/milky-way-andromeda-collision-simulation#simulation",
+    "description": "Interactive restricted N-body simulation of the Milky Way and Andromeda over 10 billion years, with direct-hit, close-pass and near-miss scenarios and a night-sky view from the Sun."
+  }}
+/>
+
+<ViewSource path="src/components/simulations/galaxy-collision/GalaxyCollision.jsx" />
+
+<Changelog entries={["2026-10-25: Published."]} />
