@@ -58,41 +58,33 @@
 
 .affiliate-btn {
   flex: 1;
+  max-width: 33%;
   text-align: center;
   padding: 0.6rem;
-  background: #1f1f1f;
-  border: 1px solid #1f1f1f; /* subtle accent color border from the start */
-  border-radius: 6px;
-  font-size: 0.875rem;
+  /* same look as the vendor rows' "Check price" buttons in review posts */
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 12px;
+  box-shadow: none; /* drops the glow from the older .affiliate-btn rule in reviewLinkCards.css */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.25;
   color: #ffffff;
-  font-weight: 600;
   text-decoration: none;
-  box-shadow: 0 0 4px rgba(255, 255, 255, 0.5); /* faint always-on glow */
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
-  max-width: 33%;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
-
-
 
 .affiliate-btn:hover {
-  background-color: #2d2d2d;
-  border-color: rgb(var(--brand-color)); /* slightly brighter accent */
-  color: #ffffff;
-  box-shadow: 0 0 8px rgba(93, 98, 210, 0.4);
-  transform: translateY(-1px);
+  background-color: rgba(255, 255, 255, 0.92);
+  border-color: transparent;
+  color: #111;
 }
 
-.affiliate-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 0 4px rgba(93, 98, 210, 0.3);
+.affiliate-btn:focus-visible {
+  outline: 2px solid rgb(var(--brand-color));
+  outline-offset: 2px;
 }
-
-
 
 /* Optional: align affiliate row with card spacing */
 .post-card + .affiliate-links {
@@ -103,42 +95,6 @@
 }
 
 /* Shared by the telescopes page cards and the homepage review cards */
-.post-card--review .score-badge,
-.april-post-card .score-badge{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 3;
-
-  padding: 8px 12px;     /* slightly bigger */
-  border-radius: 16px;
-
-  font-size: calc(0.95rem + 1px);
-  font-weight: 700;
-  font-style: italic;
-  letter-spacing: -0.01em;
-  font-variant-numeric: tabular-nums;
-
-  color: #fff;
-  background: rgba(0, 0, 0, 0.65);
-  /* explicit: an unscoped .score-badge rule elsewhere would otherwise add a tinted border */
-  border: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-}
-
-@supports ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
-  .post-card--review .score-badge,
-  .april-post-card .score-badge {
-    background: rgba(0, 0, 0, 0.65);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-  }
-}
-
 /* Telescope card titles use the secondary (display) font */
 .post-card--review .post-card-title {
   font-family: var(--font-secondary);

@@ -1,0 +1,72 @@
+/* Review score ring (ScoreBadge.astro).
+   The ring is two backgrounds: a dark disc on top of a conic gradient that is
+   coloured for the score's share of 10 (--fill, 0–1) and faint for the rest.
+   Text scales with the ring's diameter (--size). */
+
+.score-ring {
+  --ring: rgba(255, 255, 255, 0.3);
+  --size: 52px;
+  --track: calc(var(--size) * 0.065);
+
+  flex: none;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: #fff;
+  line-height: 1;
+  background:
+    radial-gradient(closest-side, rgba(8, 10, 16, 0.82) calc(100% - var(--track)), transparent calc(100% - var(--track) + 0.5px)),
+    conic-gradient(var(--ring) calc(var(--fill, 0) * 1turn), rgba(255, 255, 255, 0.14) 0);
+}
+
+.score-ring--top { --ring: #2e9e5b; }
+.score-ring--great { --ring: #7ed7a2; }
+.score-ring--good { --ring: #f0a45f; }
+.score-ring--low { --ring: #d08a8a; }
+
+.score-ring-value {
+  font-family: var(--font-secondary);
+  font-size: calc(var(--size) * 0.33);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.score-ring-max {
+  margin-top: calc(var(--size) * 0.04);
+  font-size: max(0.48rem, calc(var(--size) * 0.12));
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.score-ring--none .score-ring-value {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* On post cards: in the top-right corner, over the image. */
+.post-card .score-ring,
+.april-post-card .score-ring {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* Smaller ring on small cards (home page rows, narrow grids). */
+@container (max-width: 200px) {
+  .post-card .score-ring,
+  .april-post-card .score-ring {
+    --size: 42px;
+    top: 7px;
+    right: 7px;
+  }
+}

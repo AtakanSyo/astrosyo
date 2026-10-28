@@ -43,12 +43,6 @@ const reviewPosts = allPosts
   .filter((post) => post.score !== null && hasCat(post.frontmatter ?? {}, 'reviews'))
   .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
   .slice(0, 10);
-
-function scoreToHue(score: number | null | undefined) {
-  // 0→120 (red→green); fallback to a neutral blue if missing
-  if (score === null || score === undefined) return 210;
-  return Math.round((score / 10) * 120);
-}
 ---
 
 <Layout title="Top 10 Telescope Picks">
@@ -82,7 +76,6 @@ function scoreToHue(score: number | null | undefined) {
               url={url}
               title={cleanTitle}
               scoreText={score?.toFixed(1)}
-              hue={scoreToHue(score)}
               thumbnail={frontmatter.thumbnail}
               affiliates={affs}
             />

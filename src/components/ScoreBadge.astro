@@ -1,0 +1,24 @@
+---
+/**
+ * ScoreBadge.astro
+ * A review score as a ring: the ring fills in proportion to the score (out of
+ * 10) and takes its tier's colour. Inside a post card it sits in the card's
+ * top-right corner; anywhere else it is inline (e.g. a review's Overall score
+ * and Performance Breakdown).
+ *
+ * Props:
+ * - score: number | string (e.g. 8.5 or "8.5"; "N/A" shows an empty ring)
+ * - size: number (optional, ring diameter in px; cards default to 52)
+ */
+import { scoreTier } from '../utils/scoreTier.js';
+import '../styles/scoreBadge.css';
+
+const { score, size } = Astro.props;
+const { text, fill, tier, label } = scoreTier(score);
+const style = `--fill: ${fill}${size ? `; --size: ${size}px` : ''}`;
+---
+
+<span class={`score-ring score-ring--${tier}`} style={style} role="img" aria-label={label}>
+  <span class="score-ring-value" aria-hidden="true">{text ?? '–'}</span>
+  {text && <span class="score-ring-max" aria-hidden="true">/10</span>}
+</span>

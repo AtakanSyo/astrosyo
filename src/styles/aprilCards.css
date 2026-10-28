@@ -45,6 +45,8 @@
 .april-post-card--no-thumb {
   position: relative;
   min-height: unset;
+  /* square, like the image cards */
+  aspect-ratio: 1 / 1;
 
   background:
     radial-gradient(
@@ -59,7 +61,7 @@
     );
 
   border-radius: 16px;
-  padding: 18px 20px;
+  padding: 12px;
 
   border: 1px solid rgba(255, 255, 255, 0.05);
 
@@ -69,12 +71,26 @@
     background 0.25s ease;
 }
 
+.april-post-card--tinted {
+  /* A soft wash of the post's colour (--card-tint, set inline) from the top
+     left corner, fading into the usual dark surface so the title stays crisp. */
+  background:
+    radial-gradient(
+      160% 140% at 0% 0%,
+      /* lifted slightly, since most post colours are very dark */
+      color-mix(in oklab, var(--card-tint) 85%, white 8%),
+      color-mix(in srgb, var(--card-tint) 30%, transparent) 55%,
+      transparent 95%
+    ),
+    linear-gradient(145deg, #141414, #0a0a0a);
+}
+
 .april-post-card--no-thumb a{
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
 }
 
 /* subtle star speckles (same for all) */

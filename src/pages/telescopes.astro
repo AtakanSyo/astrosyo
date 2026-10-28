@@ -49,12 +49,6 @@ function parseScore(v: number | string | undefined): number | null {
   };
   return map[s] ?? null;
 }
-
-function scoreToHue(score: number | null): number {
-  // 0→120 (red→green). Default to neutral hue if missing.
-  if (score === null) return 210;
-  return Math.round((score / 10) * 120);
-}
 ---
 
 <Layout title="Telescope Reviews">
@@ -101,7 +95,6 @@ function scoreToHue(score: number | null): number {
 	          const scoreRaw = rating?.overall;
 	          const scoreNum = parseScore(scoreRaw);
 	          const scoreText = scoreNum !== null ? scoreNum.toFixed(1) : 'N/A';
-	          const hue = scoreToHue(scoreNum);
           const affs = [
             ['Amazon', affiliate.amazon],
             ['HighPoint', affiliate.highpointscientific],
@@ -114,7 +107,6 @@ function scoreToHue(score: number | null): number {
 	              title={cleanTitle}
 	              description={description}
 	              scoreText={scoreText}
-	              hue={hue}
 	              thumbnail={thumbnail}
 	              affiliates={affs}
 	            />
@@ -134,7 +126,6 @@ function scoreToHue(score: number | null): number {
 	            const scoreRaw = rating?.overall;
 	            const scoreNum = parseScore(scoreRaw);
 	            const scoreText = scoreNum !== null ? scoreNum.toFixed(1) : 'N/A';
-	            const hue = scoreToHue(scoreNum);
             const affs = [
               ['Amazon', affiliate.amazon],
               ['HighPoint', affiliate.highpointscientific],
@@ -147,7 +138,6 @@ function scoreToHue(score: number | null): number {
 	                title={cleanTitle}
 	                description={description}
 	                scoreText={scoreText}
-	                hue={hue}
 	                thumbnail={thumbnail}
 	                affiliates={affs}
 	              />

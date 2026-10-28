@@ -8,7 +8,6 @@
  * - title: string
  * - description: string
  * - scoreText: string | number (e.g. 8.5)
- * - hue: number (for your --h CSS var)
  * - thumbnail: string (optional)
  * - affiliates: Array<[name: string, link: string]>
  * - ctaText: string (optional, defaults to "Read the review →")
@@ -20,7 +19,6 @@ const {
   title = "",
   description = "",
   scoreText,
-  hue = 0,
   thumbnail = "",
   affiliates = [],
   ctaText = "Read review →",
@@ -31,6 +29,7 @@ const affs = Array.isArray(affiliates) ? affiliates : [];
 const hasThumb = Boolean(thumbnail);
 const linkClass = ["post-card-link", hasThumb && "post-card-link--overlay"].filter(Boolean).join(" ");
 
+import ScoreBadge from './ScoreBadge.astro';
 import '../styles/cards.css';
 import '../styles/reviewCard.css';
 ---
@@ -38,9 +37,7 @@ import '../styles/reviewCard.css';
 <div class="post-card post-card--review">
   <a href={url} class={linkClass}>
     {scoreText !== undefined && scoreText !== null && scoreText !== "" && (
-      <span class="score-badge" style={`--h:${hue}`} aria-label={`Rated ${scoreText} out of 10`}>
-        {scoreText}
-      </span>
+      <ScoreBadge score={scoreText} />
     )}
 
     {thumbnail && (

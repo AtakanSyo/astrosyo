@@ -40,23 +40,29 @@ const variantClasses = [
   isNasa && "april-post-card--nasa",
 ].filter(Boolean).join(" ");
 
+// Cards without a thumbnail (mostly calculators) get a soft wash of the post's colour.
+const tint = hasThumb ? null : cardTint(frontmatter.postColor);
+
 const cardClass = [
   "april-post-card",
   variantClasses,
   !hasThumb && "april-post-card--no-thumb",
+  tint && "april-post-card--tinted",
   extraClass
 ].filter(Boolean).join(" ");
 const linkClass = ["april-post-card-link", hasThumb && "april-post-card-link--overlay"].filter(Boolean).join(" ");
 
+import { cardTint } from '../utils/cardTint.js';
+import ScoreBadge from './ScoreBadge.astro';
 import '@fontsource/poiret-one';
 import '../styles/aprilCards.css';
 import '../styles/reviewCard.css';
 ---
 
-<div class={cardClass}>
+<div class={cardClass} style={tint ? `--card-tint: ${tint}` : undefined}>
   <a href={url} class={linkClass}>
     {scoreText !== undefined && scoreText !== null && scoreText !== "" && (
-      <span class="score-badge" aria-label={`Rated ${scoreText} out of 10`}>{scoreText}</span>
+      <ScoreBadge score={scoreText} />
     )}
 
     {thumbnail && (

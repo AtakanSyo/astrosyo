@@ -1,15 +1,21 @@
 /* src/styles/search.css - Dark Mode */
 
 .search-container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
 }
 
+/* The box and count stay a comfortable width; the card grid uses the full width. */
 .search-form {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  max-width: 640px;
+  margin: 0 auto 1rem;
+}
+
+.search-count {
+  text-align: center;
 }
 
 .search-input-wrapper {
@@ -31,6 +37,11 @@
 
 .search-input::placeholder {
   color: #aaa;
+}
+
+/* Hide the placeholder as soon as the box is focused. */
+.search-input:focus::placeholder {
+  color: transparent;
 }
 
 .search-input:focus {
@@ -86,7 +97,3 @@
 }
 
 
-.search-results {
-  display: grid;
-  gap: 1rem;
-}
