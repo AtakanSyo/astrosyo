@@ -1,0 +1,153 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "What If the Planets Were as Close as the Moon?"
+subtitle: "Swap the Moon for Jupiter, Saturn or Mars and see how big they would look in our sky"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-10-28'
+description: "An interactive 3D sky that puts each planet where the Moon is, at true size: Jupiter would span 21°, 40 times wider than the Moon, and Saturn's rings would stretch 39° across the sky."
+postColor: rgba(0, 0, 0, 1)
+slug: planets-at-moon-distance
+imageDir: /images/planets-at-moon-distance
+thumbnail: /images/planets-at-moon-distance/thumbnail.webp
+keywords:
+  - what if planets were as close as the moon
+  - planets at the distance of the moon
+  - jupiter at the moon's distance
+  - what if jupiter replaced the moon
+  - saturn in the sky instead of the moon
+  - planets in place of the moon
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import ViewSource from "../../components/ViewSource.astro";
+import Changelog from "../../components/Changelog.astro";
+import PlanetsAtMoonDistance from "../../components/simulations/planets-at-moon-distance/PlanetsAtMoonDistance.jsx";
+
+<figure class="post-figure post-figure-md" id="simulation">
+  <PlanetsAtMoonDistance client:visible />
+</figure>
+
+The Moon is about 384,400 km away and looks about half a degree wide. What
+would we see if each planet sat at that same distance instead? The
+visualization above shows an evening sky with the Moon swapped for each
+planet. The view uses a real field of view, so each one appears exactly as
+big as it would to your eye. The small dashed circle shows the real Moon's
+size for comparison.
+
+## How big would each planet look?
+
+| Body | Width in the sky | Times wider than the Moon | Sky area, in Moons |
+| --- | --- | --- | --- |
+| Moon | 0.5° | 1 | 1 |
+| Mercury | 0.7° | 1.4 | 2 |
+| Mars | 1.0° | 2 | 4 |
+| Venus | 1.8° | 3.5 | 12 |
+| Neptune | 7.3° | 14 | 200 |
+| Uranus | 7.6° | 15 | 210 |
+| Saturn (planet) | 17° | 33 | 1,100 |
+| Saturn (rings) | 39° | 76 | |
+| Jupiter | 21° | 40 | 1,600 |
+
+For a sense of these angles, hold your hand out at arm's length. Your
+little finger covers about 1°, and your closed fist about 10°. The Moon is
+half a finger. Jupiter would be about two fists.
+
+## Jupiter in place of the Moon
+
+Jupiter would be about **21° across, 40 times wider than the Moon**,
+covering as much sky as about 1,600 full Moons. Its cloud bands, the Great
+Red Spot and the white storm ovals would all be clear to the naked eye. It
+would also be brilliant. Jupiter's clouds reflect about four times as much
+light as the Moon's dark rock, and it would cover so much more sky that a
+"full Jupiter" would light the night roughly **7,000 times more** than a
+full Moon.
+
+## Saturn in place of the Moon
+
+Saturn itself would be about 17° across, but its rings would steal the
+show. The main rings span about 273,000 km, so at the Moon's distance they
+would stretch about **39° across the sky**, more than twice the planet's
+width. Over the year we would see them open and close as the angle
+between us changed.
+
+## The ice giants and the small planets
+
+**Uranus** and **Neptune** would be blue-green discs about 7.5° across,
+around 14 times wider than the Moon. **Venus**, nearly Earth's size, would
+be 3.5 times wider than the Moon and dazzling white from its unbroken
+clouds. **Mars** would be twice the Moon's width and clearly red.
+**Mercury** is only slightly larger than the Moon, and with its similar grey,
+cratered face it might take a while to notice the swap.
+
+## Could this really happen?
+
+Not without dramatic consequences. At the same distance, a body's tidal
+pull is proportional to its mass, and the planets are much heavier than the
+Moon:
+
+- **Mars** would raise tides about 9 times stronger, and **Venus** about
+  66 times.
+- **Neptune** and **Uranus** would pull over 1,000 times harder.
+- **Jupiter** would pull **about 26,000 times harder**. Earth's oceans
+  would surge across continents, and the flexing would heat the planet's
+  interior, the same process that makes Jupiter's moon Io the most
+  volcanic world in the Solar System.
+
+With a giant planet that close, it would really be Earth orbiting the
+planet, not the other way round. Around Jupiter at this distance, Earth
+would complete an orbit in about **a day and a half**. Jupiter would race
+through its phases in our sky every 36 hours.
+
+## Does the Moon look bigger near the horizon?
+
+No. The Moon often looks huge when it is rising, but that is the **Moon
+illusion**, a trick of perception. Its size in the sky barely changes, and
+it is actually slightly smaller near the horizon, because you are then
+about one Earth radius farther from it. The visualization keeps every body
+at a fixed elevation and size.
+
+## About the visualization
+
+Each body sits at the Moon's mean distance, 384,400 km, measured centre to
+centre, so its apparent size is 2 × arctan(radius ÷ distance). The camera's
+field of view is fixed at 50° vertically, about what a phone camera
+captures, so sizes on screen are true to life relative to the frame. Saturn's
+rings run from the inner C ring to the outer edge of the A ring. The planets
+are lit by a Sun that has just set behind you, and their night sides blend
+into the twilight sky, as the Moon's does. For the other planets side by side
+at true scale, see the [Solar System planets in a row](/posts/solar-system-row).
+
+## Sources
+
+- **Radii and masses:** NASA planetary fact sheets.
+- **Saturn's rings:** inner C ring 74,658 km, outer A ring edge 136,775 km (NASA Saturnian rings fact sheet).
+- **Brightness:** geometric albedos from the NASA fact sheets (Jupiter 0.54, Moon 0.12).
+
+<SimPostSchema
+  title="What If the Planets Were as Close as the Moon?"
+  description="An interactive 3D sky that puts each planet where the Moon is, at true size: Jupiter would span 21°, 40 times wider than the Moon, and Saturn's rings would stretch 39° across the sky."
+  url="https://astrosyo.com/posts/planets-at-moon-distance"
+  datePublished="2026-10-28"
+  authorName="Astrosyo"
+  keywords={["what if planets were as close as the moon", "planets at the distance of the moon", "jupiter at the moon's distance", "what if jupiter replaced the moon", "saturn in the sky instead of the moon", "planets in place of the moon"]}
+  image="/images/planets-at-moon-distance/thumbnail.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.svg"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Planets at the Moon's Distance",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL",
+    "url": "https://astrosyo.com/posts/planets-at-moon-distance#simulation",
+    "description": "Interactive evening sky showing the Moon, Mercury, Mars, Venus, Neptune, Uranus, Saturn and Jupiter at the Moon's distance, at true angular size."
+  }}
+/>
+
+<ViewSource path="src/components/simulations/planets-at-moon-distance/PlanetsAtMoonDistance.jsx" />
+
+<Changelog entries={["2026-10-28: Published."]} />
