@@ -56,7 +56,10 @@
   pointer-events: none;
 }
 
-.affiliate-btn {
+/* Scoped to the telescope cards (not the review link cards in posts) so it
+   outranks the older .affiliate-btn rule in reviewLinkCards.css, which the
+   production build can load after this file. */
+.post-card--review:not(.review-link-card) .affiliate-btn {
   flex: 1;
   max-width: 33%;
   text-align: center;
@@ -65,7 +68,7 @@
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: 12px;
-  box-shadow: none; /* drops the glow from the older .affiliate-btn rule in reviewLinkCards.css */
+  box-shadow: none;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.9rem;
   font-weight: 300;
@@ -75,13 +78,15 @@
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.affiliate-btn:hover {
+.post-card--review:not(.review-link-card) .affiliate-btn:hover {
   background-color: rgba(255, 255, 255, 0.92);
   border-color: transparent;
+  box-shadow: none;
   color: #111;
+  transform: none;
 }
 
-.affiliate-btn:focus-visible {
+.post-card--review:not(.review-link-card) .affiliate-btn:focus-visible {
   outline: 2px solid rgb(var(--brand-color));
   outline-offset: 2px;
 }
