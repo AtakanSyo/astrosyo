@@ -1,0 +1,151 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Neutron Star Size Comparison"
+subtitle: "More mass than the Sun, packed into a ball the size of a city"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-10-27'
+description: "A true-scale 3D tour of how big a neutron star is: next to Mount Everest, a stellar black hole, the Moon, a white dwarf, Earth and the Sun."
+postColor: rgba(0, 0, 0, 1)
+slug: neutron-star-size-comparison
+imageDir: /images/neutron-star-size-comparison
+thumbnail: /images/neutron-star-size-comparison/thumbnail.webp
+keywords:
+  - neutron star size comparison
+  - how big is a neutron star
+  - neutron star compared to earth
+  - neutron star size compared to city
+  - neutron star vs black hole size
+  - neutron star vs white dwarf
+  - pulsar size
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import ViewSource from "../../components/ViewSource.astro";
+import Changelog from "../../components/Changelog.astro";
+import NeutronStarScale from "../../components/simulations/neutron-star-scale/NeutronStarScale.jsx";
+
+<figure class="post-figure post-figure-md" id="simulation">
+  <NeutronStarScale client:visible />
+</figure>
+
+A neutron star is what is left when a massive star explodes as a supernova
+and its core collapses. It holds more mass than the Sun in a ball only about
+24 km across, about the size of a city. The visualization above puts that
+size next to familiar things, all at true scale: Mount Everest, a black
+hole, the Moon, a white dwarf, Earth and the Sun. Step through the objects,
+or press play for the full tour.
+
+## How big is a neutron star?
+
+A typical neutron star has a **radius of about 12 km**, so it is roughly
+**24 km across**, a little more than the length of Manhattan (21.6 km).
+Mount Everest, 8.8 km tall, would reach only a third of the way up its side.
+
+That size is now measured, not just predicted. NASA's NICER X-ray telescope
+on the International Space Station has mapped hot spots on spinning neutron
+stars. How strongly gravity bends their light shows how compact the stars
+are. Two pulsars give radii of about 12.7 km (PSR J0030+0451, about 1.4 solar
+masses) and 12.4 km (PSR J0740+6620, about 2.1 solar masses). Most estimates
+for neutron stars fall between about 11 and 14 km.
+
+Oddly, a heavier neutron star is not much bigger, and can even be slightly
+smaller: more mass squeezes the matter harder.
+
+## How dense is a neutron star?
+
+Packing 1.4 times the Sun's mass into a 12 km ball gives:
+
+- **Density:** about 4 × 10¹⁷ kg per cubic metre, around the density of an
+  atomic nucleus. **A teaspoon would weigh about 2 billion tonnes**, more
+  than all the people on Earth put together.
+- **Surface gravity:** about 130 billion times Earth's. Even without the
+  extra boost relativity gives, a mountain on its surface would be at most
+  millimetres tall.
+- **Escape speed:** about 60% of the speed of light. A little more
+  compression and nothing could escape at all: it would be a black hole.
+
+## Neutron star vs black hole size
+
+You might expect a black hole to be smaller than a neutron star, and for
+the same mass it is: a black hole with 1.4 times the Sun's mass would have
+an event horizon only about **4 km** in radius. But the black holes left by
+collapsing stars are usually much heavier, and a black hole's size grows
+with its mass. **Cygnus X-1**, the first black hole ever identified, has
+about 21 times the Sun's mass and an event horizon about **63 km** in
+radius, five times the neutron star's.
+
+## Neutron star vs white dwarf
+
+Stars too light to leave a neutron star end as **white dwarfs**. **Sirius B**,
+the companion of the brightest star in the night sky, holds about the
+Sun's mass in a ball about 5,600 km in radius, a bit smaller than Earth.
+That makes it almost 500 times wider than a neutron star with a similar
+mass. In a white dwarf, electrons resist the squeeze. In a neutron star,
+gravity wins that fight: electrons and protons merge into neutrons, which
+pack almost as tightly as matter can.
+
+## Neutron star compared to Earth and the Sun
+
+**Earth** is about 530 times wider than a neutron star, yet a neutron star
+holds about **470,000 times Earth's mass**. The **Sun** is about 58,000
+times wider, but has less mass. At the scale of the Sun, the neutron star
+is far smaller than a pixel.
+
+## Why does it have beams?
+
+Many neutron stars are **pulsars**. They have enormous magnetic fields, and
+they shine two beams of radio waves (and sometimes X-rays and gamma rays)
+out of their magnetic poles. The magnetic axis is tilted from the spin axis,
+so the beams sweep around like a lighthouse. If they cross Earth, we see a
+pulse every turn. The visualization shows this slowed down a great deal:
+newborn pulsars spin dozens of times a second, and the fastest known,
+PSR J1748−2446ad, spins 716 times a second.
+
+## About the visualization
+
+Every object is drawn at its true radius: the neutron star at 12 km, black
+holes at their event horizon (the Schwarzschild radius, as in the
+[Schwarzschild Radius Calculator](/posts/schwarzschild-radius-calculator)).
+Each step zooms out to the next object, and the smaller ones stay as
+outlines so you can see them inside. The black hole bends the starlight
+behind it. The pulsar's beams and field lines show its shape, not their
+true length. For the other end of the scale, see the
+[TON 618 size comparison](/posts/ton-618-size-comparison), which goes from
+the Sun to the largest black holes known.
+
+## Sources
+
+- **Neutron star radii:** NICER results for PSR J0030+0451 (Riley et al. 2019; Miller et al. 2019) and PSR J0740+6620 (Riley et al. 2021; Miller et al. 2021).
+- **Cygnus X-1 mass:** Miller-Jones et al., *Science* (2021).
+- **Sirius B:** Bond et al., *The Astrophysical Journal* (2017).
+- **Fastest pulsar:** Hessels et al., *Science* (2006), PSR J1748−2446ad.
+- **Moon, Earth, Sun:** NASA planetary fact sheets; IAU nominal solar radius.
+
+<SimPostSchema
+  title="Neutron Star Size Comparison"
+  description="A true-scale 3D tour of how big a neutron star is: next to Mount Everest, a stellar black hole, the Moon, a white dwarf, Earth and the Sun."
+  url="https://astrosyo.com/posts/neutron-star-size-comparison"
+  datePublished="2026-10-27"
+  authorName="Astrosyo"
+  keywords={["neutron star size comparison", "how big is a neutron star", "neutron star compared to earth", "neutron star size compared to city", "neutron star vs black hole size", "neutron star vs white dwarf", "pulsar size"]}
+  image="/images/neutron-star-size-comparison/thumbnail.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.svg"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Neutron Star Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL",
+    "url": "https://astrosyo.com/posts/neutron-star-size-comparison#simulation",
+    "description": "Interactive true-scale tour comparing a neutron star with Mount Everest, Cygnus X-1, the Moon, Sirius B, Earth and the Sun."
+  }}
+/>
+
+<ViewSource path="src/components/simulations/neutron-star-scale/NeutronStarScale.jsx" />
+
+<Changelog entries={["2026-10-27: Published."]} />
