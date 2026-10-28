@@ -4,6 +4,7 @@ import '@fontsource/poiret-one';
 import '../styles/postsGlobal.css';
 import '../styles/reviewPost.css';
 import FeedbackCTA from '../components/FeedbackCTA.astro';
+import ScoreBadge from '../components/ScoreBadge.astro';
 
 const { url } = Astro.props;
 
@@ -62,14 +63,7 @@ function parseScore(v: unknown): number | null {
   return map[s] ?? null;
 }
 
-function scoreToHue(score: number | null) {
-  if (score === null) return 210; // neutral fallback
-  return Math.round((score / 10) * 120); // red→green
-}
-
 const overallNum = parseScore(rating?.overall);
-const overallText = overallNum !== null ? overallNum.toFixed(1) : 'N/A';
-const overallHue = scoreToHue(overallNum);
 ---
 
 <head>
@@ -114,9 +108,9 @@ const overallHue = scoreToHue(overallNum);
   </div>
     <div class="review-meta centered_flex">
     
-      <div class="main-rating-card rating-card centered_flex" style={`--h:${overallHue}`}>
+      <div class="main-rating-card rating-card centered_flex">
+        <ScoreBadge score={overallNum ?? undefined} size={96} />
         <span class="category">Overall</span>
-        <span class="score" aria-label={overallNum !== null ? `Rated ${overallText} out of 10` : undefined}>{overallText}</span>
       </div>
       <p class="post-starter-description">{Astro.props.frontmatter.description}</p>
     </div>

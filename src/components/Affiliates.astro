@@ -9,92 +9,36 @@ export interface Props {
 
 const { affiliate } = Astro.props as Props;
 
-const labels = {
-  title: 'Available at These Vendors',
-  amazon: {
-    name: 'Amazon',
-    desc: 'Recommended for smaller purchases.',
-    button: 'Check price ↗'
-  },
-  highpoint: {
-    name: 'HighPoint Scientific',
-    desc: 'Great customer support & expert guidance.',
-    button: 'Check price ↗'
-  },
-  astroshop: {
-    name: 'AstroShop',
-    desc: 'Recommended for EU customers.',
-    button: 'Check price ↗'
-  }
-};
+const title = 'Available at These Vendors';
 
-const hasAffiliate =
-  affiliate.amazon ||
-  affiliate.highpointscientific ||
-  affiliate.astroshop;
+// One row per store that has a link; region is where the store mainly sells.
+const vendors = [
+  { name: 'Amazon', region: 'Global', desc: 'Recommended for smaller purchases.', link: affiliate.amazon },
+  { name: 'HighPoint Scientific', region: 'US', desc: 'Great customer support & expert guidance.', link: affiliate.highpointscientific },
+  { name: 'AstroShop', region: 'EU', desc: 'Recommended for EU customers.', link: affiliate.astroshop },
+].filter((v) => v.link);
 ---
 
-{hasAffiliate && (
+{vendors.length > 0 && (
 <section class="affiliate-section centered_flex">
 
-  <h3 class="affiliate-section-title">{labels.title}</h3>
+  <h3 class="affiliate-section-title">{title}</h3>
 
   <ul class="affiliate-vendors">
-
-    {affiliate.amazon && (
+    {vendors.map(({ name, region, desc, link }) => (
       <li>
-        <a
-          href={affiliate.amazon}
-          target="_blank"
-          rel="noopener noreferrer sponsored nofollow"
-          class="vendor-card vendor-card-link"
-        >
+        <a href={link} target="_blank" rel="noopener noreferrer sponsored nofollow" class="vendor-card">
           <div class="vendor-info">
-            <h4 class="vendor-name">{labels.amazon.name}</h4>
-            <p class="vendor-desc">{labels.amazon.desc}</p>
+            <div class="vendor-head">
+              <h4 class="vendor-name">{name}</h4>
+              <span class="vendor-region">{region}</span>
+            </div>
+            <p class="vendor-desc">{desc}</p>
           </div>
-
-          <span class="vendor-button">{labels.amazon.button}</span>
+          <span class="vendor-button">Check price ↗</span>
         </a>
       </li>
-    )}
-
-    {affiliate.highpointscientific && (
-      <li>
-        <a
-          href={affiliate.highpointscientific}
-          target="_blank"
-          rel="noopener noreferrer sponsored nofollow"
-          class="vendor-card vendor-card-link"
-        >
-          <div class="vendor-info">
-            <h4 class="vendor-name">{labels.highpoint.name}</h4>
-            <p class="vendor-desc">{labels.highpoint.desc}</p>
-          </div>
-
-          <span class="vendor-button">{labels.highpoint.button}</span>
-        </a>
-      </li>
-    )}
-
-    {affiliate.astroshop && (
-      <li>
-        <a
-          href={affiliate.astroshop}
-          target="_blank"
-          rel="noopener noreferrer sponsored nofollow"
-          class="vendor-card vendor-card-link"
-        >
-          <div class="vendor-info">
-            <h4 class="vendor-name">{labels.astroshop.name}</h4>
-            <p class="vendor-desc">{labels.astroshop.desc}</p>
-          </div>
-
-          <span class="vendor-button">{labels.astroshop.button}</span>
-        </a>
-      </li>
-    )}
-
+    ))}
   </ul>
 
 </section>

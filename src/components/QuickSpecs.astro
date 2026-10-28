@@ -1,18 +1,35 @@
 ---
+import { splitQuickSpecs } from '../utils/quickSpecs.js';
+
 interface Props {
   items?: Array<string | number>;
 }
 
 const { items } = Astro.props;
-const specs = (items ?? []).filter((value) => value !== null && value !== undefined && `${value}`.trim() !== '');
+// Key numbers (aperture, focal length, focal ratio, weight) become stat
+// blocks; everything else stays a tag.
+const { stats, tags } = splitQuickSpecs(items ?? []);
 ---
-{specs.length > 0 && (
+{(stats.length > 0 || tags.length > 0) && (
   <section class="info-tags">
     <h3>Specs</h3>
-    <ul>
-      {specs.map((item) => (
-        <li>{item}</li>
-      ))}
-    </ul>
+    {stats.length > 0 && (
+      <dl class="spec-stats">
+        {stats.map(({ label, value, unit, alt }) => (
+          <div class="spec-stat">
+            <dt>{label}</dt>
+            <dd class="spec-stat-number">{value}{unit && <span class="spec-stat-unit">{unit}</span>}</dd>
+            {alt && <dd class="spec-stat-alt">{alt}</dd>}
+          </div>
+        ))}
+      </dl>
+    )}
+    {tags.length > 0 && (
+      <ul>
+        {tags.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    )}
   </section>
 )}

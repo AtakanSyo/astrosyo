@@ -5,6 +5,8 @@ interface RatingsMap {
 
 interface Props { rating?: RatingsMap }
 
+import ScoreBadge from './ScoreBadge.astro';
+
 const { rating } = Astro.props;
 
 function parseScore(v: number | string | undefined): number | null {
@@ -42,23 +44,12 @@ const visible = rating
     </h3>
 
     <div class="ratings-row" role="list">
-      {visible.map(({ key, label, score }) => {
-        const s = score as number;
-        const hue = Math.round((s / 10) * 120); // 0→120 (red→green)
-        const alpha = (0.10 + (s / 10) * 0.22).toFixed(3); // subtle → stronger
-        return (
-          <div
-            class="rating-tile"
-            data-key={key}
-            role="listitem"
-            aria-label={`${label} ${s.toFixed(1)}/10`}
-            style={`--h:${hue};`}
-          >
-            <div class="rating-score">{s.toFixed(1)}</div>
-            <div class="rating-label">{label}</div>
-          </div>
-        );
-      })}
+      {visible.map(({ key, label, score }) => (
+        <div class="rating-tile" data-key={key} role="listitem" aria-label={`${label} ${(score as number).toFixed(1)}/10`}>
+          <ScoreBadge score={score} size={64} />
+          <div class="rating-label">{label}</div>
+        </div>
+      ))}
     </div>
   </section>
 )}

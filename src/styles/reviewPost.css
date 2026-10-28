@@ -98,15 +98,26 @@ h1 .review-tag {
   color: var(--text);
 }
 
-.info-tags h3 {
-  font-size: 1.25rem;
-  margin-bottom: 0.75rem;
-  font-weight: 700;
-  letter-spacing: .2px;
-  position: relative;
+/* ===============================
+   SECTION HEADINGS (Specs, Pros, Cons, Performance Breakdown, Vendors)
+   One look for all of them: display font, left-aligned, no underline.
+   =============================== */
+.info-tags h3,
+.ratings h3,
+.pros-cons h3,
+.affiliate-section .affiliate-section-title {
+  margin: 0 0 0.9rem;
+  padding: 0;
+  font-family: var(--font-secondary);
+  font-size: 1.4rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-align: left;
+  color: #fff;
 }
 
-.info-tags h3::after, .affiliates-header::after {
+.affiliates-header::after {
   content: "";
   display: block;
   height: 2px;
@@ -116,39 +127,76 @@ h1 .review-tag {
   opacity: .8;
 }
 
+/* ===============================
+   SPECS: key numbers, then feature tags
+   =============================== */
+.spec-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.6rem;
+  margin: 0 0 0.9rem;
+}
+
+.spec-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 0.9rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+/* number first, label under it */
+.spec-stat .spec-stat-number {
+  order: -1;
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: 1.7rem;
+  line-height: 1.1;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.spec-stat-unit {
+  margin-left: 0.2rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.spec-stat dt {
+  margin-top: 0.3rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.spec-stat .spec-stat-alt {
+  margin: 0.1rem 0 0;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
 .info-tags ul {
   display: flex;
   flex-wrap: wrap;
-  gap: .6rem .75rem;
+  gap: 0.45rem;
   padding: 0;
   margin: 0;
   list-style: none;
 }
 
+/* features: smaller, quieter tags */
 .info-tags ul li {
-  color: var(--text);
-  border: 1px solid var(--line);
-  padding: .5rem 0.95rem;
-  border-radius: 999px;
-  box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.04);
-  font-size: .94rem;
-  letter-spacing: .1px;
-  position: relative;
-  isolation: isolate;
-  background: rgb(12,12,12);
   max-width: 90vw;
-}
-
-.info-tags ul li::before {
-  content: "";
-  width: .4rem;
-  height: .4rem;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 10px rgba(169,180,255,.6);
-  margin-right: .5rem;
-  display: inline-block;
-  vertical-align: middle;
+  margin: 0;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.78);
 }
 
 /* ===============================
@@ -160,12 +208,6 @@ h1 .review-tag {
   color: var(--text);
 }
 
-.ratings h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: #fff;
-  letter-spacing: .2px;
-}
 
 .ratings-descriptor {
   display: inline-flex;
@@ -220,19 +262,11 @@ h1 .review-tag {
   border: 1px solid var(--tile-border);
 }
 
-/* border + score are white (no longer tinted by the rating) */
+/* the score ring (ScoreBadge) above the label */
 .rating-tile{
-  --rate-color: #fff;
-  border-color: var(--rate-color);
-}
-
-.rating-score{
-  color: var(--rate-color);
-  font-size: 1.35rem;
-  font-weight: 300;
-  letter-spacing: -0.01em;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .rating-label{
@@ -242,18 +276,13 @@ h1 .review-tag {
   font-size: 0.8rem;
   line-height: 1.2;
 }
-/* Subtle emphasis on Overall (not changing bar color) */
-/* .vbar-card[data-key="overall"] {
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  padding: 6px;
-} */
 
 /* ===============================
-   PROS & CONS (split cards)
+   PROS & CONS (tinted cards)
    =============================== */
 .pros-cons {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   margin: 2em 0;
   flex-wrap: wrap;
   max-width: min(90vw, 800px);
@@ -261,33 +290,51 @@ h1 .review-tag {
 }
 
 @media (max-width: 600px) {
-  .pros-cons{
+  .pros-cons {
     flex-direction: column;
   }
 }
 
-
 .pros-cons > div {
+  --tone: 46, 158, 91;
   flex: 1;
   min-width: 200px;
-  border: 1px solid var(--line);
-  border-radius: .75rem;
-  padding: 1rem;
-  box-shadow: var(--shadow);
-  position: relative;
-  overflow: hidden;
-  background: rgb(12,12,12);
+  padding: 1.1rem 1.2rem 0.9rem;
+  border: 1px solid rgba(var(--tone), 0.3);
+  border-radius: 14px;
+  background:
+    radial-gradient(130% 100% at 0% 0%, rgba(var(--tone), 0.2), rgba(var(--tone), 0.04) 60%, transparent 90%),
+    #0c0c0c;
 }
 
+.pros-cons > .cons-block {
+  --tone: 208, 96, 96;
+}
+
+/* heading with a round mark: ✓ for pros, – for cons */
 .pros-cons h3 {
-  font-size: 1.25rem;
-  margin-bottom: .75rem;
-  text-align: center;
-  color: #ffffff;
-  letter-spacing: .2px;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
 }
 
-/* Lists */
+.pros-cons h3::before {
+  content: "✓";
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: rgba(var(--tone), 0.22);
+  color: rgb(var(--tone));
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+}
+
+.pros-cons .cons-block h3::before {
+  content: "–";
+}
+
 .pros-cons ul {
   list-style: none;
   padding-left: 0;
@@ -295,26 +342,27 @@ h1 .review-tag {
 }
 
 .pros-cons li {
-  margin: .5em 0;
-  line-height: 1.4;
-  color: var(--text);
   position: relative;
-  padding-left: 1.25rem;
+  margin: 0.45em 0;
+  padding-left: 1.4rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--text);
 }
 
-/* Bullet dots */
 .pros-cons li::before {
-  content: "";
+  content: "✓";
   position: absolute;
-  left: 0; top: .55em;
-  width: .5rem; height: .5rem;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 2px rgba(169,180,255,0.15);
+  left: 0;
+  top: 0;
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+  color: rgb(var(--tone));
 }
 
-.pros-cons .pros-block li::before { background: #fff; box-shadow: 0 0 0 2px rgba(60,214,128,0.18); }
-.pros-cons .cons-block li::before { background: #fff; box-shadow: 0 0 0 2px rgba(255,107,107,0.18); }
+.pros-cons .cons-block li::before {
+  content: "–";
+}
 
 .includes {
   margin: 2em 0;
@@ -361,6 +409,8 @@ h1 .review-tag {
   flex-direction: column;
   gap: 1.6rem;
   justify-content: center;
+  /* same space below the list as between the heading and the list */
+  margin-bottom: 1.6rem;
 }
 
 .affiliate-section-title {
@@ -487,14 +537,9 @@ h1 .review-tag {
 }
 
 .main-rating-card{
-  --rate-color: #fff;
-
-  border: 2px solid var(--rate-color);
-  background: rgba(255,255,255,0.03);
-
-  border-radius: 18px;
-  padding: 20px 22px 18px;
-  gap: 6px;
+  /* the Overall score ring (ScoreBadge) with its label under it */
+  padding: 8px 0 4px;
+  gap: 8px;
 }
 
 /* Category label */
@@ -505,15 +550,6 @@ h1 .review-tag {
   color: #fff;
 }
 
-/* The score itself */
-.main-rating-card .score{
-  color: var(--rate-color);
-  font-size: 2.2rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
 
 /* The article is a centered flex column, so short one-line paragraphs and
    headings would shrink to their text and sit in the middle. Make them span
@@ -547,3 +583,70 @@ h1 .review-tag {
 
 .review-tagline::before { content: "\201C"; }
 .review-tagline::after { content: "\201D"; }
+
+/* The summary sections at the top of a review (Specs, Pros & Cons,
+   Performance Breakdown, Vendors) share one width and left edge. */
+.review-post .info-tags,
+.review-post .pros-cons,
+.review-post .ratings,
+.review-post .affiliate-section {
+  width: min(90vw, 800px);
+  max-width: min(90vw, 800px);
+  box-sizing: border-box;
+}
+
+
+/* Phones: three key numbers fit on one row. */
+@media (max-width: 600px) {
+  .spec-stats {
+    grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+    gap: 0.45rem;
+  }
+
+  .spec-stat {
+    padding: 0.6rem 0.65rem 0.55rem;
+  }
+
+  .spec-stat .spec-stat-number {
+    font-size: 1.35rem;
+  }
+
+  .spec-stat dt,
+  .spec-stat .spec-stat-alt {
+    font-size: 0.7rem;
+  }
+}
+
+/* Performance Breakdown and Vendors: heading and content centred. */
+.review-post .ratings,
+.review-post .ratings h3,
+.review-post .affiliate-section .affiliate-section-title {
+  text-align: center;
+}
+
+.review-post .ratings-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0;
+  overflow: visible;
+}
+
+/* up to 120px wide; shrink so four still fit across on phones */
+.review-post .rating-tile {
+  flex: 0 1 120px;
+  min-width: 72px;
+  padding: 14px 6px 12px;
+  border-radius: 12px;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+@media (max-width: 600px) {
+  .review-post .rating-tile {
+    flex-basis: 72px;
+    flex-grow: 1;
+    max-width: 120px;
+  }
+}
