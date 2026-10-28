@@ -23,8 +23,7 @@ import { StarIntegrator, supportsStarIntegrator } from './starIntegrator.js';
  * particles, are moved on the GPU (starIntegrator.js). Scrubbing backwards
  * restores the nearest checkpoint and re-runs forward.
  *
- * Two views: space (drag to rotate, buttons to zoom) and the night sky as seen
- * from a star standing in for the Sun, looking towards Andromeda.
+ * Drag to rotate, buttons to zoom.
  */
 
 const PLAY_GYR_PER_SEC = 0.35; // 10 billion years in about half a minute
@@ -36,7 +35,6 @@ const PARTICLE_VERTEX = /* glsl */ `
   uniform sampler2D uPositions;
   uniform float uPxScale;     // pixels per unit of (size / distance)
   uniform float uBrightness;
-  uniform float uNearFade;    // stars closer than this fade out (night-sky view)
   uniform float uMaxSize;     // largest dot, in pixels
   uniform float uMinFlux;     // floor on sub-pixel dimming (0 = physical; >0 keeps distant galaxies visible)
   attribute vec2 aRef;
@@ -55,7 +53,6 @@ const PARTICLE_VERTEX = /* glsl */ `
     float alpha = uBrightness;
     if (size < 1.6) { alpha *= max((size * size) / (1.6 * 1.6), uMinFlux); size = 1.6; }
     size = min(size, uMaxSize);
-    alpha *= smoothstep(uNearFade * 0.25, uNearFade, dist);
     // Warm cores fading to cooler outskirts; Andromeda a touch warmer than the Milky Way.
     float t = clamp(aRadius / 3.2, 0.0, 1.0);
     vec3 core = aGalaxy < 0.5 ? vec3(1.0, 0.86, 0.66) : vec3(1.0, 0.78, 0.55);
@@ -95,15 +92,12 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
   const engineRef = useRef(null);
   const labelRefs = useRef({});
   const [scenarioKey, setScenarioKey] = useState(SCENARIOS[0].key);
-  const [view, setView] = useState('space');
   const [playing, setPlaying] = useState(false);
-  const [status, setStatus] = useState({ time: 0, target: 0, separation: 785, sunDistance: 8.2, seeking: false, andromedaDeg: 3.8 });
+  const [status, setStatus] = useState({ time: 0, target: 0, separation: 785, sunDistance: 8.2, seeking: false });
   const [events, setEvents] = useState(null);
   const [unsupported, setUnsupported] = useState(false);
   const playingRef = useRef(playing);
   playingRef.current = playing;
-  const viewRef = useRef(view);
-  viewRef.current = view;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -160,10 +154,9 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
       uniforms: {
         uPositions: { value: null },
         uPxScale: { value: 1 },
-        uBrightness: { value: 0.5 },
-        uNearFade: { value: 0 },
+        uBrightness: { value: 0.3 * countBoost },
         uMaxSize: { value: 6 },
-        uMinFlux: { value: 0 },
+        uMinFlux: { value: 0.12 }, // keep far-away galaxies visible when zoomed out
       },
       transparent: true,
       depthTest: false,
@@ -205,12 +198,11 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
       setEvents(result.events);
     };
 
-    // ---------- Space-view camera: drag to rotate, buttons to zoom ----------
+    // ---------- Camera: drag to rotate, buttons to zoom ----------
     const orbit = { theta: -Math.PI / 2, phi: 0.95, zoom: 1 };
     const centre = new THREE.Vector3();
     let dragging = null;
     const onDown = (e) => {
-      if (viewRef.current !== 'space') return;
       dragging = { x: e.clientX, y: e.clientY };
       canvas.setPointerCapture?.(e.pointerId);
     };
@@ -272,60 +264,36 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
         (c0[2] * GALAXIES[0].mass + c1[2] * GALAXIES[1].mass) / mt,
       );
       const sep = separation[Math.min(simStep, STEPS)];
-      const isSky = viewRef.current === 'sky';
-      if (isSky || frameCount % 12 === 0) {
+      if (frameCount % 12 === 1) {
         const p = integrator.readPosition(sunIndex);
         sunPos = new THREE.Vector3(p[0], p[1], p[2]);
       }
 
       const w = container.clientWidth;
       const h = container.clientHeight;
-      if (isSky) {
-        camera.fov = 70;
-        camera.updateProjectionMatrix();
-        camera.position.copy(sunPos);
-        camera.up.set(0, 0, 1);
-        camera.lookAt(m31Pos);
-        // Nearby stars would be big, sparse dots; fading them out leaves the
-        // smooth glow of the Milky Way's band and of Andromeda.
-        material.uniforms.uNearFade.value = 3;
-        material.uniforms.uMaxSize.value = 2.6;
-        material.uniforms.uMinFlux.value = 0; // true dimming with distance, as the eye would see it
-        material.uniforms.uBrightness.value = 0.5 * countBoost;
-      } else {
-        camera.fov = 45;
-        camera.updateProjectionMatrix();
-        // Frame both galaxies around the centre of mass (the lighter one sits
-        // farther out); zoom buttons scale the distance.
-        const reach = Math.max(mwPos.distanceTo(centre), m31Pos.distanceTo(centre)) + 45;
-        const dist = Math.min(2600, Math.max(70, reach / Math.tan(THREE.MathUtils.degToRad(22.5)))) * orbit.zoom;
-        const goal = new THREE.Vector3(
-          centre.x + dist * Math.cos(orbit.phi) * Math.cos(orbit.theta),
-          centre.y + dist * Math.cos(orbit.phi) * Math.sin(orbit.theta),
-          centre.z + dist * Math.sin(orbit.phi),
-        );
-        camera.position.lerp(goal, frameCount < 3 ? 1 : 0.12);
-        camera.up.set(0, 0, 1);
-        camera.lookAt(centre);
-        material.uniforms.uNearFade.value = 0;
-        material.uniforms.uMaxSize.value = 6;
-        material.uniforms.uMinFlux.value = 0.12; // keep far-away galaxies visible when zoomed out
-        material.uniforms.uBrightness.value = 0.3 * countBoost;
-      }
+      // Frame both galaxies around the centre of mass (the lighter one sits
+      // farther out); zoom buttons scale the distance.
+      const reach = Math.max(mwPos.distanceTo(centre), m31Pos.distanceTo(centre)) + 45;
+      const dist = Math.min(2600, Math.max(70, reach / Math.tan(THREE.MathUtils.degToRad(22.5)))) * orbit.zoom;
+      const goal = new THREE.Vector3(
+        centre.x + dist * Math.cos(orbit.phi) * Math.cos(orbit.theta),
+        centre.y + dist * Math.cos(orbit.phi) * Math.sin(orbit.theta),
+        centre.z + dist * Math.sin(orbit.phi),
+      );
+      camera.position.lerp(goal, frameCount < 3 ? 1 : 0.12);
+      camera.lookAt(centre);
       material.uniforms.uPxScale.value = (h * renderer.getPixelRatio()) / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2));
 
-      placeLabel('mw', mwPos, !isSky && sep > 25, w, h);
+      placeLabel('mw', mwPos, sep > 25, w, h);
       placeLabel('m31', m31Pos, sep > 25, w, h);
 
       if (frameCount % 4 === 0) {
-        const toM31 = sunPos.distanceTo(m31Pos);
         setStatus({
           time: simStep * DT,
           target: targetStep * DT,
           separation: sep,
           sunDistance: sunPos.distanceTo(centre),
           seeking: target - simStep > 0,
-          andromedaDeg: THREE.MathUtils.radToDeg(2 * Math.atan(GALAXIES[1].diskRadius / Math.max(toM31, 1))),
         });
       }
     };
@@ -405,25 +373,14 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
           <span className="gcx-hud-sub">{events ? phaseLabel(status.time, events) : ''}</span>
         </div>
         <div className="gcx-hud gcx-hud-stats" aria-hidden="true">
-          {view === 'space' ? (
-            <>
-              <span>Separation <b>{Math.round(status.separation)} kpc</b></span>
-              <span>{sepLy.toFixed(sepLy < 1 ? 2 : 1)} million light-years</span>
-            </>
-          ) : (
-            <>
-              <span>Andromeda spans <b>{status.andromedaDeg.toFixed(1)}°</b></span>
-              <span>The full Moon spans 0.5°</span>
-            </>
-          )}
+          <span>Separation <b>{Math.round(status.separation)} kpc</b></span>
+          <span>{sepLy.toFixed(sepLy < 1 ? 2 : 1)} million light-years</span>
         </div>
         {status.seeking && <div className="gcx-seeking" aria-hidden="true">Simulating…</div>}
-        {view === 'space' && (
-          <div className="gcx-zoom">
-            <button type="button" onClick={() => engineRef.current?.zoom(0.75)} aria-label="Zoom in"><Plus size={15} strokeWidth={1.8} /></button>
-            <button type="button" onClick={() => engineRef.current?.zoom(1 / 0.75)} aria-label="Zoom out"><Minus size={15} strokeWidth={1.8} /></button>
-          </div>
-        )}
+        <div className="gcx-zoom">
+          <button type="button" onClick={() => engineRef.current?.zoom(0.75)} aria-label="Zoom in"><Plus size={15} strokeWidth={1.8} /></button>
+          <button type="button" onClick={() => engineRef.current?.zoom(1 / 0.75)} aria-label="Zoom out"><Minus size={15} strokeWidth={1.8} /></button>
+        </div>
         {unsupported && (
           <div className="gcx-unsupported">This simulation needs WebGL2 with floating-point render targets, which this browser does not support.</div>
         )}
@@ -455,10 +412,6 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
               {s.name}
             </button>
           ))}
-        </div>
-        <div className="gcx-chips gcx-views" role="tablist" aria-label="View">
-          <button type="button" role="tab" aria-selected={view === 'space'} className={view === 'space' ? 'is-active' : ''} onClick={() => setView('space')}>Space view</button>
-          <button type="button" role="tab" aria-selected={view === 'sky'} className={view === 'sky' ? 'is-active' : ''} onClick={() => setView('sky')}>Night sky from the Sun</button>
         </div>
       </div>
 
