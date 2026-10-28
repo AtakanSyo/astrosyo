@@ -1,6 +1,7 @@
 // src/components/SearchPosts.jsx
 import { useState, useMemo, useEffect } from 'react';
 import { cardTint } from '../utils/cardTint.js';
+import { scoreTier } from '../utils/scoreTier.js';
 
 /**
  * @typedef {{
@@ -15,6 +16,7 @@ import { cardTint } from '../utils/cardTint.js';
  *     postColor?: string;
  *   };
  *   dateStr?: string;
+ *   score?: number | null;
  * }} SearchPost
  */
 
@@ -110,6 +112,7 @@ export default function SearchPosts({ posts = /** @type {SearchPost[]} */ ([]), 
               key={p.url}
             >
               <a href={p.url} className={`april-post-card-link${hasThumb ? ' april-post-card-link--overlay' : ''}`}>
+                {p.score != null && <ScoreRing score={p.score} />}
                 {hasThumb && (
                   <div className="april-post-card-thumb">
                     <img src={fm.thumbnail} alt={fm.title ?? ''} loading="lazy" decoding="async" />
@@ -130,6 +133,17 @@ export default function SearchPosts({ posts = /** @type {SearchPost[]} */ ([]), 
 }
 
 /* Helpers */
+
+// The same rating ring as ScoreBadge.astro (styles in scoreBadge.css).
+function ScoreRing({ score }) {
+  const { text, fill, tier, label } = scoreTier(score);
+  return (
+    <span className={`score-ring score-ring--${tier}`} style={{ '--fill': fill }} role="img" aria-label={label}>
+      <span className="score-ring-value" aria-hidden="true">{text ?? '–'}</span>
+      {text && <span className="score-ring-max" aria-hidden="true">/10</span>}
+    </span>
+  );
+}
 function normalizeCats(frontmatter) {
   const raw = frontmatter?.category ?? frontmatter?.categories ?? [];
   if (Array.isArray(raw)) return raw.map(String).map((s) => s.toLowerCase());

@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import SearchPosts from '../components/SearchPosts.jsx';
 import '@fontsource/poiret-one';
 import '../styles/aprilCards.css';
+import '../styles/scoreBadge.css';
 import '../styles/search.css';
 import '../styles/searchPage.css';
 // 1) Glob & sort at build time
@@ -16,8 +17,13 @@ visiblePosts.sort(
 );
 
 // 2) Map into a shape that includes a formatted date string
+const isReview = (fm: any) =>
+  [fm?.category ?? fm?.categories].flat().filter(Boolean).some((c) => String(c).toLowerCase() === 'reviews');
+
 const posts = visiblePosts.map((p) => {
   const raw = new Date(p.frontmatter.pubDate);
+  // Review cards show the overall rating, as on the home and telescopes pages.
+  const overall = Number(p.frontmatter.rating?.overall);
   const dateStr = raw.toLocaleDateString('en-GB', {
     day:   '2-digit',
     month: '2-digit',
@@ -34,6 +40,7 @@ const posts = visiblePosts.map((p) => {
       thumbnail: p.frontmatter.thumbnail,
       postColor: p.frontmatter.postColor,
     },
+    score: isReview(p.frontmatter) && Number.isFinite(overall) ? overall : null,
     dateStr,
   };
 });
