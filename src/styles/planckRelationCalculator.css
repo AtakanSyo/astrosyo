@@ -1,0 +1,88 @@
+/* E = hν calculator: shares its base look with photonConverter.css (.pwf-*). */
+.prc-canvas {
+  display: block;
+  width: 100%;
+  height: 130px;
+}
+
+.prc-error {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #ff9d8a;
+}
+
+.prc .pwf-input[aria-invalid="true"] {
+  border-color: #ff9d8a;
+}
+
+.prc-spectrum {
+  margin-top: 0.6rem;
+}
+
+.prc-spectrum-bar {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  overflow: visible;
+}
+
+.prc-spectrum-seg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  opacity: 0.75;
+}
+
+.prc-spectrum-seg:first-child {
+  border-radius: 999px 0 0 999px;
+}
+
+.prc-spectrum-seg:nth-last-child(2) {
+  border-radius: 0 999px 999px 0;
+}
+
+.prc-spectrum-marker {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #111;
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%);
+  transition: left 0.3s ease;
+}
+
+.prc-spectrum-ends {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--pwf-text-dim);
+}
+
+.prc .prc-wavelength {
+  margin-left: auto;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prc-spectrum-marker {
+    transition: none;
+  }
+}
+
+/* Undo the article paragraph spacing inside the calculator. */
+.prc .pwf-title,
+.prc .pwf-wave-caption,
+.prc .prc-error {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.prc .pwf-wave-caption {
+  margin-top: 0.6rem;
+}

@@ -28,6 +28,7 @@ export const calculatorSlugs = [
   "magnitude-brightness-calculator",
   "main-sequence-lifetime-calculator",
   "parallax-distance-calculator",
+  "planck-relation-calculator",
   "photon-energy-wavelength-frequency-converter",
   "proper-motion-velocity-calculator",
   "quantum-particle-simulator",

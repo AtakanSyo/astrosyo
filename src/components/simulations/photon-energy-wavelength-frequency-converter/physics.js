@@ -74,7 +74,7 @@ export function fromBase(valueInBase, unitTable, unit) {
 // These are the standard rounded textbook cut points — real astronomical
 // band definitions vary by sub-field and overlap at the edges, but this is
 // the conventional picture for a general-audience classifier.
-const BANDS = [
+export const BANDS = [
   { name: "Gamma ray", max: 1e-11, color: "#c65cff" },
   { name: "X-ray", max: 1e-8, color: "#7c6cff" },
   { name: "Ultraviolet", max: 3.8e-7, color: "#8a5cff" },

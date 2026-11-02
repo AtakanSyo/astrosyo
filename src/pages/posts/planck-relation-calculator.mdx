@@ -1,0 +1,107 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "E = hν Calculator"
+subtitle: "Enter a photon's energy to get its frequency, or its frequency to get its energy."
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-02'
+description: "Convert photon energy to frequency and back with the Planck relation, E = hν, from radio waves to gamma rays, and see the photon drawn as a wave packet."
+postColor: rgba(32, 58, 110, 1)
+slug: planck-relation-calculator
+keywords:
+  - E = hv calculator
+  - Planck relation calculator
+  - energy to frequency calculator
+  - frequency to energy calculator
+  - Planck Einstein relation
+  - photon energy from frequency
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import ViewSource from "../../components/ViewSource.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import PlanckRelationCalculator from "../../components/simulations/planck-relation-calculator/PlanckRelationCalculator.jsx";
+
+<figure class="post-figure post-figure-md" id="calculator">
+  <PlanckRelationCalculator client:load />
+</figure>
+
+Light comes in packets of energy called photons, and the energy of each one is
+set by a single property: its frequency. Type a value into either field above
+and the other updates instantly. Numbers like `5.45e14` work too.
+
+## The formula
+
+The Planck relation, also called the Planck–Einstein relation, is:
+
+$$
+E = h\nu
+$$
+
+Here <Katex tex="E" /> is the photon's energy, <Katex tex="\nu" /> (the Greek letter nu) is its frequency, and <Katex tex="h" /> is the Planck constant:
+
+$$
+h = 6.62607015 \times 10^{-34}\ \text{J·s}
+$$
+
+To go the other way, divide by <Katex tex="h" />:
+
+$$
+\nu = \frac{E}{h}
+$$
+
+The relation is a straight proportion, so doubling the frequency doubles the energy.
+
+## Worked example
+
+Green light has a frequency of about <Katex tex="5.45 \times 10^{14}" /> Hz, so one photon carries:
+
+$$
+E = (6.626 \times 10^{-34})(5.45 \times 10^{14})
+$$
+
+$$
+E \approx 3.61 \times 10^{-19}\ \text{J}
+$$
+
+Dividing by <Katex tex="1.602 \times 10^{-19}" /> joules per electronvolt gives about 2.25 eV.
+
+## Reading the photon drawing
+
+The moving wave packet is a schematic. Raise the frequency and its waves pack
+more tightly, and the marker slides right along the spectrum bar. The number of
+waves drawn isn't to scale, since real frequencies span far too wide a range to
+draw literally. The packet's height stays the same because a single photon's
+energy depends only on its frequency. A brighter light of the same colour has
+more photons, not more energetic ones.
+
+To work with wavelength as an input as well, use the
+[Photon Energy & Wavelength Calculator](/posts/photon-energy-wavelength-frequency-converter).
+
+<SimPostSchema
+  title="E = hν Calculator"
+  description="Convert photon energy to frequency and back with the Planck relation, E = hν, from radio waves to gamma rays, and see the photon drawn as a wave packet."
+  url="https://astrosyo.com/posts/planck-relation-calculator"
+  datePublished="2026-11-02"
+  authorName="Astrosyo"
+  keywords={["E = hv calculator", "Planck relation calculator", "energy to frequency calculator", "frequency to energy calculator", "Planck Einstein relation", "photon energy from frequency"]}
+  articleSection="Astronomy Tools"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.svg"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "E = hν Calculator",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/planck-relation-calculator#calculator",
+    "description": "Interactive converter between photon energy and frequency using E = hν, with an animated photon wave packet and spectrum position."
+  }}
+/>
+
+<ViewSource path="src/components/simulations/planck-relation-calculator/PlanckRelationCalculator.jsx" />
+
+<Changelog entries={["2026-11-02: Published."]} />
