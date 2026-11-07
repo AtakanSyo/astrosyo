@@ -138,6 +138,18 @@ body:has(.review-light) .pros-cons > div {
     #fff;
 }
 
+/* ---- research disclaimer: dark box with white text in the base theme ---- */
+body:has(.review-light) main .review-disclaimer {
+  background: #fff;
+  border: 1px solid var(--rl-border);
+  border-left: 3px solid var(--rl-accent);
+  color: var(--rl-muted);
+}
+
+body:has(.review-light) main .review-disclaimer strong {
+  color: var(--rl-heading);
+}
+
 body:has(.review-light) .vendor-button,
 body:has(.review-light) .feedback-cta-btn {
   background: #111;
