@@ -17,7 +17,8 @@ const {
 
 ---
 
-<head>
+<Layout title={title} description={description} category={Astro.props.frontmatter?.category}>
+  <Fragment slot="head">
     <script type="importmap">
       {
         "imports": {
@@ -26,9 +27,7 @@ const {
         }
       }
     </script>
-</head>
-
-<Layout title={title} description={description} category={Astro.props.frontmatter?.category}>
+  </Fragment>
   <article class="post nasa-post centered_flex">
 
     <h1 class="nasa-article-title">{title}</h1>

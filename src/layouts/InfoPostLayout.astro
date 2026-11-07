@@ -18,14 +18,6 @@ const {
 
 ---
 
-<head>
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
-  />
-  {cover_image && <link rel="preload" as="image" href={cover_image} />}
-</head>
-
 <Layout
   title={title}
   description={description}
@@ -33,6 +25,13 @@ const {
   image={cover_image}
   ogType="article"
 >
+  <Fragment slot="head">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    />
+    {cover_image && <link rel="preload" as="image" href={cover_image} />}
+  </Fragment>
   <article class="post centered_flex">
     {cover_image && (
       <img

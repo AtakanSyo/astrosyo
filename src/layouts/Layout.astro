@@ -132,6 +132,8 @@ gtag('config', '${gaId}');
   }, 10000);
 })();`}></script>
     )}
+
+    <slot name="head" />
   </head>
   <body class={bodyClasses}>
     <Header currentPath={pathname} />

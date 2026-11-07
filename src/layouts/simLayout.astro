@@ -61,7 +61,8 @@ const articleStyle = [
 ].filter(Boolean).join("; ");
 ---
 
-<head>
+<Layout title={title} description={description} category={Astro.props.frontmatter?.category}>
+  <Fragment slot="head">
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
@@ -74,9 +75,7 @@ const articleStyle = [
         }
       }
     </script>
-</head>
-
-<Layout title={title} description={description} category={Astro.props.frontmatter?.category}>
+  </Fragment>
   <article class:list={["post sim-post centered_flex", { "story-post": isStory, "calculator-post": isCalculator }]} style={articleStyle}>
 
     <div class="post-entrance centered_flex" style={entranceStyle}>

@@ -66,11 +66,6 @@ function parseScore(v: unknown): number | null {
 const overallNum = parseScore(rating?.overall);
 ---
 
-<head>
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLdProduct).replace(/</g, "\\u003c")}></script>
-  {cover_image && <link rel="preload" as="image" href={cover_image} />}
-</head>
-
 <Layout
   title={title}
   description={description}
@@ -78,6 +73,10 @@ const overallNum = parseScore(rating?.overall);
   image={cover_image}
   ogType="article"
 >
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLdProduct).replace(/</g, "\\u003c")}></script>
+    {cover_image && <link rel="preload" as="image" href={cover_image} />}
+  </Fragment>
 
 <div class="centered_flex">
 
