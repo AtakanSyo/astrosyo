@@ -3,6 +3,7 @@ import Layout from './Layout.astro';
 import '@fontsource/poiret-one';
 import '../styles/postsGlobal.css';
 import '../styles/reviewPost.css';
+import '../styles/reviewLight.css';
 import FeedbackCTA from '../components/FeedbackCTA.astro';
 import ScoreBadge from '../components/ScoreBadge.astro';
 
@@ -77,6 +78,8 @@ const overallNum = parseScore(rating?.overall);
     <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLdProduct).replace(/</g, "\\u003c")}></script>
     {cover_image && <link rel="preload" as="image" href={cover_image} />}
   </Fragment>
+
+{Astro.props.frontmatter?.theme === 'light' && <div class="review-light" hidden></div>}
 
 <div class="centered_flex">
 

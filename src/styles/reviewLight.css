@@ -1,0 +1,145 @@
+/* Light (white background, black text) theme for review posts.
+   Opt in per post with `theme: light` in the frontmatter: ReviewPostLayout
+   then renders a hidden .review-light marker, and every rule here is gated on
+   that marker, so reviews without the flag (and every other page) stay dark.
+   The site header and footer keep their dark style. */
+
+body:has(.review-light) {
+  /* palette for this theme */
+  --rl-heading: #000;
+  --rl-text: #222;                       /* soft charcoal for long reading */
+  --rl-muted: #6b6560;                   /* warm grey: captions, descriptions */
+  --rl-border: rgba(0, 0, 0, 0.12);
+  --rl-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.06);
+  --rl-accent: var(--brand-color-darker-v2);
+
+  /* site variables, remapped for a light page */
+  --color-text: var(--rl-text);
+  --off-white: var(--rl-text);
+  --primary-text-color: var(--rl-heading);
+  --secondary-text-color: var(--rl-muted);
+  --text-primary: var(--rl-text);
+  --text-muted: var(--rl-muted);
+  --text: var(--rl-text);
+  --tile-bg: #fff;
+  --tile-border: var(--rl-border);
+  --card-bg: #fff;
+  --card-border: var(--rl-border);
+  --gray-layer: rgba(0, 0, 0, 0.05);
+
+  background: #fff;
+  color: var(--rl-text);
+}
+
+/* the translucent nav would turn grey over white: make it solid */
+body:has(.review-light) header {
+  background: #000;
+}
+
+/* ---- text ---- */
+body:has(.review-light) main :is(h1, h2, h3, h4, p, li, strong, dt, dd, figcaption, span) {
+  color: var(--rl-text);
+}
+
+body:has(.review-light) main :is(
+  .review-tagline,
+  .post-starter-description,
+  .vendor-desc,
+  .vendor-region,
+  .feedback-cta-desc,
+  .spec-stat-unit,
+  .spec-stat-alt,
+  dt,
+  figcaption
+) {
+  color: var(--rl-muted);
+}
+
+/* component-scoped labels that set their own white */
+body:has(.review-light) main .category,
+body:has(.review-light) main .spec-stat-number,
+body:has(.review-light) main .rating-label,
+body:has(.review-light) main .affiliate-section-title {
+  color: var(--rl-heading) !important;
+}
+
+/* amber links are unreadable on white: use the darker brand tone */
+body:has(.review-light) main a {
+  color: var(--brand-color-darker);
+}
+
+/* ---- headings: the thin display font needs full black and an anchor ---- */
+body:has(.review-light) main :is(h1, h3, h4) {
+  color: var(--rl-heading);
+}
+
+body:has(.review-light) article.post h2 {
+  color: var(--rl-heading);
+  font-size: 2.25rem;
+  line-height: 1.2;
+  margin-top: 2.2rem;
+}
+
+body:has(.review-light) article.post h2::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 2px;
+  margin-top: 0.45rem;
+  border-radius: 2px;
+  background: var(--rl-accent);
+}
+
+/* ---- review tag ---- */
+body:has(.review-light) .review-tag {
+  background: #f1f1f1;
+  border-color: rgba(0, 0, 0, 0.2);
+  color: var(--rl-heading);
+}
+
+/* ---- quick-spec chips: the dark theme's white outline vanishes on white ---- */
+body:has(.review-light) .info-tags ul li {
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #333;
+}
+
+/* ---- score rings: light disc, same coloured arc ---- */
+body:has(.review-light) .score-ring {
+  background:
+    radial-gradient(closest-side, #fff calc(100% - var(--track)), transparent calc(100% - var(--track) + 0.5px)),
+    conic-gradient(var(--ring) calc(var(--fill, 0) * 1turn), rgba(0, 0, 0, 0.1) 0);
+}
+
+body:has(.review-light) .score-ring-value,
+body:has(.review-light) .score-ring .score-ring-value {
+  color: var(--rl-heading);
+}
+
+body:has(.review-light) .score-ring-max {
+  color: var(--rl-muted);
+}
+
+/* ---- cards: white, clear border and a soft lift ---- */
+body:has(.review-light) .spec-stat,
+body:has(.review-light) .rating-tile,
+body:has(.review-light) .vendor-card,
+body:has(.review-light) .feedback-cta-card {
+  background: #fff;
+  border: 1px solid var(--rl-border);
+  box-shadow: var(--rl-shadow);
+}
+
+body:has(.review-light) .pros-cons > div {
+  border-color: rgba(var(--tone), 0.35);
+  box-shadow: var(--rl-shadow);
+  background:
+    radial-gradient(130% 100% at 0% 0%, rgba(var(--tone), 0.14), rgba(var(--tone), 0.03) 60%, transparent 90%),
+    #fff;
+}
+
+body:has(.review-light) .vendor-button,
+body:has(.review-light) .feedback-cta-btn {
+  background: #111;
+  color: #fff;
+}
