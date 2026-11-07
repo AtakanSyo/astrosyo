@@ -2,6 +2,19 @@
   min-height: 100vh;
 }
 
+/* auto-fill (not the shared grid's auto-fit) keeps empty columns, so a lone
+   result stays one square card instead of stretching across the row */
+.search-results.april-post-grid {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+/* photo cards are sized by a fixed min-height elsewhere; make them square
+   like the no-photo cards */
+.search-results .april-post-card-link--overlay {
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+}
+
 .no-results {
   text-align: center;
   color: #666;
