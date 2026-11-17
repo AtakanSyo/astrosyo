@@ -95,6 +95,44 @@ body:has(.review-light) article.post h2::after {
   background: var(--rl-accent);
 }
 
+/* ---- reading column: headings, text and photos share one left edge ---- */
+/* the text column is 65ch of 18px body text, about 736px */
+body:has(.review-light) article.post > :is(h2, h3) {
+  align-self: center;
+  width: min(calc(100% - 2rem), 736px);
+  max-width: none;
+  padding-left: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* subheadings: a step up so they stand apart from captions */
+body:has(.review-light) article.post > h3 {
+  font-size: 1.75rem;
+  line-height: 1.25;
+  margin-top: 1.8rem;
+}
+
+/* left-aligned body text: no justified gaps or forced hyphenation on white */
+body:has(.review-light) article.post p,
+body:has(.review-light) .planet-sightings dd {
+  text-align: left;
+  hyphens: manual;
+}
+
+/* product photos no wider than the text and at most 60% of the screen tall;
+   dark astrophotos marked .post-image-wide keep their full width */
+body:has(.review-light) article.post .post-image-lg:not(.post-image-wide) {
+  max-width: min(100%, 736px);
+  max-height: 60vh;
+}
+
+/* section labels above the cards: all centred, like the ratings and vendors */
+body:has(.review-light) .info-tags > h3 {
+  text-align: center;
+  align-self: center;
+}
+
 /* ---- review tag ---- */
 body:has(.review-light) .review-tag {
   background: #f1f1f1;
