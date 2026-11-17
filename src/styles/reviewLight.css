@@ -63,6 +63,11 @@ body:has(.review-light) main .affiliate-section-title {
   color: var(--rl-heading) !important;
 }
 
+/* planet names in the what-you-can-see list: headings, not muted labels */
+body:has(.review-light) main .planet-sightings dt {
+  color: var(--rl-heading);
+}
+
 /* amber links are unreadable on white: use the darker brand tone */
 body:has(.review-light) main a {
   color: var(--brand-color-darker);
