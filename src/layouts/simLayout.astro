@@ -61,7 +61,13 @@ const articleStyle = [
 ].filter(Boolean).join("; ");
 ---
 
-<Layout title={title} description={description} category={Astro.props.frontmatter?.category}>
+<Layout
+  title={title}
+  description={description}
+  category={Astro.props.frontmatter?.category}
+  image={Astro.props.frontmatter?.cover_image}
+  ogType={Astro.props.frontmatter?.cover_image ? "article" : "website"}
+>
   <Fragment slot="head">
     <link
       rel="stylesheet"
