@@ -1,0 +1,113 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Planet Size Comparison Calculator"
+subtitle: "Any two worlds in the Solar System, to scale"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-18'
+description: "Compare the size of any two planets, moons, dwarf planets or the Sun: drawn to scale, with how many times wider one is, how many would fit inside, and their mass, density and surface gravity side by side."
+postColor: rgba(40, 28, 18, 1)
+slug: planet-size-comparison-calculator
+keywords:
+  - planet size comparison
+  - how many earths fit in jupiter
+  - planet size comparison calculator
+  - how big is mars compared to mercury
+  - moon vs earth size
+  - solar system size comparison
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import ViewSource from "../../components/ViewSource.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import PlanetSizeComparisonCalculator from "../../components/simulations/planet-size-comparison-calculator/PlanetSizeComparisonCalculator.jsx";
+
+<figure class="post-figure post-figure-md" id="calculator">
+  <PlanetSizeComparisonCalculator client:load />
+</figure>
+
+Pictures of the Solar System almost never show sizes to scale, because
+at true scale the small worlds disappear next to the large ones. Pick
+any two bodies above, from the Sun down to Pluto's moon Charon, and
+the calculator draws them to the same scale and puts numbers on the
+difference.
+
+## How the numbers work
+
+Everything comes from the two radii, <Katex tex="R_1" /> and
+<Katex tex="R_2" />. The diameter ratio is the simple
+"how many times wider":
+
+$$
+\frac{D_1}{D_2} = \frac{R_1}{R_2}
+$$
+
+Volume grows with the cube of the radius, which is why the
+"how many fit inside" numbers get so large so quickly:
+
+$$
+\frac{V_1}{V_2} = \left(\frac{R_1}{R_2}\right)^3
+$$
+
+Jupiter is about 11 times wider than Earth, so it has about
+<Katex tex="11^3 \approx 1{,}321" /> times its volume. The Sun is
+about 109 times wider than Earth, so about 1.3 million Earths would
+fit inside it.
+
+## Fitting whole planets inside
+
+The volume ratio assumes you could melt the small body down and pour it
+in. Packed as solid spheres, there would be gaps between them: randomly
+packed spheres fill only about 64% of a space. The calculator gives
+both numbers, so about 1,321 Earths fit inside Jupiter by volume, but
+only about 846 as whole planets.
+
+## Size isn't mass
+
+Two bodies of similar size can have very different masses. Saturn is
+nearly as wide as Jupiter but has less than a third of its mass, and
+its average density is lower than water's. Earth is the densest body in
+the Solar System at about 5.5 g/cm³. Surface gravity depends on both:
+
+$$
+g = \frac{GM}{R^2}
+$$
+
+That's why Mercury, with a dense iron core, has almost the same surface
+gravity as the larger Mars.
+
+## See them in 3D
+
+For some pairs there's a separate page with both bodies as rotating
+3D globes at true scale. The calculator links to it when one exists,
+for example [Mercury and Mars](/posts/mercury-mars-size-comparison),
+[Earth and the Moon](/posts/earth-moon-size-comparison) and
+[Jupiter and Earth](/posts/jupiter-earth-size-comparison).
+
+<SimPostSchema
+  title="Planet Size Comparison Calculator"
+  description="Compare the size of any two planets, moons, dwarf planets or the Sun: drawn to scale, with how many times wider one is, how many would fit inside, and their mass, density and surface gravity side by side."
+  url="https://astrosyo.com/posts/planet-size-comparison-calculator"
+  datePublished="2026-11-18"
+  authorName="Astrosyo"
+  keywords={["planet size comparison", "how many earths fit in jupiter", "planet size comparison calculator", "how big is mars compared to mercury", "moon vs earth size"]}
+  articleSection="Astronomy Tools"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.svg"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Planet Size Comparison Calculator",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/planet-size-comparison-calculator#calculator",
+    "description": "Interactive tool comparing any two Solar System bodies to scale, with diameter and volume ratios, how many fit inside, and mass, density and surface gravity."
+  }}
+/>
+
+<ViewSource path="src/components/simulations/planet-size-comparison-calculator/PlanetSizeComparisonCalculator.jsx" />
+
+<Changelog entries={["2026-11-18: Published."]} />

@@ -1,0 +1,113 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Telescope Focal Length & Focal Ratio Calculator"
+subtitle: "Focal length, aperture and f-number, from any two"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-18'
+description: "Calculate a telescope's focal ratio (N = F/D), focal length or aperture from the other two, in millimetres or inches. Shows whether the scope is fast, medium or slow, what a Barlow or 0.63× focal reducer does to it, and draws the light cone to scale."
+postColor: rgba(16, 30, 52, 1)
+slug: telescope-focal-length-calculator
+keywords:
+  - telescope focal length calculator
+  - focal ratio calculator
+  - how to calculate telescope focal length
+  - f-number telescope
+  - fast vs slow telescope
+  - focal reducer calculator
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import ViewSource from "../../components/ViewSource.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import TelescopeFocalLengthCalculator from "../../components/simulations/telescope-focal-length-calculator/TelescopeFocalLengthCalculator.jsx";
+
+<figure class="post-figure post-figure-md" id="calculator">
+  <TelescopeFocalLengthCalculator client:load />
+</figure>
+
+Every telescope is described by two lengths: its aperture, the
+diameter of the main lens or mirror, and its focal length, the
+distance over which that lens or mirror brings light to a focus. The
+ratio between them, the focal ratio, decides a lot about how the
+telescope behaves at the eyepiece.
+
+## The formula
+
+$$
+N = \frac{F}{D}
+$$
+
+<Katex tex="F" /> is the focal length and <Katex tex="D" /> the
+aperture, in the same unit. An 8" Dobsonian with a 203 mm mirror and
+1200 mm focal length works out to <Katex tex="1200 / 203 \approx 5.9" />,
+written f/5.9. Rearranged, the same formula gives the focal length
+(<Katex tex="F = N \times D" />) when you know the f-number and
+aperture, or the aperture (<Katex tex="D = F / N" />) when you know
+the other two. Most telescopes print both numbers on the tube or in
+the spec sheet, often as "203/1200" or "D = 203 mm, F = 1200 mm".
+
+## Fast, medium and slow
+
+The terms come from photography, where a low f-number means a shorter
+exposure. For visual observing the rough bands are:
+
+- **Fast (below f/5):** short tube for the aperture, wide fields of
+  view, good for large deep-sky objects and astrophotography. Needs
+  careful collimation, and Newtonians show coma at the edge of the
+  field.
+- **Medium (f/5 to f/8):** where most beginner Dobsonians and
+  refractors sit. Forgiving with budget eyepieces and collimation.
+- **Slow (above f/8):** Maksutovs, Schmidt-Cassegrains and long
+  refractors. High magnification with comfortable eyepieces and sharp
+  images across the field, at the cost of a narrower view.
+
+The f-number doesn't change how bright a star looks or how faint you
+can go; that depends on aperture alone. It changes the scale of the
+image, which is why the same eyepiece magnifies more in a slow scope.
+
+## Barlows and focal reducers
+
+A Barlow lens multiplies the effective focal length (and so the focal
+ratio) by its factor: a 2× Barlow turns an f/5 scope into an f/10 one
+for that eyepiece. A focal reducer does the opposite. The common 0.63×
+reducer for Schmidt-Cassegrains turns a C8 from 2032 mm at f/10 into
+about 1280 mm at f/6.3, which widens the field and shortens
+photographic exposures. Pick one from the dropdown to see the
+effective numbers.
+
+## What to do with these numbers
+
+Focal length together with an eyepiece gives magnification, and focal
+ratio together with an eyepiece gives exit pupil. The
+[Telescope Magnification Calculator](/posts/telescope-magnification-calculator)
+and [Exit Pupil Calculator](/posts/exit-pupil-calculator) take it from
+here.
+
+<SimPostSchema
+  title="Telescope Focal Length & Focal Ratio Calculator"
+  description="Calculate a telescope's focal ratio (N = F/D), focal length or aperture from the other two, in millimetres or inches. Shows whether the scope is fast, medium or slow, what a Barlow or 0.63× focal reducer does to it, and draws the light cone to scale."
+  url="https://astrosyo.com/posts/telescope-focal-length-calculator"
+  datePublished="2026-11-18"
+  authorName="Astrosyo"
+  keywords={["telescope focal length calculator", "focal ratio calculator", "how to calculate telescope focal length", "f-number telescope", "focal reducer calculator"]}
+  articleSection="Astronomy Tools"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.svg"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Telescope Focal Length & Focal Ratio Calculator",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/telescope-focal-length-calculator#calculator",
+    "description": "Interactive calculator that solves N = F/D for focal ratio, focal length or aperture, classifies the scope as fast, medium or slow, applies a Barlow or focal reducer, and draws the light cone to scale."
+  }}
+/>
+
+<ViewSource path="src/components/simulations/telescope-focal-length-calculator/TelescopeFocalLengthCalculator.jsx" />
+
+<Changelog entries={["2026-11-18: Published."]} />

@@ -1,0 +1,133 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Telescope Limiting Magnitude Calculator"
+subtitle: "How faint can your telescope go?"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-18'
+description: "Estimate the faintest star a telescope can show from its aperture and how dark your sky is (Bortle class or naked-eye limit), with the classic 2.5 + 5·log10(D) rule alongside. Checks Neptune, Titan, Proxima Centauri, the quasar 3C 273, Triton and Pluto against your limit."
+postColor: rgba(30, 20, 48, 1)
+slug: telescope-limiting-magnitude-calculator
+keywords:
+  - telescope limiting magnitude calculator
+  - limiting magnitude formula
+  - faintest star telescope
+  - how faint can a telescope see
+  - bortle scale limiting magnitude
+  - can my telescope see pluto
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import ViewSource from "../../components/ViewSource.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import TelescopeLimitingMagnitudeCalculator from "../../components/simulations/telescope-limiting-magnitude-calculator/TelescopeLimitingMagnitudeCalculator.jsx";
+
+<figure class="post-figure post-figure-md" id="calculator">
+  <TelescopeLimitingMagnitudeCalculator client:load />
+</figure>
+
+A telescope's main job is collecting light, and the limiting magnitude
+is the simplest way to put a number on how well it does it: the
+faintest star you can expect to see through it. Each step of one
+magnitude is a factor of about 2.5 in brightness, so the difference
+between a magnitude 12 and a magnitude 14 telescope is a factor of six
+in what reaches your eye.
+
+## Light grasp
+
+A telescope collects light over its whole aperture, while your eye
+collects it through a pupil a few millimetres wide. The ratio is the
+light grasp:
+
+$$
+\text{light grasp} = \left(\frac{D}{d_{\text{pupil}}}\right)^2
+$$
+
+An 8" (203 mm) scope against a 7 mm pupil collects about 840 times
+more light than your eye. In magnitudes that's
+<Katex tex="5\log_{10}(203/7) \approx 7.3" />.
+
+## Sky-adjusted limit
+
+Add that gain to the faintest star you can see with the naked eye:
+
+$$
+m = m_{\text{eye}} + 5\log_{10}\left(\frac{D}{d_{\text{pupil}}}\right)
+$$
+
+The naked-eye limit, <Katex tex="m_{\text{eye}}" />, is where the sky
+comes in. Under a Bortle 4 rural/suburban sky it's around 6.3; from a
+city it may be 4.5 or worse; from a truly dark site, 7.5 or better.
+Pick your Bortle class from the dropdown, or if you've counted stars
+in a known patch of sky and know your own limit, enter it directly.
+
+## The classic rule
+
+Many references give a single formula with no sky term:
+
+$$
+m = 2.5 + 5\log_{10}(D_{\text{mm}})
+$$
+
+often written as <Katex tex="7.5 + 5\log_{10}(D_{\text{cm}})" />,
+which is the same thing. It amounts to assuming a naked-eye limit of
+about 6.7 with a 7 mm pupil, so it fits a reasonably dark sky and
+overestimates what you'll see from a town. The calculator shows it
+for comparison.
+
+## Why real limits vary
+
+Both formulas are estimates, and observers routinely beat or fall
+short of them by a magnitude:
+
+- **Magnification helps.** Higher power darkens the sky background
+  more than it dims a star, so the faintest stars show up at
+  100–200×, not at the lowest power.
+- **Averted vision** (looking slightly to the side of a target) uses
+  the more sensitive parts of the retina and gains about half a
+  magnitude.
+- **Experience counts.** Practised observers go noticeably deeper than
+  beginners with the same scope.
+- **Seeing, transparency and optics** take some back: haze, a dewy
+  or dusty mirror, or a large central obstruction all cost light.
+
+## Point sources only
+
+The limit applies to stars and other point-like objects: planets, the
+moons of Saturn and Neptune, quasars, Pluto. A galaxy listed at
+magnitude 12 spreads that light over an area of sky, so its surface
+brightness is far lower and it can be invisible in a telescope whose
+stellar limit is 13 or 14. For extended objects, a larger exit pupil
+and a darker sky matter more than the number here; the
+[Exit Pupil Calculator](/posts/exit-pupil-calculator) helps with that.
+For the smallest detail a telescope can resolve rather than the
+faintest light it can catch, see the
+[Telescope Angular Resolution Calculator](/posts/telescope-angular-resolution-calculator).
+
+<SimPostSchema
+  title="Telescope Limiting Magnitude Calculator"
+  description="Estimate the faintest star a telescope can show from its aperture and how dark your sky is (Bortle class or naked-eye limit), with the classic 2.5 + 5·log10(D) rule alongside. Checks Neptune, Titan, Proxima Centauri, the quasar 3C 273, Triton and Pluto against your limit."
+  url="https://astrosyo.com/posts/telescope-limiting-magnitude-calculator"
+  datePublished="2026-11-18"
+  authorName="Astrosyo"
+  keywords={["telescope limiting magnitude calculator", "limiting magnitude formula", "faintest star telescope", "bortle scale limiting magnitude", "can my telescope see pluto"]}
+  articleSection="Astronomy Tools"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.svg"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Telescope Limiting Magnitude Calculator",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/telescope-limiting-magnitude-calculator#calculator",
+    "description": "Interactive calculator for a telescope's stellar limiting magnitude from aperture, Bortle class or naked-eye limit, and eye pupil, with the classic rule of thumb, a magnitude scale, and a table of point-like targets within reach."
+  }}
+/>
+
+<ViewSource path="src/components/simulations/telescope-limiting-magnitude-calculator/TelescopeLimitingMagnitudeCalculator.jsx" />
+
+<Changelog entries={["2026-11-18: Published."]} />

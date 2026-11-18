@@ -1,0 +1,150 @@
+/* Shared extras for the telescope calculator family (focal length, exit
+   pupil, limiting magnitude). The base card, fields, verdict and chart
+   styles come from telescopeMagnificationCalculator.css (.tmc-*). */
+
+.tt-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* segmented toggle: "Solve for", units, input mode */
+.tt-seg {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.tt-seg-label {
+  font-size: 0.78rem;
+  color: var(--tmc-text-dim);
+  margin-right: 0.2rem;
+}
+
+.tt-seg-btn {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--tmc-border);
+  background: var(--tmc-bg-2);
+  color: var(--tmc-text-dim);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.tt-seg-btn:hover,
+.tt-seg-btn:focus-visible {
+  border-color: var(--tmc-accent);
+  color: var(--tmc-text);
+}
+
+.tt-seg-btn.is-on {
+  border-color: var(--tmc-accent);
+  background: rgba(169, 180, 255, 0.14);
+  color: var(--tmc-text);
+}
+
+/* focal length: the light cone */
+.tt-cone {
+  fill: rgba(169, 180, 255, 0.16);
+  stroke: var(--tmc-accent);
+  stroke-width: 1.5;
+}
+
+.tt-cone-aperture {
+  stroke: var(--tmc-accent-warm);
+  stroke-width: 3;
+}
+
+.tt-dim {
+  stroke: var(--tmc-text-dim);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+/* exit pupil: use bands along the gauge */
+.tt-band {
+  opacity: 0.22;
+}
+.tt-band-0 { fill: #6fb3e0; }
+.tt-band-1 { fill: #7fd88f; }
+.tt-band-2 { fill: #e0c05c; }
+.tt-band-3 { fill: #f0a45f; }
+.tt-band-4 { fill: #ff8a7e; }
+
+/* tables: eyepiece suggestions, reachable targets */
+.tt-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 1.1rem;
+  border: 1px solid var(--tmc-border);
+  border-radius: 12px;
+}
+
+.tt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.tt-table th,
+.tt-table td {
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  border-bottom: 1px solid var(--tmc-border);
+}
+
+.tt-table tr:last-child td {
+  border-bottom: none;
+}
+
+.tt-table th {
+  font-weight: 600;
+  color: var(--tmc-text-dim);
+  background: var(--tmc-bg-2);
+}
+
+.tt-table td.num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tt-yes { color: var(--tmc-good); }
+.tt-no { color: var(--tmc-text-dim); }
+
+/* limiting magnitude: the magnitude scale */
+.tt-scale-axis {
+  stroke: var(--tmc-text-dim);
+  stroke-width: 1;
+}
+
+.tt-scale-reach {
+  fill: var(--tmc-good);
+  opacity: 0.2;
+}
+
+.tt-scale-eye {
+  fill: var(--tmc-accent);
+  opacity: 0.22;
+}
+
+.tt-scale-dot {
+  fill: var(--tmc-text);
+}
+
+.tt-scale-dot.is-out {
+  fill: none;
+  stroke: var(--tmc-text-dim);
+  stroke-width: 1.2;
+}
+
+.tt-scale-limit {
+  stroke: var(--tmc-good);
+  stroke-width: 2;
+}
+
+.tt-scale-tick {
+  fill: var(--tmc-text-dim);
+  font-size: 9.5px;
+}

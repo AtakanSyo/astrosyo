@@ -1,0 +1,135 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Astrophotography Pixel Scale & Field of View Calculator"
+subtitle: "Image scale, sampling and framing for any telescope and camera"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-18'
+description: "Calculate arcseconds per pixel and field of view for your telescope and camera, check whether you're undersampled or oversampled for your seeing, see the Moon or Andromeda framed to scale, and get the longest untracked exposure from the NPF and 500 rules."
+postColor: rgba(18, 24, 44, 1)
+slug: astrophotography-pixel-scale-calculator
+keywords:
+  - pixel scale calculator
+  - arcseconds per pixel
+  - astrophotography field of view calculator
+  - ccd suitability calculator
+  - undersampled oversampled astrophotography
+  - npf rule calculator
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import ViewSource from "../../components/ViewSource.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import AstrophotographyPixelScaleCalculator from "../../components/simulations/astrophotography-pixel-scale-calculator/AstrophotographyPixelScaleCalculator.jsx";
+
+<figure class="post-figure post-figure-md" id="calculator">
+  <AstrophotographyPixelScaleCalculator client:load />
+</figure>
+
+Before buying a camera for a telescope, or a telescope for a camera,
+two questions decide whether the pair will work: how much sky does the
+sensor cover, and how much sky does each pixel cover? The first decides
+which targets fit. The second decides whether the camera can record the
+detail the sky allows.
+
+## Pixel scale
+
+$$
+\text{scale} = 206.265 \times \frac{p}{F}
+$$
+
+<Katex tex="p" /> is the pixel size in micrometres and <Katex tex="F" />
+the focal length in millimetres; the result is in arcseconds per pixel.
+206,265 is the number of arcseconds in a radian, and the micrometre and
+millimetre units take care of the factor of 1,000. Binning 2×2 combines
+four pixels into one, which doubles the scale.
+
+A RedCat 51 (250 mm) with a 3.76 µm camera gives about 3.1″ per pixel.
+The same camera on a C8 at 2032 mm gives 0.38″ per pixel, eight times
+finer.
+
+## Sampling: matching the camera to the sky
+
+The atmosphere blurs every star into a small disc. Its width, the FWHM
+(full width at half maximum), is your seeing: about 2″ on a good night
+at a decent site, 3″ on an average one. The usual aim is 2 to 3 pixels
+across that disc.
+
+- **Undersampled (under 2 px):** stars look blocky and fine detail is
+  lost. Common, and usually acceptable, with short refractors and
+  camera lenses aimed at wide fields. Drizzle integration in stacking
+  software can win some back.
+- **Well sampled (2–3 px):** round stars, with no light wasted on extra
+  pixels.
+- **Oversampled (over 3 px):** the same detail spread over more pixels,
+  each collecting less light, so the image is noisier for the same
+  exposure time. Common with long-focal-length scopes. Binning, or a
+  focal reducer, fixes it.
+
+Planetary imaging is the exception. With very short exposures that
+freeze the seeing ("lucky imaging"), planetary imagers deliberately
+sample much finer, usually at a focal ratio around 5 times the pixel
+size in µm.
+
+## Field of view
+
+$$
+\text{FOV} = 2 \arctan\left(\frac{s}{2F}\right)
+$$
+
+<Katex tex="s" /> is the sensor's width or height in millimetres. The
+framing preview draws the sensor and a target at the same scale, so
+you can see whether the whole Andromeda Galaxy fits (it needs about
+3° × 1°) or whether the Ring Nebula is a speck.
+
+## Untracked exposures: the NPF and 500 rules
+
+On a fixed tripod the sky turns during the exposure, and stars trail.
+The old 500 rule divides 500 by the focal length times the crop factor.
+It was worked out for film and allows visible trailing on today's
+high-resolution sensors. The NPF rule, from Frédéric Michaud of the
+Société Astronomique de France, takes the f-number and pixel size into
+account:
+
+$$
+t = \frac{35N + 30p}{f}
+$$
+
+Both give the worst case, for stars on the celestial equator. Stars
+near the celestial pole move less, so you can expose longer when
+pointing there.
+
+## Related calculators
+
+The [Telescope Focal Length & Focal Ratio Calculator](/posts/telescope-focal-length-calculator)
+shows what a reducer or Barlow does to your focal length, and the
+[True Field of View Calculator](/posts/true-field-of-view-calculator)
+answers the same framing question at the eyepiece.
+
+<SimPostSchema
+  title="Astrophotography Pixel Scale & Field of View Calculator"
+  description="Calculate arcseconds per pixel and field of view for your telescope and camera, check whether you're undersampled or oversampled for your seeing, see the Moon or Andromeda framed to scale, and get the longest untracked exposure from the NPF and 500 rules."
+  url="https://astrosyo.com/posts/astrophotography-pixel-scale-calculator"
+  datePublished="2026-11-18"
+  authorName="Astrosyo"
+  keywords={["pixel scale calculator", "arcseconds per pixel", "astrophotography field of view calculator", "ccd suitability calculator", "npf rule calculator"]}
+  articleSection="Astronomy Tools"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.svg"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Astrophotography Pixel Scale & Field of View Calculator",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/astrophotography-pixel-scale-calculator#calculator",
+    "description": "Interactive calculator for image scale, field of view, sampling against seeing with binning advice, framing preview, and NPF and 500 rule exposure limits."
+  }}
+/>
+
+<ViewSource path="src/components/simulations/astrophotography-pixel-scale-calculator/AstrophotographyPixelScaleCalculator.jsx" />
+
+<Changelog entries={["2026-11-18: Published."]} />

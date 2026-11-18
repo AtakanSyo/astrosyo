@@ -1,0 +1,142 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Black Hole Calculator"
+subtitle: "Size, density, Hawking radiation and what happens if you fall in, from one mass"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-18'
+description: "Enter a black hole's mass (and spin) to get its event horizon, photon sphere and innermost stable orbit, density, Eddington luminosity, Hawking temperature, evaporation time, whether you'd be spaghettified before the horizon, and whether it would tear apart a star or swallow it whole."
+postColor: rgba(26, 14, 10, 1)
+slug: black-hole-calculator
+keywords:
+  - black hole calculator
+  - black hole size calculator
+  - event horizon calculator
+  - spaghettification calculator
+  - black hole density
+  - sagittarius a* event horizon
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import ViewSource from "../../components/ViewSource.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import BlackHoleCalculator from "../../components/simulations/black-hole-calculator/BlackHoleCalculator.jsx";
+
+<figure class="post-figure post-figure-md" id="calculator">
+  <BlackHoleCalculator client:load />
+</figure>
+
+A black hole is described by remarkably few numbers. Its mass and its
+spin (and in principle its electric charge, which for real black holes
+is essentially zero) are enough to work out everything else. This
+calculator brings together everything the site's individual black hole
+calculators compute, from one mass and one spin. Each linked row opens
+the dedicated page with the full derivation.
+
+## Size
+
+$$
+r_s = \frac{2GM}{c^2}
+$$
+
+The Schwarzschild radius is the event horizon of a black hole that
+isn't spinning: about 3 km per solar mass. Sagittarius A*, at the
+centre of the Milky Way, has 4.3 million solar masses and a radius of
+about 12.7 million km, around 18 times the Sun's radius. A spinning
+black hole's horizon is smaller, down to half of <Katex tex="r_s" /> at
+the maximum spin.
+
+Two more radii matter for anything near it:
+
+- **The photon sphere**, at <Katex tex="1.5\,r_s" />, where light can
+  orbit. It's what the Event Horizon Telescope images outline.
+- **The innermost stable circular orbit (ISCO)**, at
+  <Katex tex="3\,r_s" /> without spin. Inside it, gas can't orbit and
+  falls in, so it marks the inner edge of an accretion disk. Spin moves
+  it inward for gas orbiting the same way.
+
+## Bigger is less dense
+
+The radius grows in proportion to the mass, but volume grows with its
+cube, so the average density inside the horizon falls as
+<Katex tex="1/M^2" />. A stellar-mass black hole is far denser than an
+atomic nucleus. Around 140 million solar masses the average comes down
+to about the density of water, and the largest black holes known are
+thinner than air.
+
+## Falling in
+
+What kills you near a black hole is the tidal stretch: the pull on your
+feet being stronger than on your head. Across a person of length
+<Katex tex="L" /> at distance <Katex tex="r" />:
+
+$$
+\Delta a \approx \frac{2GML}{r^3}
+$$
+
+Near a small black hole that stretch reaches lethal levels thousands of
+kilometres before the horizon, which is the "spaghettification" of
+popular science. Near a supermassive one the horizon is so far out that
+the stretch there is less than you feel standing up; you would cross it
+without noticing. The calculator uses about 10 g of head-to-foot
+difference as the lethal threshold, a rough figure.
+
+The same reasoning applies to stars. Below roughly 100 million solar
+masses, a black hole tears a Sun-like star apart outside its horizon
+and the debris lights up as a tidal disruption flare; above it, the
+star is swallowed whole. The
+[Tidal Disruption Radius Calculator](/posts/tidal-disruption-radius-calculator)
+covers other kinds of star.
+
+## Hawking radiation
+
+Black holes slowly radiate, with a temperature inversely proportional
+to their mass:
+
+$$
+T = \frac{\hbar c^3}{8\pi G M k_B}
+$$
+
+A black hole of one solar mass sits at 60 billionths of a kelvin, far
+colder than the 2.7 K cosmic microwave background, so for now it
+absorbs more than it emits. Only very small black holes, below about
+the Moon's mass, are hotter than the background and actually shrink.
+Their evaporation time grows as <Katex tex="M^3" />: a solar-mass black
+hole would take about <Katex tex="10^{67}" /> years.
+
+## Related calculators
+
+[Schwarzschild Radius](/posts/schwarzschild-radius-calculator) ·
+[Black Hole ISCO](/posts/black-hole-isco-calculator) ·
+[Hawking Temperature](/posts/hawking-temperature-calculator) ·
+[Black Hole Evaporation Time](/posts/black-hole-evaporation-time-calculator) ·
+[Tidal Disruption Radius](/posts/tidal-disruption-radius-calculator) ·
+[Eddington Luminosity](/posts/eddington-luminosity-calculator)
+
+<SimPostSchema
+  title="Black Hole Calculator"
+  description="Enter a black hole's mass (and spin) to get its event horizon, photon sphere and innermost stable orbit, density, Eddington luminosity, Hawking temperature, evaporation time, whether you'd be spaghettified before the horizon, and whether it would tear apart a star or swallow it whole."
+  url="https://astrosyo.com/posts/black-hole-calculator"
+  datePublished="2026-11-18"
+  authorName="Astrosyo"
+  keywords={["black hole calculator", "black hole size calculator", "event horizon calculator", "spaghettification calculator", "black hole density"]}
+  articleSection="Astronomy Tools"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.svg"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Black Hole Calculator",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/black-hole-calculator#calculator",
+    "description": "All-in-one black hole calculator: event horizon, photon sphere, ISCO, density, Eddington luminosity, Hawking temperature, evaporation time, spaghettification distance and tidal disruption of a Sun-like star, from mass and spin."
+  }}
+/>
+
+<ViewSource path="src/components/simulations/black-hole-calculator/BlackHoleCalculator.jsx" />
+
+<Changelog entries={["2026-11-18: Published."]} />

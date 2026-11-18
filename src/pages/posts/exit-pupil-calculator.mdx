@@ -1,0 +1,119 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Exit Pupil Calculator"
+subtitle: "Which eyepieces suit your telescope and your eyes"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-18'
+description: "Calculate a telescope's exit pupil from the eyepiece or the magnification, compare it with your own eye's pupil (estimated from your age, or entered directly), see what that exit pupil is good for, and get a table of the eyepieces that give each useful exit pupil in your scope."
+postColor: rgba(22, 40, 34, 1)
+slug: exit-pupil-calculator
+keywords:
+  - exit pupil calculator
+  - telescope exit pupil
+  - exit pupil eyepiece chart
+  - best eyepiece for telescope
+  - pupil size by age
+  - lowest useful magnification
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import ViewSource from "../../components/ViewSource.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import ExitPupilCalculator from "../../components/simulations/exit-pupil-calculator/ExitPupilCalculator.jsx";
+
+<figure class="post-figure post-figure-md" id="calculator">
+  <ExitPupilCalculator client:load />
+</figure>
+
+Look at the eyepiece of a telescope pointed at a bright sky from a
+little way back and you'll see a small bright disc floating just
+behind the glass. That disc is the exit pupil: the beam of light the
+telescope delivers to your eye. Its size, more than magnification,
+decides how bright and how detailed a view is, and it's the most
+useful number to plan an eyepiece set around.
+
+## The formula
+
+$$
+\text{exit pupil} = \frac{D}{M} = \frac{f}{N}
+$$
+
+<Katex tex="D" /> is the aperture and <Katex tex="M" /> the
+magnification. The second form is often handier: <Katex tex="f" /> is
+the eyepiece's focal length and <Katex tex="N" /> the telescope's
+focal ratio. A 25 mm eyepiece in an f/5.9 Dobsonian gives
+<Katex tex="25 / 5.9 \approx 4.2" /> mm, whatever the size of the
+telescope. Turned around, the eyepiece for a given exit pupil is
+<Katex tex="f = \text{exit pupil} \times N" />, which is how the table
+under the calculator is built.
+
+## Your eye sets the upper limit
+
+A dark-adapted pupil opens to about 7 mm in young adults and less with
+age. A rough rule is half a millimetre less per decade after twenty,
+so around 5 mm at sixty, but individuals vary by a millimetre or more
+either way. If the exit pupil is wider than your pupil, your eye only
+takes in the middle of the beam and the rest of the aperture goes to
+waste: an 8 mm exit pupil seen by a 6 mm pupil turns a 200 mm scope
+into a 150 mm one. The calculator estimates your pupil from your age;
+if you know your own measurement, enter it instead.
+
+That's also where the lowest useful magnification comes from:
+<Katex tex="D / d_{\text{pupil}}" />, about 29× for an 8" scope and a
+7 mm pupil.
+
+## What each exit pupil is good for
+
+The bands below are the usual observing-guide advice, rounded:
+
+- **5–7 mm:** the widest fields. Large nebulae, star clouds, the Milky
+  Way, and nebula filters, which dim the view and need all the light
+  they can get.
+- **2.5–5 mm:** most deep-sky objects. Enough magnification to darken
+  the background sky while keeping galaxies and clusters bright.
+- **1–2.5 mm:** the Moon, planets, small planetary nebulae and
+  globular clusters.
+- **0.5–1 mm:** close double stars and planetary detail on nights of
+  very steady air.
+- **Below 0.5 mm:** empty magnification. The image gets dimmer and
+  softer without showing more, and floaters in your eye start to
+  get in the way.
+
+A basic set for any scope is three eyepieces at roughly 5, 2.5 and 1
+mm exit pupil.
+
+## Related calculators
+
+The [Telescope Magnification Calculator](/posts/telescope-magnification-calculator)
+adds true field of view, and the
+[Telescope Focal Length & Focal Ratio Calculator](/posts/telescope-focal-length-calculator)
+works out the f-number if you only know the aperture and focal length.
+
+<SimPostSchema
+  title="Exit Pupil Calculator"
+  description="Calculate a telescope's exit pupil from the eyepiece or the magnification, compare it with your own eye's pupil (estimated from your age, or entered directly), see what that exit pupil is good for, and get a table of the eyepieces that give each useful exit pupil in your scope."
+  url="https://astrosyo.com/posts/exit-pupil-calculator"
+  datePublished="2026-11-18"
+  authorName="Astrosyo"
+  keywords={["exit pupil calculator", "telescope exit pupil", "exit pupil eyepiece chart", "best eyepiece for telescope", "pupil size by age"]}
+  articleSection="Astronomy Tools"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.svg"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Exit Pupil Calculator",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/exit-pupil-calculator#calculator",
+    "description": "Interactive calculator for telescope exit pupil, compared with an age-based eye pupil estimate, with use bands, effective aperture when the exit pupil is too wide, and an eyepiece suggestion table."
+  }}
+/>
+
+<ViewSource path="src/components/simulations/exit-pupil-calculator/ExitPupilCalculator.jsx" />
+
+<Changelog entries={["2026-11-18: Published."]} />
