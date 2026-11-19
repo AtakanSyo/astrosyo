@@ -85,6 +85,41 @@ const BEAM_FRAGMENT = /* glsl */ `
   }
 `;
 
+// Neutron star surface: white-hot centre fading to a saturated blue limb, a
+// thin bright rim, and two hot polar caps where the beams leave the surface
+// (uPole, in view space, follows the magnetic axis as the star turns).
+const NS_SURFACE_VERTEX = /* glsl */ `
+  varying vec3 vNormalView;
+  void main() {
+    vNormalView = normalize(normalMatrix * normal);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+const NS_SURFACE_FRAGMENT = /* glsl */ `
+  uniform vec3 uPole;
+  uniform float uTime;
+  varying vec3 vNormalView;
+  void main() {
+    vec3 n = normalize(vNormalView);
+    float mu = clamp(n.z, 0.0, 1.0); // orthographic: view direction is +z
+    vec3 limb = vec3(0.10, 0.22, 0.95);
+    vec3 mid = vec3(0.45, 0.62, 1.0);
+    vec3 core = vec3(0.97, 0.98, 1.0);
+    vec3 col = mix(limb, mid, smoothstep(0.0, 0.7, mu));
+    col = mix(col, core, smoothstep(0.7, 1.0, mu));
+    // Hot polar caps with a soft halo, flickering slightly.
+    float d = abs(dot(n, uPole));
+    float cap = smoothstep(0.93, 0.985, d);
+    float halo = pow(d, 10.0) * 0.55;
+    float flicker = 0.92 + 0.08 * sin(uTime * 7.0);
+    col += vec3(0.75, 0.85, 1.0) * (cap + halo) * flicker;
+    // Thin rim where the glow takes over.
+    col += vec3(0.35, 0.5, 1.0) * pow(1.0 - mu, 6.0) * 0.8;
+    gl_FragColor = vec4(min(col, vec3(1.0)), 1.0);
+    #include <colorspace_fragment>
+  }
+`;
+
 // Dipole field line r = L sin²θ, in the plane at azimuth `phi` around the
 // magnetic axis (+y), from the star's surface out and back.
 const fieldLinePoints = (L, phi, radius) => {
@@ -216,6 +251,9 @@ export default function NeutronStarScale({ id = 'neutron-star-scale', aspect = '
     // Each has a filled look (when it is the current stage) and an outline at
     // its true radius (when a bigger object is on screen).
     let pulsar = null;
+    let magneticAxis = null;
+    let neutronSurface = null;
+    const poleQuat = new THREE.Quaternion();
     let earthBody = null;
     let blackHoleMaterial = null;
     const objects = OBJECTS.map((obj) => {
@@ -224,7 +262,26 @@ export default function NeutronStarScale({ id = 'neutron-star-scale', aspect = '
       let outlineColor;
       if (obj.kind === 'neutron') {
         // Hot (about a million degrees at the surface), so blue-white.
-        fill = glowingSphere(r, { deep: 0x22379a, bright: 0xdde6ff, limb: 1.3, glow: new THREE.Color(0x8faaff), glowOpacity: [0.45, 0.12] });
+        fill = new THREE.Group();
+        neutronSurface = track(new THREE.ShaderMaterial({
+          vertexShader: NS_SURFACE_VERTEX,
+          fragmentShader: NS_SURFACE_FRAGMENT,
+          uniforms: { uPole: { value: new THREE.Vector3(0, 1, 0) }, uTime: { value: 0 } },
+          toneMapped: false,
+        }));
+        const body = new THREE.Mesh(track(new THREE.SphereGeometry(r, 128, 64)), neutronSurface);
+        body.renderOrder = 1;
+        // Layered corona: a tight hot halo hugging the edge, then a wide blue haze.
+        const coronas = [
+          [0xcfdcff, 2.9, 0.85],
+          [0x5d82ff, 4.4, 0.45],
+          [0x3557ff, 8, 0.16],
+        ].map(([color, scale, opacity]) => {
+          const sprite = createGlowSprite(glowTexture, { color: new THREE.Color(color), scale: r * scale, opacity });
+          track(sprite.material);
+          return sprite;
+        });
+        fill.add(...coronas.reverse(), body);
         // Beams and field lines turn with the magnetic axis, which is tilted
         // from the spin axis (+y) and carried around it.
         const spin = new THREE.Group();
@@ -237,7 +294,7 @@ export default function NeutronStarScale({ id = 'neutron-star-scale', aspect = '
         const beamMat = track(new THREE.ShaderMaterial({
           vertexShader: BEAM_VERTEX,
           fragmentShader: BEAM_FRAGMENT,
-          uniforms: { uLength: { value: length }, uColor: { value: new THREE.Color(0xb8ccff) }, uOpacity: { value: 0.55 } },
+          uniforms: { uLength: { value: length }, uColor: { value: new THREE.Color(0xa4bbff) }, uOpacity: { value: 0.75 } },
           transparent: true,
           depthWrite: false,
           side: THREE.DoubleSide,
@@ -259,6 +316,7 @@ export default function NeutronStarScale({ id = 'neutron-star-scale', aspect = '
         spin.add(magnetic);
         fill.add(spin);
         pulsar = spin;
+        magneticAxis = magnetic;
         outlineColor = new THREE.Color(0xa9bfff);
       } else if (obj.kind === 'blackhole') {
         // One camera-facing quad; the shader draws the lensed sky, the event
@@ -401,6 +459,12 @@ export default function NeutronStarScale({ id = 'neutron-star-scale', aspect = '
       });
       everest.visible = current === 0;
       pulsar.rotation.y += (dt * Math.PI * 2) / SPIN_SECONDS;
+      if (current === 0) {
+        // Camera looks straight down -z, so world space is view space here.
+        pulsar.updateMatrixWorld(true);
+        neutronSurface.uniforms.uPole.value.set(0, 1, 0).applyQuaternion(magneticAxis.getWorldQuaternion(poleQuat));
+        neutronSurface.uniforms.uTime.value = now / 1000;
+      }
       earthBody.rotation.y += dt * 0.08;
 
       placeLabels(w, hgt, scale, current);

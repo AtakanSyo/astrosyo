@@ -36,21 +36,51 @@ const SKY_VERTEX = /* glsl */ `
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `;
-// Late dusk: warm near the horizon, deepening to night blue overhead, a little
-// brighter towards the set Sun (behind and to the right).
+// Late dusk: an orange band on the horizon, a rosy-violet layer above it, then
+// saturated twilight blue deepening to night overhead, a little brighter
+// towards the set Sun (behind and to the right). The first stars come out
+// where the sky is dark enough.
 const SKY_FRAGMENT = /* glsl */ `
   uniform vec3 uSun;
+  uniform float uTime;
+  uniform vec3 uBodyDir;
+  uniform float uBodyCos; // cos of the body's angular radius: no stars behind it
   varying vec3 vDir;
+  float hash(vec3 p) {
+    p = fract(p * vec3(443.897, 441.423, 437.195));
+    p += dot(p, p.yzx + 19.19);
+    return fract((p.x + p.y) * p.z);
+  }
   void main() {
     vec3 d = normalize(vDir);
     float h = max(d.y, 0.0);
-    vec3 zenith = vec3(0.004, 0.007, 0.022);
-    vec3 mid = vec3(0.016, 0.03, 0.08);
-    vec3 horizon = vec3(0.42, 0.2, 0.12);
-    vec3 col = mix(mid, zenith, smoothstep(0.05, 0.6, h));
-    col = mix(horizon, col, smoothstep(0.0, 0.14, h));
+    vec3 zenith = vec3(0.0015, 0.003, 0.016);
+    vec3 high = vec3(0.004, 0.012, 0.055);
+    vec3 low = vec3(0.012, 0.04, 0.13);
+    vec3 violet = vec3(0.12, 0.05, 0.13);
+    vec3 horizon = vec3(0.78, 0.26, 0.06);
+    vec3 col = mix(high, zenith, smoothstep(0.2, 0.75, h));
+    col = mix(low, col, smoothstep(0.06, 0.3, h));
+    col = mix(violet, col, smoothstep(0.02, 0.1, h));
+    col = mix(horizon, col, smoothstep(0.0, 0.045, h));
     float sunSide = pow(max(dot(normalize(vec3(d.x, 0.0, d.z)), normalize(vec3(uSun.x, 0.0, uSun.z))), 0.0), 3.0);
-    col += vec3(0.2, 0.09, 0.04) * sunSide * (1.0 - smoothstep(0.0, 0.25, h));
+    col += vec3(0.35, 0.12, 0.03) * sunSide * (1.0 - smoothstep(0.0, 0.2, h));
+
+    // Stars: one candidate per cell of a fine direction grid, fading out
+    // towards the brighter sky near the horizon, twinkling gently.
+    vec3 cell = floor(d * 260.0);
+    float r = hash(cell);
+    if (r > 0.985) {
+      vec3 centre = (cell + 0.5 + (vec3(hash(cell + 1.3), hash(cell + 2.7), hash(cell + 4.1)) - 0.5) * 0.6) / 260.0;
+      float dist = length(d - normalize(centre)) * 260.0;
+      float mag = pow((r - 0.985) / 0.015, 3.0);
+      float twinkle = 0.75 + 0.25 * sin(uTime * (1.5 + r * 40.0) + r * 100.0);
+      float star = smoothstep(0.55, 0.0, dist) * (0.25 + 1.6 * mag) * twinkle;
+      star *= smoothstep(0.08, 0.35, h);
+      star *= step(dot(d, uBodyDir), uBodyCos);
+      vec3 tint = mix(vec3(1.0, 0.85, 0.7), vec3(0.75, 0.85, 1.0), hash(cell + 7.7));
+      col += tint * star;
+    }
     gl_FragColor = vec4(col, 1.0);
     #include <colorspace_fragment>
   }
@@ -137,7 +167,12 @@ export default function PlanetsAtMoonDistance({ id = 'planets-at-moon-distance',
     // ---------- Sky ----------
     const sky = new THREE.Mesh(
       track(new THREE.SphereGeometry(2000, 64, 32)),
-      track(new THREE.ShaderMaterial({ vertexShader: SKY_VERTEX, fragmentShader: SKY_FRAGMENT, uniforms: { uSun: { value: SUN_DIR } }, side: THREE.BackSide, depthWrite: false })),
+      track(new THREE.ShaderMaterial({ vertexShader: SKY_VERTEX, fragmentShader: SKY_FRAGMENT, uniforms: {
+        uSun: { value: SUN_DIR },
+        uTime: { value: 0 },
+        uBodyDir: { value: skyDirection(AZIMUTH, ELEVATION) },
+        uBodyCos: { value: 1 },
+      }, side: THREE.BackSide, depthWrite: false })),
     );
     sky.renderOrder = -2;
     scene.add(sky);
@@ -170,6 +205,9 @@ export default function PlanetsAtMoonDistance({ id = 'planets-at-moon-distance',
         disposables.push({ dispose: saturn.dispose });
         saturn.planetMaterial.blending = THREE.AdditiveBlending;
         saturn.planetMaterial.transparent = true;
+        // Skip ACES on the planets: it greys out their colours.
+        saturn.planetMaterial.toneMapped = false;
+        saturn.ringMaterial.toneMapped = false;
         saturn.planetMesh.renderOrder = 1;
         saturn.ringMesh.renderOrder = 2;
         saturn.ringMaterial.blending = THREE.AdditiveBlending; // translucent and bright against the sky, like the planet
@@ -180,7 +218,7 @@ export default function PlanetsAtMoonDistance({ id = 'planets-at-moon-distance',
         tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
         const mesh = new THREE.Mesh(
           track(new THREE.SphereGeometry(r, 96, 48)),
-          track(new THREE.MeshStandardMaterial({ map: tex, roughness: 1, metalness: 0, blending: THREE.AdditiveBlending, transparent: true })),
+          track(new THREE.MeshStandardMaterial({ map: tex, roughness: 1, metalness: 0, blending: THREE.AdditiveBlending, transparent: true, toneMapped: false })),
         );
         mesh.rotation.z = THREE.MathUtils.degToRad(body.key === 'uranus' ? 82 : 8);
         mesh.renderOrder = 1;
@@ -237,8 +275,12 @@ export default function PlanetsAtMoonDistance({ id = 'planets-at-moon-distance',
       }
       growT = Math.min(1, growT + dt / GROW_SECONDS);
       const e = 1 - (1 - growT) ** 3;
-      bodies[current].group.scale.setScalar(Math.exp(Math.log(growFrom) * (1 - e)));
+      const grow = Math.exp(Math.log(growFrom) * (1 - e));
+      bodies[current].group.scale.setScalar(grow);
+      // Hide the stars behind the disc (slightly larger, so none sit on the edge).
+      sky.material.uniforms.uBodyCos.value = Math.cos(Math.asin(Math.min(1, (BODIES[current].radiusKm / 1000 / D) * grow * 1.02)));
       bodies[current].spinner.update(dt);
+      sky.material.uniforms.uTime.value = now / 1000;
 
       const w = container.clientWidth;
       const h = container.clientHeight;
