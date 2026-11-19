@@ -1,17 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { Minus, Pause, Play, Plus } from 'lucide-react';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { prepareScene } from '../lib/threeCore.js';
 import {
+  ARM_PATTERN_SPEED,
+  ARM_PITCH,
   DT,
   G,
   GALAXIES,
   KPC_LY,
+  ORIENTATIONS,
   SCENARIOS,
   STEPS,
   T_MAX,
+  armStrengthTrack,
   buildStars,
   integrateCores,
+  makeRandom,
 } from './collisionModel.js';
 import { StarIntegrator, supportsStarIntegrator } from './starIntegrator.js';
 
@@ -37,27 +45,69 @@ const PARTICLE_VERTEX = /* glsl */ `
   uniform float uBrightness;
   uniform float uMaxSize;     // largest dot, in pixels
   uniform float uMinFlux;     // floor on sub-pixel dimming (0 = physical; >0 keeps distant galaxies visible)
+  uniform vec3 uCore0;
+  uniform vec3 uCore1;
+  uniform mat3 uDiskInv0;     // world -> each galaxy's original disk frame
+  uniform mat3 uDiskInv1;
+  uniform vec2 uDiskScale;
+  uniform vec2 uArms;
+  uniform float uArmPhase;    // spiral pattern rotation, radians
+  uniform float uArmStrength; // 1 = intact disks, 0 = arms washed out by tides
   attribute vec2 aRef;
   attribute float aGalaxy;
   attribute float aRadius;
+  attribute float aKind;
   varying vec3 vColor;
   varying float vAlpha;
   void main() {
     vec3 p = texture2D(uPositions, aRef).xyz;
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     float dist = max(-mv.z, 1e-3);
+    float h = fract(sin(dot(aRef, vec2(12.9898, 78.233))) * 43758.5453);
+    bool mw = aGalaxy < 0.5;
+
+    // Where is this star now relative to its own galaxy's spiral pattern?
+    vec3 q = (mw ? uDiskInv0 : uDiskInv1) * (p - (mw ? uCore0 : uCore1));
+    float rs = mw ? uDiskScale.x : uDiskScale.y;
+    float arms = mw ? uArms.x : uArms.y;
+    float r = max(length(q.xy), 0.05);
+    float phase = arms * (atan(q.y, q.x) + log(r / rs) / ${ARM_PITCH.toFixed(5)} - uArmPhase);
+    float onArm = pow(0.5 + 0.5 * cos(phase), 5.0);
+    onArm *= smoothstep(0.25, 0.8, r / rs) * (1.0 - smoothstep(3.6, 5.0, r / rs)) * step(abs(q.z), 1.2);
+    float s = uArmStrength;
+
+    // Stellar populations: gold bulge, cream disk fading cooler outwards,
+    // blue young stars that shine in the arms, pink star-forming knots.
+    float t = clamp(aRadius / 3.2, 0.0, 1.0);
+    vec3 col;
+    float boost = 1.0;
+    float grow = 1.0;
+    if (aKind < 0.5) { col = vec3(1.0, 0.76, 0.48); boost = 1.1; }
+    else if (aKind < 1.5) {
+      col = mix(vec3(1.0, 0.9, 0.74), vec3(0.8, 0.85, 1.0), t);
+      boost = mix(1.0, 0.4 + 0.8 * onArm, s);
+    }
+    else if (aKind < 2.5) {
+      col = mix(vec3(0.62, 0.76, 1.0), vec3(0.36, 0.55, 1.0), t);
+      boost = mix(1.1, 0.12 + 2.6 * onArm, s);
+    }
+    else {
+      col = vec3(1.0, 0.3, 0.6);
+      boost = mix(2.0, 4.0 * smoothstep(0.35, 0.8, onArm), s);
+      grow = 1.4;
+    }
+    // Tint by galaxy so the two stay tellable apart as they mix.
+    vec3 tint = mw ? vec3(0.9, 0.97, 1.1) : vec3(1.1, 0.95, 0.84);
+    col *= aKind < 1.5 ? tint : mix(vec3(1.0), tint, 0.4);
+    col = mix(col, vec3(1.0), h * 0.15);
     // Physical size: apparent size falls as 1/distance, so a galaxy's surface
     // brightness stays the same however far away it is. Sub-pixel stars keep
     // their light by trading size for opacity.
-    float size = ${STAR_SIZE.toFixed(3)} * uPxScale / dist;
-    float alpha = uBrightness;
-    if (size < 1.6) { alpha *= max((size * size) / (1.6 * 1.6), uMinFlux); size = 1.6; }
+    float size = ${STAR_SIZE.toFixed(3)} * grow * uPxScale / dist;
+    float alpha = uBrightness * boost * (0.55 + 0.9 * h);
+    if (size < 1.8) { alpha *= max((size * size) / (1.8 * 1.8), uMinFlux); size = 1.8; }
     size = min(size, uMaxSize);
-    // Warm cores fading to cooler outskirts; Andromeda a touch warmer than the Milky Way.
-    float t = clamp(aRadius / 3.2, 0.0, 1.0);
-    vec3 core = aGalaxy < 0.5 ? vec3(1.0, 0.86, 0.66) : vec3(1.0, 0.78, 0.55);
-    vec3 outer = aGalaxy < 0.5 ? vec3(0.6, 0.76, 1.0) : vec3(1.0, 0.68, 0.6);
-    vColor = mix(core, outer, t);
+    vColor = col;
     vAlpha = alpha;
     gl_PointSize = size;
     gl_Position = projectionMatrix * mv;
@@ -68,11 +118,81 @@ const PARTICLE_FRAGMENT = /* glsl */ `
   varying vec3 vColor;
   varying float vAlpha;
   void main() {
-    float d = length(gl_PointCoord - 0.5);
-    float a = vAlpha * (1.0 - smoothstep(0.12, 0.5, d));
+    float d = length(gl_PointCoord - 0.5) * 2.0;
+    if (d > 1.0) discard;
+    // A bright core with a soft wing, so crowds of stars blend into a glow.
+    float a = vAlpha * (exp(-d * d * 7.0) * 0.85 + exp(-d * d * 2.2) * 0.15);
     gl_FragColor = vec4(vColor, a);
   }
 `;
+
+// The sky behind: faint foreground stars and distant galaxies, drawn on a
+// sphere that follows the camera so it sits at infinity.
+const SKY_VERTEX = /* glsl */ `
+  uniform float uPixelRatio;
+  attribute float aSize;
+  attribute vec3 aColor;
+  varying vec3 vColor;
+  void main() {
+    vColor = aColor;
+    gl_PointSize = aSize * uPixelRatio;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+const SKY_FRAGMENT = /* glsl */ `
+  varying vec3 vColor;
+  void main() {
+    float d = length(gl_PointCoord - 0.5) * 2.0;
+    if (d > 1.0) discard;
+    gl_FragColor = vec4(vColor * exp(-d * d * 5.0), 1.0);
+  }
+`;
+
+function buildSky(count, rand) {
+  const pos = new Float32Array(count * 3);
+  const col = new Float32Array(count * 3);
+  const size = new Float32Array(count);
+  const tints = [[0.75, 0.84, 1.0], [1.0, 0.95, 0.88], [1.0, 0.8, 0.62], [1.0, 1.0, 1.0]];
+  for (let i = 0; i < count; i += 1) {
+    const u = rand() * 2 - 1;
+    const a = rand() * Math.PI * 2;
+    const s = Math.sqrt(1 - u * u);
+    pos.set([5000 * s * Math.cos(a), 5000 * s * Math.sin(a), 5000 * u], i * 3);
+    const galaxy = rand() < 0.04; // a few faint, fuzzy background galaxies
+    const tint = galaxy ? [1.0, 0.88, 0.75] : tints[Math.floor(rand() * tints.length)];
+    const b = galaxy ? 0.05 + rand() * 0.05 : 0.04 + rand() ** 5 * 0.55;
+    col.set(tint.map((c) => c * b), i * 3);
+    size[i] = galaxy ? 4 + rand() * 4 : 1.2 + rand() * 1.4;
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geometry.setAttribute('aColor', new THREE.Float32BufferAttribute(col, 3));
+  geometry.setAttribute('aSize', new THREE.Float32BufferAttribute(size, 1));
+  return geometry;
+}
+
+// Inverse of a disk's orientation (rotate about x, then z; see collisionModel.js).
+function diskInverse({ x, z }) {
+  const m = new THREE.Matrix4().makeRotationZ(z).multiply(new THREE.Matrix4().makeRotationX(x));
+  return new THREE.Matrix3().setFromMatrix4(m).transpose();
+}
+
+// A soft radial glow texture for each galaxy's diffuse halo.
+function makeGlowTexture() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d');
+  const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grad.addColorStop(0, 'rgba(255,255,255,1)');
+  grad.addColorStop(0.18, 'rgba(255,255,255,0.45)');
+  grad.addColorStop(0.5, 'rgba(255,255,255,0.1)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
 
 const phaseLabel = (t, events) => {
   const fp = events.firstPass;
@@ -106,6 +226,8 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
 
     const camera = new THREE.PerspectiveCamera(45, 16 / 10, 0.01, 20000);
     camera.up.set(0, 0, 1);
+    let composer = null;
+    let skyMaterial = null;
     const core = prepareScene({
       canvas,
       container,
@@ -113,11 +235,17 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
       background: 0x000000,
       cameraFactory: () => ({
         camera,
-        onResize: ({ width, height }) => {
+        onResize: ({ width, height, dpr }) => {
           camera.aspect = width / height || 1;
           camera.updateProjectionMatrix();
+          if (composer) {
+            composer.setPixelRatio(dpr);
+            composer.setSize(width, height);
+          }
+          if (skyMaterial) skyMaterial.uniforms.uPixelRatio.value = dpr;
         },
       }),
+      renderOverride: ({ renderer: r, scene: s, camera: c }) => (composer ? composer.render() : r.render(s, c)),
     });
     const { scene, renderer, start, stop, dispose: disposeCore } = core;
 
@@ -146,17 +274,27 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
     geometry.setAttribute('aRef', new THREE.Float32BufferAttribute(refs, 2));
     const galaxyAttr = new THREE.Float32BufferAttribute(new Float32Array(count), 1);
     const radiusAttr = new THREE.Float32BufferAttribute(new Float32Array(count), 1);
+    const kindAttr = new THREE.Float32BufferAttribute(new Float32Array(count), 1);
     geometry.setAttribute('aGalaxy', galaxyAttr);
     geometry.setAttribute('aRadius', radiusAttr);
+    geometry.setAttribute('aKind', kindAttr);
     const material = new THREE.ShaderMaterial({
       vertexShader: PARTICLE_VERTEX,
       fragmentShader: PARTICLE_FRAGMENT,
       uniforms: {
         uPositions: { value: null },
         uPxScale: { value: 1 },
-        uBrightness: { value: 0.3 * countBoost },
+        uBrightness: { value: 0.24 * countBoost },
         uMaxSize: { value: 6 },
         uMinFlux: { value: 0.12 }, // keep far-away galaxies visible when zoomed out
+        uCore0: { value: new THREE.Vector3() },
+        uCore1: { value: new THREE.Vector3() },
+        uDiskInv0: { value: diskInverse(ORIENTATIONS[0]) },
+        uDiskInv1: { value: diskInverse(ORIENTATIONS[1]) },
+        uDiskScale: { value: new THREE.Vector2(GALAXIES[0].diskScale, GALAXIES[1].diskScale) },
+        uArms: { value: new THREE.Vector2(GALAXIES[0].arms, GALAXIES[1].arms) },
+        uArmPhase: { value: 0 },
+        uArmStrength: { value: 1 },
       },
       transparent: true,
       depthTest: false,
@@ -165,11 +303,55 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
     });
     const points = new THREE.Points(geometry, material);
     points.frustumCulled = false;
+    points.renderOrder = 2;
     scene.add(points);
+
+    // Background sky, kept centred on the camera.
+    const skyGeometry = buildSky(small ? 1400 : 2600, makeRandom(31));
+    skyMaterial = new THREE.ShaderMaterial({
+      vertexShader: SKY_VERTEX,
+      fragmentShader: SKY_FRAGMENT,
+      uniforms: { uPixelRatio: { value: renderer.getPixelRatio() } },
+      depthTest: false,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    const sky = new THREE.Points(skyGeometry, skyMaterial);
+    sky.frustumCulled = false;
+    sky.renderOrder = 0;
+    scene.add(sky);
+
+    // Each galaxy's faint diffuse halo of unresolved light, so they read as
+    // galaxies rather than specks when far away.
+    const glowTexture = makeGlowTexture();
+    const halos = GALAXIES.map((gal, g) => {
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: glowTexture,
+        color: g === 0 ? 0x8fb0ff : 0xffb27a,
+        transparent: true,
+        opacity: 0.45,
+        depthTest: false,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      }));
+      sprite.scale.setScalar(gal.diskRadius * 3.2);
+      sprite.renderOrder = 1;
+      scene.add(sprite);
+      return sprite;
+    });
+
+    // Bloom, so dense cores and star-forming knots glow.
+    composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType }));
+    composer.addPass(new RenderPass(scene, camera));
+    const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.7, 0.5, 0.7);
+    composer.addPass(bloom);
+    composer.setPixelRatio(renderer.getPixelRatio());
+    composer.setSize(container.clientWidth || 1, container.clientHeight || 1);
 
     // ---------- Simulation state ----------
     let track = null;
     let separation = null;
+    let armStrength = null;
     let simStep = 0;
     let targetStep = 0;
     let sunIndex = 0;
@@ -186,6 +368,7 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
       const result = integrateCores(scenario);
       track = result.track;
       separation = result.separation;
+      armStrength = armStrengthTrack(separation);
       const stars = buildStars(count, track);
       integrator.load(stars.positions, stars.velocities);
       integrator.saveCheckpoint(0);
@@ -193,6 +376,8 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
       galaxyAttr.needsUpdate = true;
       radiusAttr.array.set(stars.radiusOf);
       radiusAttr.needsUpdate = true;
+      kindAttr.array.set(stars.kindOf);
+      kindAttr.needsUpdate = true;
       sunIndex = stars.sunIndex;
       simStep = 0;
       setEvents(result.events);
@@ -222,17 +407,20 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
 
     // ---------- Frame ----------
     const projected = new THREE.Vector3();
-    const placeLabel = (key, world, show, w, h) => {
+    const placeLabel = (key, world, show, w, h, radius) => {
       const el = labelRefs.current[key];
       if (!el) return;
       projected.copy(world).project(camera);
       const visible = show && projected.z < 1 && Math.abs(projected.x) < 1.1 && Math.abs(projected.y) < 1.1;
       el.style.opacity = visible ? '1' : '0';
       if (visible) {
-        el.style.transform = `translate(${((projected.x * 0.5 + 0.5) * w).toFixed(1)}px, ${((0.5 - projected.y * 0.5) * h).toFixed(1)}px)`;
+        // Sit the label just above the galaxy's disk, however big it looks.
+        const lift = Math.min(h * 0.3, (radius * h) / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * camera.position.distanceTo(world)));
+        el.style.transform = `translate(${((projected.x * 0.5 + 0.5) * w).toFixed(1)}px, ${((0.5 - projected.y * 0.5) * h - lift).toFixed(1)}px)`;
       }
     };
 
+    const reducedMotion = !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
     let frameCount = 0;
     let sunPos = new THREE.Vector3();
     const m31Pos = new THREE.Vector3();
@@ -264,6 +452,11 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
         (c0[2] * GALAXIES[0].mass + c1[2] * GALAXIES[1].mass) / mt,
       );
       const sep = separation[Math.min(simStep, STEPS)];
+      const u = material.uniforms;
+      u.uCore0.value.copy(mwPos);
+      u.uCore1.value.copy(m31Pos);
+      u.uArmPhase.value = (simStep * DT * ARM_PATTERN_SPEED) % (Math.PI * 2);
+      u.uArmStrength.value = armStrength[Math.min(simStep, STEPS)];
       if (frameCount % 12 === 1) {
         const p = integrator.readPosition(sunIndex);
         sunPos = new THREE.Vector3(p[0], p[1], p[2]);
@@ -282,10 +475,20 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
       );
       camera.position.lerp(goal, frameCount < 3 ? 1 : 0.12);
       camera.lookAt(centre);
+      sky.position.copy(camera.position);
+      halos[0].position.copy(mwPos);
+      halos[1].position.copy(m31Pos);
+      // Halos give distant galaxies presence; fade them as the camera closes in.
+      halos.forEach((halo) => {
+        const d = camera.position.distanceTo(halo.position);
+        halo.material.opacity = 0.12 + 0.33 * THREE.MathUtils.smoothstep(d, 150, 700);
+      });
+      // A slow drift around the scene while the clock runs.
+      if (playingRef.current && !dragging && !reducedMotion) orbit.theta += Math.min(delta, 0.1) * 0.035;
       material.uniforms.uPxScale.value = (h * renderer.getPixelRatio()) / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2));
 
-      placeLabel('mw', mwPos, sep > 25, w, h);
-      placeLabel('m31', m31Pos, sep > 25, w, h);
+      placeLabel('mw', mwPos, sep > 25, w, h, GALAXIES[0].diskRadius * 0.6);
+      placeLabel('m31', m31Pos, sep > 25, w, h, GALAXIES[1].diskRadius * 0.6);
 
       if (frameCount % 4 === 0) {
         setStatus({
@@ -311,7 +514,7 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
     const io = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         start(animate);
-        if (!autoplayed && !window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+        if (!autoplayed && !reducedMotion) {
           autoplayed = true;
           setPlaying(true);
         }
@@ -332,6 +535,13 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
       integrator.dispose();
       geometry.dispose();
       material.dispose();
+      skyGeometry.dispose();
+      skyMaterial.dispose();
+      halos.forEach((s) => s.material.dispose());
+      glowTexture.dispose();
+      bloom.dispose();
+      composer.dispose();
+      composer = null;
       disposeCore();
       engineRef.current = null;
     };
@@ -430,6 +640,9 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
         .gcx { width: 100%; display: flex; flex-direction: column; gap: 0.8rem; }
         .gcx-view { position: relative; width: 100%; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; overflow: hidden; background: #000; touch-action: pan-y; }
         .gcx-view canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+        .gcx-view::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+          background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%); }
+        .gcx-label, .gcx-hud, .gcx-zoom, .gcx-seeking, .gcx-unsupported { z-index: 1; }
         .gcx-view canvas:active { cursor: grabbing; }
         .gcx-label { position: absolute; top: 0; left: 0; pointer-events: none; white-space: nowrap; font-size: clamp(0.6rem, 1.1vw, 0.75rem);
           letter-spacing: 0.08em; text-transform: uppercase; translate: -50% calc(-100% - 14px); transition: opacity 0.3s ease; opacity: 0; }

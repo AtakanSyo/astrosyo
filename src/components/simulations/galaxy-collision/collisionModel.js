@@ -196,6 +196,28 @@ export const ORIENTATIONS = [
   { x: 1.05, z: 0.6 },
 ];
 
+// Spiral arms: trailing logarithmic spirals (~14° pitch). Test-particle stars
+// can't hold arms together (real arms are density waves kept up by the disk's
+// own gravity), so the renderer treats the arms as a pattern turning at
+// ARM_PATTERN_SPEED and lights up young stars wherever they cross it.
+export const ARM_PITCH = Math.tan(0.24);
+export const ARM_PATTERN_SPEED = 25 * KMS; // rad/Gyr (25 km/s/kpc)
+export const spiralArmAngle = (gal, arm, r) => (arm / gal.arms) * Math.PI * 2 - Math.log(r / gal.diskScale) / ARM_PITCH;
+
+// How well each disk keeps its spiral pattern at each step: fades as the
+// galaxies come within a few disk radii, and never recovers once tides have
+// stirred the disks up.
+export function armStrengthTrack(separation) {
+  const out = new Float32Array(separation.length);
+  let s = 1;
+  for (let i = 0; i < separation.length; i += 1) {
+    const x = Math.min(1, Math.max(0, (separation[i] - 35) / 85));
+    s = Math.min(s, x * x * (3 - 2 * x));
+    out[i] = s;
+  }
+  return out;
+}
+
 // Build the initial star particles. Each star starts on a circular orbit in
 // its own galaxy's potential (plus a little random motion), arranged in an
 // exponential disk with spiral arms and a central bulge. Returns flat arrays
@@ -207,6 +229,9 @@ export function buildStars(count, coreTrack, seed = 7) {
   const velocities = new Float32Array(count * 4);
   const galaxyOf = new Float32Array(count);
   const radiusOf = new Float32Array(count); // initial radius in disk-scale units, for colour
+  // Stellar population, for colour only: 0 bulge (old, gold), 1 disk,
+  // 2 spiral arm (young, blue), 3 star-forming knot (pink).
+  const kindOf = new Float32Array(count);
   let sunIndex = 0;
 
   const coreVel = (g) => [0, 1, 2].map((k) => (coreTrack[6 + g * 3 + k] - coreTrack[g * 3 + k]) / DT);
@@ -226,17 +251,24 @@ export function buildStars(count, coreTrack, seed = 7) {
     })(ORIENTATIONS[g]);
     const centre = [coreTrack[g * 3], coreTrack[g * 3 + 1], coreTrack[g * 3 + 2]];
     const cv = coreVel(g);
-    const pitch = Math.tan(0.24); // ~14° spiral pitch
+    const armAngle = (arm, r) => spiralArmAngle(gal, arm, r);
+    // Star-forming knots strung along the arms; some arm stars cluster round them.
+    const knots = Array.from({ length: 70 }, () => {
+      const r = gal.diskScale * (0.6 + rand() * 2.6);
+      return { r, theta: armAngle(Math.floor(rand() * gal.arms), r) + gaussian(rand) * 0.12 };
+    });
 
     for (let i = 0; i < n; i += 1, index += 1) {
       let p;
       let vel;
       let radius;
+      let kind = 1;
       const isSun = g === 0 && i === 0;
       if (!isSun && rand() < gal.bulgeFraction) {
         // Bulge: a compact, roughly spherical cloud on random orbits.
         radius = gal.bulgeScale * Math.sqrt(rand() / (1 - rand() * 0.999));
         radius = Math.min(radius, gal.bulgeScale * 4);
+        kind = 0;
         const u = rand() * 2 - 1;
         const phi = rand() * Math.PI * 2;
         const s = Math.sqrt(1 - u * u);
@@ -251,11 +283,18 @@ export function buildStars(count, coreTrack, seed = 7) {
         let theta = rand() * Math.PI * 2;
         if (rand() < 0.55) {
           // Concentrate about half the stars along logarithmic spiral arms.
-          const arm = Math.floor(rand() * gal.arms);
-          theta = (arm / gal.arms) * Math.PI * 2 + Math.log(radius / gal.diskScale) / pitch + gaussian(rand) * 0.22;
+          kind = 2;
+          if (rand() < 0.12) {
+            const knot = knots[Math.floor(rand() * knots.length)];
+            radius = Math.max(0.4, knot.r + gaussian(rand) * 0.15);
+            theta = knot.theta + (gaussian(rand) * 0.15) / knot.r;
+            kind = 3;
+          } else {
+            theta = armAngle(Math.floor(rand() * gal.arms), radius) + gaussian(rand) * 0.22;
+          }
         }
-        if (isSun) { radius = 8.2; theta = 0; }
-        const z = gaussian(rand) * 0.12 * (0.6 + radius / gal.diskRadius);
+        if (isSun) { radius = 8.2; theta = 0; kind = 1; }
+        const z = isSun ? 0 : gaussian(rand) * 0.12 * (0.6 + radius / gal.diskRadius);
         p = [radius * Math.cos(theta), radius * Math.sin(theta), z];
         const vc = circularSpeed(gal.mass, gal.scale, radius);
         const disp = isSun ? 0 : 0.06 * vc;
@@ -268,8 +307,9 @@ export function buildStars(count, coreTrack, seed = 7) {
       velocities.set([cv[0] + wv[0], cv[1] + wv[1], cv[2] + wv[2], 0], index * 4);
       galaxyOf[index] = g;
       radiusOf[index] = radius / gal.diskScale;
+      kindOf[index] = kind;
     }
   });
 
-  return { positions, velocities, galaxyOf, radiusOf, sunIndex };
+  return { positions, velocities, galaxyOf, radiusOf, kindOf, sunIndex };
 }
