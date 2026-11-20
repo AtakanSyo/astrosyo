@@ -20,10 +20,22 @@ lang: en
 import SinglePlanetSim from "../../components/simulations/single-planet/SinglePlanetSim.jsx";
 import SimPostSchema from "../../components/SimPostSchema.astro";
 
-<SinglePlanetSim planet="Pluto" client:visible cameraPosition={{ x: 0, y: 0, z: 3.5 }} />
+<SinglePlanetSim
+  planet="Pluto"
+  client:visible
+  cameraPosition={{ x: 0, y: 0, z: 2.9 }}
+  lightPosition={[3, 1.1, 2]}
+  lightIntensity={3.2}
+  ambientIntensity={0.05}
+  textureContrast={1.12}
+  spinDegPerSec={-4}
+  atmosphere={{ color: "#8ab8ff", strength: 0.55, haloScale: 1.045 }}
+  showStarBackground
+/>
 
 <h2>What you’re seeing</h2>
-<p>This simulation shows Pluto as a spherical world. The texture used here is <strong>not a scientifically accurate dataset from NASA</strong>. Instead, it is a <strong>mock artistic texture</strong> sourced from <a href="https://planetpixelemporium.com/pluto.html" target="_blank" rel="noopener noreferrer">here</a>. It is intended to represent Pluto’s general appearance for visualization purposes only.</p>
+<p>This simulation shows Pluto as a spherical world. The surface map is <strong>not a scientifically accurate dataset from NASA</strong>. It is a <strong>mock artistic texture</strong> sourced from <a href="https://planetpixelemporium.com/pluto.html" target="_blank" rel="noopener noreferrer">here</a>, recoloured to match Pluto’s real tones as seen by New Horizons: pale nitrogen ice, tan plains and reddish-brown regions. It is intended to represent Pluto’s general appearance for visualization purposes only.</p>
+<p>The faint blue rim around the lit edge stands for Pluto's thin nitrogen atmosphere. When New Horizons looked back at Pluto after its 2015 flyby, sunlight scattering through layers of haze made the atmosphere glow blue. Pluto also spins backwards compared with most planets, and the globe here turns the same way.</p>
 <h2>Discovery</h2>
 <p>Pluto was discovered in 1930 by Clyde Tombaugh at Lowell Observatory after a systematic search for a predicted trans-Neptunian planet. The discovery confirmed that the Solar System extended beyond Neptune.</p>
 

@@ -50,7 +50,7 @@ const PLANET_CONFIG = {
     spinDegPerSec: 5,
   },
   pluto: {
-    textureUrl: '/textures/plutomap2k.webp',
+    textureUrl: '/textures/pluto_natural.webp',
     spinDegPerSec: 5,
   },
 };

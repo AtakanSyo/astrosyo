@@ -30,7 +30,7 @@ export const BODIES = [
   { key: "uranus", name: "Uranus", kind: "planet", radiusKm: 25362, massKg: 8.681e25, color: "#9fd6dc", texture: "/textures/uranus_texture.webp" },
   { key: "neptune", name: "Neptune", kind: "planet", radiusKm: 24622, massKg: 1.02413e26, color: "#4b70dd", texture: "/textures/neptune_texture.webp" },
   { key: "triton", name: "Triton", kind: "moon", parent: "Neptune", radiusKm: 1353.4, massKg: 2.139e22, color: "#c9bcb4", texture: null },
-  { key: "pluto", name: "Pluto", kind: "dwarf planet", radiusKm: 1188.3, massKg: 1.303e22, color: "#c7a98a", texture: "/textures/plutomap2k.webp" },
+  { key: "pluto", name: "Pluto", kind: "dwarf planet", radiusKm: 1188.3, massKg: 1.303e22, color: "#c7a98a", texture: "/textures/pluto_natural.webp" },
   { key: "charon", name: "Charon", kind: "moon", parent: "Pluto", radiusKm: 606, massKg: 1.586e21, color: "#9a948e", texture: null },
 ];
 
@@ -50,6 +50,7 @@ const PAIR_PAGES = {
   "jupiter|saturn": "/posts/saturn-jupiter-size-comparison",
   "neptune|saturn": "/posts/saturn-neptune-size-comparison",
   "saturn|uranus": "/posts/saturn-uranus-size-comparison",
+  "moon|pluto": "/posts/pluto-moon-size-comparison",
 };
 
 export function pairPage(a, b) {

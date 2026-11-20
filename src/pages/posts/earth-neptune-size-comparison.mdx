@@ -43,6 +43,36 @@ import SimPostSchema from "../../components/SimPostSchema.astro";
 
 <p>This visualization places Earth and Neptune next to each other using their exact physical diameters and true 3D geometry. Earth shows its familiar dynamic surface with oceans, continents, and clouds, while Neptune appears as a cold, deep-blue world with high-altitude methane ice clouds. Textbook diagrams rarely capture the true size difference between the two. Earth looks small and compact, while Neptune feels like a massive, layered sphere of atmosphere and fluid interior. Seeing both planets rotating in the same frame makes the physical scale intuitive rather than abstract.</p>
 
+<p>The same two planets with their diameters marked. A line runs straight across each planet's face, drawn to the same scale, so the ratio between the two lengths is how many times wider Neptune is.</p>
+
+<PlanetSizeComparison
+  client:load
+  id="earth-neptune-diameters"
+  primaryTexture="/textures/neptune_texture.webp"
+  secondaryTexture="/textures/earth-texture-nasa.webp"
+  options={{ planetPosition: [-0.75, 0, 0], secondPosition: [1.35, 0, 0] }}
+  primaryRadius={24.622}
+  secondaryRadius={6.371}
+  primaryContrast={1.0}
+  secondaryContrast={1.0}
+  orthoExtent={1.35}
+  lightPosition={[1.2, 0.8, 4]}
+  directionalLightIntensity={4}
+  ambientLightIntensity={0.06}
+  primaryTiltDeg={-28.3}
+  secondaryTiltDeg={-23.4}
+  primaryAtmosphere={{ color: "#6a93ff", strength: 0.9 }}
+  secondaryAtmosphere
+  secondaryNightLights
+  secondaryInitialSpinDeg={180}
+  diameterOverlay={{
+    primaryName: "Neptune",
+    primaryDiameterKm: 49244,
+    secondaryName: "Earth",
+    secondaryDiameterKm: 12742,
+  }}
+/>
+
 <h2>The numbers behind the scale</h2>
 <p>Earth’s diameter is approximately 12,742 km, while Neptune’s is about 49,244 km. The diameter ratio between them is:</p>
 

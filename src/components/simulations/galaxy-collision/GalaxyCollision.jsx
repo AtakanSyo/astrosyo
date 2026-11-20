@@ -38,6 +38,9 @@ const PLAY_GYR_PER_SEC = 0.35; // 10 billion years in about half a minute
 const CHECKPOINT_STEPS = 500; // a checkpoint every billion years
 const SEEK_STEPS_PER_FRAME = 360;
 const STAR_SIZE = 0.22; // kpc: each particle stands for many stars, so it has a physical size
+// Diffuse halo colour: warm unresolved starlight, or each galaxy's own hue.
+const HALO_NATURAL = 0xffe6c8;
+const HALO_VIVID = [0x4fd2ff, 0xff5a4a];
 
 const PARTICLE_VERTEX = /* glsl */ `
   uniform sampler2D uPositions;
@@ -53,6 +56,7 @@ const PARTICLE_VERTEX = /* glsl */ `
   uniform vec2 uArms;
   uniform float uArmPhase;    // spiral pattern rotation, radians
   uniform float uArmStrength; // 1 = intact disks, 0 = arms washed out by tides
+  uniform float uVivid;       // 0 = natural colours, 1 = vivid per-galaxy palette
   attribute vec2 aRef;
   attribute float aGalaxy;
   attribute float aRadius;
@@ -76,30 +80,43 @@ const PARTICLE_VERTEX = /* glsl */ `
     onArm *= smoothstep(0.25, 0.8, r / rs) * (1.0 - smoothstep(3.6, 5.0, r / rs)) * step(abs(q.z), 1.2);
     float s = uArmStrength;
 
-    // Stellar populations: gold bulge, cream disk fading cooler outwards,
-    // blue young stars that shine in the arms, pink star-forming knots.
+    // Natural palette: what a long-exposure photo shows. Warm gold bulge,
+    // cream disk cooling outwards, blue-white young stars along the arms,
+    // pink hydrogen-alpha star-forming regions. Both galaxies are real
+    // spirals of similar make-up, so they share it.
+    // Vivid palette: each galaxy gets its own hue family (Milky Way ice-cyan
+    // to violet, Andromeda gold to crimson), so you can follow whose stars
+    // are whose as they mix.
     float t = clamp(aRadius / 3.2, 0.0, 1.0);
-    vec3 col;
+    vec3 nat;
+    vec3 viv;
     float boost = 1.0;
     float grow = 1.0;
-    if (aKind < 0.5) { col = vec3(1.0, 0.76, 0.48); boost = 1.1; }
+    if (aKind < 0.5) {
+      nat = vec3(1.0, 0.78, 0.5);
+      viv = mw ? vec3(0.78, 0.96, 1.0) : vec3(1.0, 0.8, 0.58);
+      boost = 1.1;
+    }
     else if (aKind < 1.5) {
-      col = mix(vec3(1.0, 0.9, 0.74), vec3(0.8, 0.85, 1.0), t);
+      nat = mix(vec3(1.0, 0.86, 0.68), vec3(0.62, 0.74, 1.0), t);
+      viv = mw ? mix(vec3(0.42, 0.9, 1.0), vec3(0.32, 0.56, 1.0), t)
+               : mix(vec3(1.0, 0.56, 0.46), vec3(1.0, 0.34, 0.36), t);
       boost = mix(1.0, 0.4 + 0.8 * onArm, s);
     }
     else if (aKind < 2.5) {
-      col = mix(vec3(0.62, 0.76, 1.0), vec3(0.36, 0.55, 1.0), t);
+      nat = mix(vec3(0.42, 0.62, 1.0), vec3(0.3, 0.48, 1.0), t);
+      viv = mw ? mix(vec3(0.3, 0.7, 1.0), vec3(0.5, 0.4, 1.0), t)
+               : mix(vec3(1.0, 0.3, 0.3), vec3(0.92, 0.18, 0.32), t);
       boost = mix(1.1, 0.12 + 2.6 * onArm, s);
     }
     else {
-      col = vec3(1.0, 0.3, 0.6);
+      nat = vec3(1.0, 0.28, 0.5);
+      viv = mw ? vec3(0.72, 0.62, 1.0) : vec3(1.0, 0.5, 0.48);
       boost = mix(2.0, 4.0 * smoothstep(0.35, 0.8, onArm), s);
       grow = 1.4;
     }
-    // Tint by galaxy so the two stay tellable apart as they mix.
-    vec3 tint = mw ? vec3(0.9, 0.97, 1.1) : vec3(1.1, 0.95, 0.84);
-    col *= aKind < 1.5 ? tint : mix(vec3(1.0), tint, 0.4);
-    col = mix(col, vec3(1.0), h * 0.15);
+    vec3 col = mix(nat, viv, uVivid);
+    col = mix(col, vec3(1.0), h * 0.08);
     // Physical size: apparent size falls as 1/distance, so a galaxy's surface
     // brightness stays the same however far away it is. Sub-pixel stars keep
     // their light by trading size for opacity.
@@ -212,6 +229,7 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
   const engineRef = useRef(null);
   const labelRefs = useRef({});
   const [scenarioKey, setScenarioKey] = useState(SCENARIOS[0].key);
+  const [palette, setPalette] = useState('vivid');
   const [playing, setPlaying] = useState(false);
   const [status, setStatus] = useState({ time: 0, target: 0, separation: 785, sunDistance: 8.2, seeking: false });
   const [events, setEvents] = useState(null);
@@ -295,6 +313,7 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
         uArms: { value: new THREE.Vector2(GALAXIES[0].arms, GALAXIES[1].arms) },
         uArmPhase: { value: 0 },
         uArmStrength: { value: 1 },
+        uVivid: { value: 1 },
       },
       transparent: true,
       depthTest: false,
@@ -327,7 +346,7 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
     const halos = GALAXIES.map((gal, g) => {
       const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
         map: glowTexture,
-        color: g === 0 ? 0x8fb0ff : 0xffb27a,
+        color: HALO_VIVID[g],
         transparent: true,
         opacity: 0.45,
         depthTest: false,
@@ -506,6 +525,11 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
       seek: (t) => { targetStep = Math.max(0, Math.min(STEPS, t / DT)); },
       time: () => targetStep * DT,
       zoom: (f) => { orbit.zoom = Math.min(4, Math.max(0.2, orbit.zoom * f)); },
+      setPalette: (name) => {
+        const vivid = name === 'vivid';
+        material.uniforms.uVivid.value = vivid ? 1 : 0;
+        halos.forEach((halo, g) => halo.material.color.setHex(vivid ? HALO_VIVID[g] : HALO_NATURAL));
+      },
     };
     loadScenario(SCENARIOS[0].key);
 
@@ -616,6 +640,26 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
       </div>
 
       <div className="gcx-options">
+        <div className="gcx-chips gcx-palette" role="radiogroup" aria-label="Colours">
+          {[
+            ['vivid', 'Colour by galaxy'],
+            ['natural', 'Natural colours'],
+          ].map(([key, name]) => (
+            <button
+              key={key}
+              type="button"
+              role="radio"
+              aria-checked={palette === key}
+              className={palette === key ? 'is-active' : ''}
+              onClick={() => {
+                setPalette(key);
+                engineRef.current?.setPalette(key);
+              }}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
         <div className="gcx-chips" role="tablist" aria-label="Scenario">
           {SCENARIOS.map((s) => (
             <button key={s.key} type="button" role="tab" aria-selected={s.key === scenarioKey} className={s.key === scenarioKey ? 'is-active' : ''} onClick={() => chooseScenario(s.key)}>
@@ -646,8 +690,8 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
         .gcx-view canvas:active { cursor: grabbing; }
         .gcx-label { position: absolute; top: 0; left: 0; pointer-events: none; white-space: nowrap; font-size: clamp(0.6rem, 1.1vw, 0.75rem);
           letter-spacing: 0.08em; text-transform: uppercase; translate: -50% calc(-100% - 14px); transition: opacity 0.3s ease; opacity: 0; }
-        .gcx-label-mw { color: #a9c8ff; }
-        .gcx-label-m31 { color: #ffc3a0; }
+        .gcx-label-mw { color: #8fe6ff; }
+        .gcx-label-m31 { color: #ff9a8c; }
         .gcx-hud { position: absolute; display: flex; flex-direction: column; gap: 0.1rem; padding: 0.3rem 0.55rem; border-radius: 8px;
           background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); pointer-events: none; font-variant-numeric: tabular-nums; }
         .gcx-hud-time { left: 0.75rem; top: 0.7rem; color: #fff; font-size: clamp(0.7rem, 1.3vw, 0.9rem); }
@@ -667,8 +711,8 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
         .gcx-round:hover { background: rgba(255,255,255,0.14); }
         .gcx-slider { flex: 1; display: flex; flex-direction: column; gap: 0.3rem; }
         .gcx-slider input[type="range"] { width: 100%; -webkit-appearance: none; appearance: none; background: transparent; height: 18px; margin: 0; }
-        .gcx-slider input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 999px; background: linear-gradient(90deg, #6f8fd8, #e8b48a); }
-        .gcx-slider input[type="range"]::-moz-range-track { height: 6px; border-radius: 999px; background: linear-gradient(90deg, #6f8fd8, #e8b48a); }
+        .gcx-slider input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 999px; background: linear-gradient(90deg, #4fd2ff, #9a6bff 50%, #ff5a5a); }
+        .gcx-slider input[type="range"]::-moz-range-track { height: 6px; border-radius: 999px; background: linear-gradient(90deg, #4fd2ff, #9a6bff 50%, #ff5a5a); }
         .gcx-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: -6px; border-radius: 50%;
           background: #fff; border: none; box-shadow: 0 0 0 4px rgba(255,255,255,0.12); cursor: pointer; }
         .gcx-slider input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; border: none; box-shadow: 0 0 0 4px rgba(255,255,255,0.12); cursor: pointer; }
@@ -679,7 +723,7 @@ export default function GalaxyCollision({ id = 'galaxy-collision', aspect = '16 
           color: rgba(255,255,255,0.65); font-size: 0.78rem; cursor: pointer; }
         .gcx-chips button:hover { color: #fff; border-color: rgba(255,255,255,0.35); }
         .gcx-chips button.is-active { background: rgba(255,255,255,0.92); color: #111; border-color: transparent; }
-        .gcx-info { border-left: 2px solid rgba(232,180,138,0.6); padding: 0.2rem 0 0.2rem 0.85rem; display: flex; flex-direction: column; gap: 0.25rem; }
+        .gcx-info { border-left: 2px solid rgba(138,107,255,0.7); padding: 0.2rem 0 0.2rem 0.85rem; display: flex; flex-direction: column; gap: 0.25rem; }
         .gcx-info-name { font-size: 1.05rem; color: #fff; }
         .gcx .gcx-info-text, .gcx .gcx-info-event { margin: 0; padding: 0; width: auto; max-width: none; text-align: left; font-size: 0.88rem; line-height: 1.5; }
         .gcx .gcx-info-text { color: rgba(255,255,255,0.8); }

@@ -1,0 +1,143 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Pluto and Moon Size Comparison"
+subtitle: "Pluto is smaller than our Moon"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-20'
+description: "Pluto vs the Moon at true scale: Pluto is only about two-thirds as wide as Earth's Moon. See both side by side as rotating 3D globes, with their diameters marked."
+slug: pluto-moon-size-comparison
+imageDir: /images/pluto-moon-size-comparison
+thumbnail: /images/pluto-moon-size-comparison/thumbnail.webp
+keywords:
+  - pluto vs moon size
+  - is pluto smaller than the moon
+  - pluto moon size comparison
+  - how big is pluto
+  - planet size comparison
+lang: en
+---
+
+import PlanetSizeComparison from "../../components/simulations/planet-size-comparison/PlanetSizeComparison.jsx";
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import Changelog from "../../components/Changelog.astro";
+
+<PlanetSizeComparison
+  client:load
+  id="pluto-moon"
+  primaryTexture="/textures/moon_texture.webp"
+  secondaryTexture="/textures/pluto_natural.webp"
+  options={{ planetPosition: [-0.95, 0, 0], secondPosition: [0.95, 0, 0] }}
+  primaryRadius={1737.4}
+  secondaryRadius={1188.3}
+  primaryContrast={1.0}
+  secondaryContrast={1.0}
+  orthoExtent={1.15}
+  lightPosition={[3.5, 1.2, 4]}
+  directionalLightIntensity={3.2}
+  ambientLightIntensity={0.06}
+  primaryTiltDeg={-6.7}
+  secondaryTiltDeg={-57.5}
+/>
+
+<p>This visualization places the Moon and Pluto next to each other at their true relative sizes, as rotating 3D globes. On the left is Earth's Moon, grey and cratered. On the right is Pluto, a world of pale nitrogen ice and reddish-brown plains, first seen up close when the New Horizons spacecraft flew past in 2015. Pluto was called the ninth planet for 76 years, so most people picture it as a fairly large world. It isn't: Pluto is noticeably smaller than our own Moon.</p>
+
+<p>The same two worlds with their diameters marked. A line runs straight across each face, drawn to the same scale, so the ratio between the two lengths is how many times wider the Moon is.</p>
+
+<PlanetSizeComparison
+  client:load
+  id="pluto-moon-diameters"
+  primaryTexture="/textures/moon_texture.webp"
+  secondaryTexture="/textures/pluto_natural.webp"
+  options={{ planetPosition: [-0.95, 0, 0], secondPosition: [1.2, 0, 0] }}
+  primaryRadius={1737.4}
+  secondaryRadius={1188.3}
+  primaryContrast={1.0}
+  secondaryContrast={1.0}
+  orthoExtent={1.45}
+  lightPosition={[1.2, 0.8, 4]}
+  directionalLightIntensity={3.2}
+  ambientLightIntensity={0.08}
+  primaryTiltDeg={-6.7}
+  secondaryTiltDeg={-57.5}
+  diameterOverlay={{
+    primaryName: "Moon",
+    primaryDiameterKm: 3475,
+    secondaryName: "Pluto",
+    secondaryDiameterKm: 2377,
+    primaryTint: 0xdddddd,
+    secondaryTint: 0xffe2c4,
+  }}
+/>
+
+<h2>The numbers behind the scale</h2>
+
+<p>The Moon is about 3,475 km across. Pluto is about 2,377 km across. The ratio of their diameters is:</p>
+
+$$
+\frac{D_{Moon}}{D_{Pluto}} = \frac{3{,}475}{2{,}377} \approx 1.46
+$$
+
+<p>Volume scales with the cube of the diameter:</p>
+
+$$
+(1.46)^3 \approx 3.1
+$$
+
+<p>So you could fit about three Plutos inside the Moon. Surface area, which sets how big each world looks, scales with the square:</p>
+
+$$
+(1.46)^2 \approx 2.1
+$$
+
+<p>The Moon's face is about twice the size of Pluto's. The gap in mass is bigger still: the Moon is about 5.6 times as massive, because Pluto is a mix of rock and ice while the Moon is solid rock.</p>
+
+<h2>How small is Pluto?</h2>
+
+<p>Pluto is about half as wide as the United States, coast to coast. Seven moons in the Solar System are larger than it: Jupiter's Ganymede, Callisto, Io and Europa, Saturn's Titan, Neptune's Triton, and our own Moon. That is a big part of why astronomers reclassified it as a dwarf planet in 2006, after finding Eris, a world of almost the same size, even further out.</p>
+
+<p>Pluto does have a moon of its own, Charon, which is about half Pluto's width. The two are so close in size that they orbit a point in the space between them, rather than Charon circling Pluto.</p>
+
+<PlanetSizeComparison
+  client:load
+  id="pluto-moon-close"
+  primaryTexture="/textures/moon_texture.webp"
+  secondaryTexture="/textures/pluto_natural.webp"
+  options={{ rotationHours: 30, axialTiltDeg: 0 }}
+  primaryRadius={1737.4}
+  secondaryRadius={1188.3}
+  planetDistance={1.85}
+  primaryContrast={1.0}
+  secondaryContrast={1.0}
+  orthoExtent={0.55}
+  lightPosition={[2.5, 1.2, 4.5]}
+  directionalLightIntensity={3.2}
+  ambientLightIntensity={0.1}
+/>
+
+<p>To compare any other pair of planets, moons or dwarf planets, with how many fit inside each other and their gravity and density side by side, use the <a href="/posts/planet-size-comparison-calculator">Planet Size Comparison Calculator</a>.</p>
+
+<SimPostSchema
+  title="Pluto and Moon Size Comparison"
+  description="Pluto vs the Moon at true scale: Pluto is only about two-thirds as wide as Earth's Moon. See both side by side as rotating 3D globes, with their diameters marked."
+  url="https://astrosyo.com/posts/pluto-moon-size-comparison"
+  datePublished="2026-11-20"
+  authorName="Astrosyo"
+  keywords={["pluto vs moon size", "is pluto smaller than the moon", "pluto moon size comparison", "how big is pluto", "planet size comparison"]}
+  image="/images/pluto-moon-size-comparison/thumbnail.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Pluto and Moon Size Comparison",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebGL2",
+    "url": "https://astrosyo.com/posts/pluto-moon-size-comparison#pluto-moon",
+    "description": "Interactive 3D visualization comparing Pluto and Earth's Moon at true relative scale, with their diameters marked."
+  }}
+/>
+
+<Changelog entries={["2026-11-20: Published."]} />

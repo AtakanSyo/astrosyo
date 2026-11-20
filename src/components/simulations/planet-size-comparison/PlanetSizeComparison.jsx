@@ -31,7 +31,13 @@ export default function PlanetSizeComparison({
   secondaryAtmosphere,
   primaryNightLights = false, // Earth texture only: city lights on the night side and an ocean glint
   secondaryNightLights = false,
+  // Draws each planet's diameter as a line across its face, with a name and
+  // size label under it and the diameter ratio between them. For the default
+  // front-on camera only. { primaryName, primaryDiameterKm, secondaryName,
+  // secondaryDiameterKm, ratioPosition: [x, y] (optional, world units) }
+  diameterOverlay,
 }) {
+  const overlayKey = JSON.stringify(diameterOverlay ?? null);
   const atmosKey = JSON.stringify([primaryAtmosphere ?? null, secondaryAtmosphere ?? null]);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -293,6 +299,242 @@ export default function PlanetSizeComparison({
       }
     });
 
+    if (diameterOverlay) {
+      const overlay = new THREE.Group();
+      overlay.renderOrder = 10;
+      scene.add(overlay);
+      const overlayDisposables = [];
+      let overlayAlive = true;
+      const fontFamily = getComputedStyle(container).fontFamily || 'system-ui, sans-serif';
+      const fmtKm = (km) => `${Math.round(km).toLocaleString('en-US')} km`;
+
+      // Per-frame updaters for the draw-in animation, called with t in [0, 1].
+      const animators = [];
+      const labelMaterials = [];
+
+      // Soft vertical falloff, used for the glow behind each line.
+      const glowCanvas = document.createElement('canvas');
+      glowCanvas.width = 4;
+      glowCanvas.height = 64;
+      {
+        const g = glowCanvas.getContext('2d');
+        const grad = g.createLinearGradient(0, 0, 0, 64);
+        grad.addColorStop(0, 'rgba(255,255,255,0)');
+        grad.addColorStop(0.5, 'rgba(255,255,255,1)');
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = grad;
+        g.fillRect(0, 0, 4, 64);
+      }
+      const glowTex = new THREE.CanvasTexture(glowCanvas);
+      overlayDisposables.push(glowTex);
+
+      const mesh = (geo, { color = 0xffffff, opacity = 1, map, additive = false } = {}) => {
+        const mat = new THREE.MeshBasicMaterial({
+          color,
+          map,
+          transparent: true,
+          opacity,
+          depthTest: false,
+          depthWrite: false,
+          blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending,
+        });
+        const m = new THREE.Mesh(geo, mat);
+        m.renderOrder = 10;
+        overlayDisposables.push(geo, mat);
+        return m;
+      };
+
+      const arrowGeo = (len, half) => {
+        const shape = new THREE.Shape();
+        shape.moveTo(0, 0);
+        shape.lineTo(-len, half);
+        shape.lineTo(-len * 0.72, 0);
+        shape.lineTo(-len, -half);
+        shape.closePath();
+        return new THREE.ShapeGeometry(shape);
+      };
+
+      // A dimension line across a planet: glow, core line, arrowheads at the
+      // limb and a centre dot. Grows out from the centre.
+      const dimensionLine = (x, y, r, tint) => {
+        const group = new THREE.Group();
+        group.position.set(x, y, 3);
+        overlay.add(group);
+
+        const shadowH = R_PLANET * 0.05;
+        const glowH = R_PLANET * 0.028;
+        const coreH = R_PLANET * 0.006;
+        const arrowLen = Math.min(R_PLANET * 0.065, r * 0.32);
+        const arrowHalf = arrowLen * 0.45;
+
+        const bar = new THREE.Group();
+        group.add(bar);
+        // A soft dark band lifts the line off bright cloud tops; a faint
+        // tinted glow keeps it from looking like a hard vector stroke.
+        bar.add(mesh(new THREE.PlaneGeometry(2 * r, shadowH), { color: 0x000000, opacity: 0.45, map: glowTex }));
+        bar.add(mesh(new THREE.PlaneGeometry(2 * r, glowH), { color: tint, opacity: 0.35, map: glowTex }));
+        bar.add(mesh(new THREE.PlaneGeometry(2 * (r - arrowLen * 0.7), coreH), { color: 0xffffff, opacity: 0.95 }));
+
+        const ends = [-1, 1].map((side) => {
+          const end = new THREE.Group();
+          const head = mesh(arrowGeo(arrowLen, arrowHalf), { color: 0xffffff, opacity: 0.95 });
+          if (side < 0) head.rotation.z = Math.PI;
+          end.add(head);
+          group.add(end);
+          return { end, side };
+        });
+
+        const dot = mesh(new THREE.CircleGeometry(R_PLANET * 0.009, 24), { color: 0xffffff, opacity: 0.9 });
+        group.add(dot);
+
+        animators.push((t) => {
+          const e = 1 - (1 - t) ** 3;
+          bar.scale.x = Math.max(e, 0.0001);
+          ends.forEach(({ end, side }) => {
+            end.position.x = side * r * e;
+            end.visible = e > 0.02;
+          });
+        });
+      };
+
+      // Text as a sprite; `height` is the cap height of the first line in world units.
+      const label = (lines, x, y, height) => {
+        const PX = 96;
+        const canvasEl = document.createElement('canvas');
+        const ctx = canvasEl.getContext('2d');
+        const fonts = lines.map((l) => `${l.weight ?? 400} ${PX * (l.scale ?? 1)}px ${fontFamily}`);
+        const widths = lines.map((l, i) => {
+          ctx.font = fonts[i];
+          return ctx.measureText(l.text).width;
+        });
+        const lineHeights = lines.map((l) => PX * (l.scale ?? 1) * 1.25);
+        canvasEl.width = Math.ceil(Math.max(...widths) + PX * 0.6);
+        canvasEl.height = Math.ceil(lineHeights.reduce((a, b) => a + b, 0) + PX * 0.3);
+        let cursor = PX * 0.15;
+        lines.forEach((l, i) => {
+          ctx.font = fonts[i];
+          ctx.fillStyle = l.color ?? 'rgba(255,255,255,0.92)';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.shadowColor = 'rgba(0,0,0,0.85)';
+          ctx.shadowBlur = PX * 0.12;
+          ctx.fillText(l.text, canvasEl.width / 2, cursor + PX * 0.1 * (l.scale ?? 1));
+          cursor += lineHeights[i];
+        });
+        const tex = new THREE.CanvasTexture(canvasEl);
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
+        const sprite = new THREE.Sprite(mat);
+        const worldPerPx = height / PX;
+        sprite.scale.set(canvasEl.width * worldPerPx, canvasEl.height * worldPerPx, 1);
+        sprite.position.set(x, y, 3);
+        sprite.renderOrder = 11;
+        overlay.add(sprite);
+        overlayDisposables.push(tex, mat);
+        labelMaterials.push(mat);
+      };
+
+      const build = () => {
+        if (!overlayAlive) return;
+        const textH = R_PLANET * 0.1;
+        const bars = [
+          { pos: cfg.planetPosition, r: R_PLANET, name: diameterOverlay.primaryName, km: diameterOverlay.primaryDiameterKm },
+          { pos: cfg.secondPosition, r: R_PLANET_2, name: diameterOverlay.secondaryName, km: diameterOverlay.secondaryDiameterKm },
+        ];
+        const tints = [diameterOverlay.primaryTint ?? 0x9fc4ff, diameterOverlay.secondaryTint ?? 0x9fd8ff];
+        bars.forEach(({ pos, r, name, km }, i) => {
+          const [x, y] = pos;
+          dimensionLine(x, y, r, tints[i]);
+          label(
+            [
+              { text: name ?? '', weight: 500 },
+              { text: km ? fmtKm(km) : '', scale: 0.8, color: 'rgba(255,255,255,0.7)' },
+            ],
+            x,
+            y - r - textH * 1.9,
+            textH,
+          );
+        });
+        const a = diameterOverlay.primaryDiameterKm;
+        const b = diameterOverlay.secondaryDiameterKm;
+        if (a > 0 && b > 0) {
+          const big = a >= b ? bars[0] : bars[1];
+          const small = a >= b ? bars[1] : bars[0];
+          const ratio = Math.max(a, b) / Math.min(a, b);
+          const [rx, ry] = diameterOverlay.ratioPosition ?? [small.pos[0], small.pos[1] + small.r + textH * 3.2];
+          label(
+            [
+              { text: `${ratio.toFixed(2)}×`, weight: 500, scale: 2 },
+              { text: `${big.name}'s diameter`, scale: 0.8, color: 'rgba(255,255,255,0.75)' },
+              { text: `÷ ${small.name}'s diameter`, scale: 0.8, color: 'rgba(255,255,255,0.75)' },
+            ],
+            rx,
+            ry,
+            textH,
+          );
+        }
+      };
+
+      const applyT = (t) => {
+        animators.forEach((fn) => fn(t));
+        const fade = Math.min(1, Math.max(0, (t - 0.45) / 0.55));
+        labelMaterials.forEach((m) => { m.opacity = fade; });
+      };
+
+      // The lines grow out from each planet's centre the first time the
+      // stage scrolls into view, then stay put.
+      let rafId = 0;
+      let observer = null;
+      const play = () => {
+        const DURATION = 1100;
+        const t0 = performance.now();
+        const step = (now) => {
+          if (!overlayAlive) return;
+          const t = Math.min(1, (now - t0) / DURATION);
+          applyT(t);
+          if (!loopActive) sceneCtx.renderOnce?.();
+          if (t < 1) rafId = requestAnimationFrame(step);
+        };
+        rafId = requestAnimationFrame(step);
+      };
+
+      // Draw once the page fonts are ready so the labels use the site font.
+      (document.fonts?.ready ?? Promise.resolve()).then(() => {
+        if (!overlayAlive) return;
+        build();
+        const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        if (reduceMotion || typeof IntersectionObserver === 'undefined') {
+          applyT(1);
+          sceneCtx.renderOnce?.();
+          return;
+        }
+        applyT(0);
+        sceneCtx.renderOnce?.();
+        observer = new IntersectionObserver(
+          (entries) => {
+            if (entries.some((en) => en.isIntersecting)) {
+              observer?.disconnect();
+              observer = null;
+              play();
+            }
+          },
+          { threshold: 0.45 },
+        );
+        observer.observe(container);
+      });
+
+      extras.push({
+        dispose: () => {
+          overlayAlive = false;
+          cancelAnimationFrame(rafId);
+          observer?.disconnect();
+          scene.remove(overlay);
+          overlayDisposables.forEach((d) => d.dispose());
+        },
+      });
+    }
+
     const degPerSec = 360.0 / (cfg.rotationHours * 3600.0);
 
     let loopActive = false;
@@ -361,6 +603,7 @@ export default function PlanetSizeComparison({
     atmosKey,
     primaryNightLights,
     secondaryNightLights,
+    overlayKey,
   ]);
 
   const onToggle = () => {
