@@ -1,0 +1,157 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Compton Scattering and Inverse Compton Scattering"
+subtitle: "When light bounces off an electron, and when an electron throws light"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-20'
+description: "An interactive visualization of Compton scattering, where a photon loses energy to an electron, and inverse Compton scattering, where a fast electron boosts microwave and radio photons into X-rays and gamma rays."
+postColor: rgba(14, 24, 44, 1)
+slug: compton-scattering
+imageDir: /images/compton-scattering
+thumbnail: /images/compton-scattering/thumbnail.webp
+keywords:
+  - compton scattering
+  - inverse compton scattering
+  - compton effect
+  - compton wavelength
+  - klein-nishina
+  - sunyaev-zeldovich effect
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import ComptonScattering from "../../components/simulations/compton-scattering/ComptonScattering.jsx";
+
+<figure class="post-figure post-figure-md" id="simulation">
+  <ComptonScattering client:visible />
+</figure>
+
+When light meets a free electron, the two can trade energy. Which way the
+energy flows depends on who is moving. A high-energy photon hitting an
+electron at rest loses some of its energy and comes away with a longer
+wavelength: that is Compton scattering. A very fast electron hitting a
+low-energy photon gives energy away, and the photon comes out hundreds or
+millions of times more energetic: that is inverse Compton scattering. The
+first proved that light comes in particles. The second makes many of the
+X-rays and gamma rays in the universe.
+
+## Compton scattering
+
+In 1923 Arthur Compton fired X-rays from a molybdenum target at a block of
+graphite and measured what came out at different angles. The scattered
+X-rays had slightly longer wavelengths than the ones that went in, and the
+shift grew with the angle. A wave picture of light can't explain that. A
+particle picture can: treat the X-ray as a photon carrying momentum, let it
+collide with an electron like a billiard ball, conserve energy and momentum,
+and the shift comes out exactly:
+
+$$
+\lambda' - \lambda = \frac{h}{m_e c}\,(1 - \cos\theta)
+$$
+
+<Katex tex="\theta" /> is the angle the photon is deflected through, and
+<Katex tex="h / m_e c" /> is a fixed length, the Compton wavelength of the
+electron: 2.426 picometres. The shift doesn't depend on the photon's energy
+at all. What changes is how much that shift matters. For Compton's 17.5 keV
+X-rays, with a wavelength of about 71 pm, even the largest possible shift
+(4.85 pm, for a photon bounced straight back) is a 7% change. For a gamma
+ray the same few picometres can be most of its wavelength, and a
+backscattered gamma ray hands most of its energy to the electron. Compton
+won the 1927 Nobel Prize in Physics for the discovery.
+
+In energy terms:
+
+$$
+E' = \frac{E}{1 + \frac{E}{m_e c^2}(1 - \cos\theta)}
+$$
+
+The electron recoils at an angle <Katex tex="\varphi" /> on the other side
+of the original direction, carrying the energy the photon lost. The
+animation shows both, and the plot below it shows how likely each angle
+is, from the Klein–Nishina formula. Low-energy photons scatter forwards and
+backwards about equally; high-energy photons mostly carry on forwards.
+
+Compton scattering is not just history. It is the main way gamma rays lose
+energy in matter, so it shapes every gamma-ray detector's spectrum: the
+sharp "Compton edge" is the most energy a photon can leave behind in one
+collision (477 keV for the 662 keV gamma rays from caesium-137). It also
+blurs medical X-ray images, which is why X-ray machines use anti-scatter
+grids.
+
+## Inverse Compton scattering
+
+Now run the collision the other way. Let the electron move at nearly the
+speed of light, with Lorentz factor <Katex tex="\gamma" />, and let it meet a
+low-energy photon: a microwave photon left over from the Big Bang, say, or
+a photon of starlight. In the electron's own frame the photon arrives
+blueshifted by a factor of about <Katex tex="\gamma" />. It scatters, and
+back in our frame it is blueshifted again by about <Katex tex="\gamma" />.
+Averaged over directions:
+
+$$
+\langle E_1 \rangle \approx \frac{4}{3}\,\gamma^2 E
+$$
+
+The square is what makes this so powerful. An electron with
+<Katex tex="\gamma = 10{,}000" /> (an energy of about 5 GeV) turns a
+cosmic-microwave-background photon of 0.0006 eV into an X-ray of about
+84 keV, a gain of a hundred million. The scattered photons are also beamed
+forwards, into a narrow cone of half-angle about <Katex tex="1/\gamma" />
+around the electron's direction of travel: the animation shows the cone.
+
+There is a limit. When <Katex tex="\gamma E" /> approaches the electron's
+rest energy (511 keV), the electron would be handing over a large share of
+its own energy in one go, and the simple <Katex tex="\gamma^2" /> rule
+breaks down. In this Klein–Nishina regime the scattered photon can carry at
+most about the electron's whole energy, <Katex tex="\gamma m_e c^2" />.
+
+### Where it happens
+
+- **The Sunyaev–Zel'dovich effect.** The hot gas in a galaxy cluster
+  (around 100 million kelvin) is full of electrons moving at a few percent
+  of light speed. They nudge some of the cosmic microwave background
+  photons passing through to slightly higher energies, which leaves a
+  faint dip in the microwave sky behind every big cluster. Surveys use it
+  to find clusters at any distance.
+- **Blazars and quasars.** Jets of electrons near the speed of light
+  scatter the light of the surrounding gas and dust up to gamma-ray
+  energies.
+- **The Crab Nebula.** The same electrons that make the nebula's radio to
+  X-ray glow by synchrotron radiation scatter some of those photons up to
+  TeV gamma rays, a process called synchrotron self-Compton.
+- **Radio galaxy lobes.** Electrons in giant lobes scatter the cosmic
+  microwave background into X-rays, which is how X-ray telescopes see lobes
+  far beyond the visible galaxy.
+
+Inverse Compton scattering also works as a brake. Every scattering takes
+energy from the electron, so a fast electron in a dense bath of photons
+cools quickly. That puts a ceiling on how bright compact radio sources can
+appear, at a brightness temperature of about a trillion kelvin.
+
+<SimPostSchema
+  title="Compton Scattering and Inverse Compton Scattering"
+  description="An interactive visualization of Compton scattering, where a photon loses energy to an electron, and inverse Compton scattering, where a fast electron boosts microwave and radio photons into X-rays and gamma rays."
+  url="https://astrosyo.com/posts/compton-scattering"
+  datePublished="2026-11-20"
+  authorName="Astrosyo"
+  keywords={["compton scattering", "inverse compton scattering", "compton effect", "compton wavelength", "klein-nishina", "sunyaev-zeldovich effect"]}
+  image="/images/compton-scattering/thumbnail.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Compton and Inverse Compton Scattering",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/compton-scattering#simulation",
+    "description": "Interactive animation of Compton scattering with adjustable photon energy and angle, a Klein–Nishina angular plot, and inverse Compton scattering with adjustable electron Lorentz factor and seed photons, with beaming and an energy scale."
+  }}
+/>
+
+<Changelog entries={["2026-11-20: Published."]} />
