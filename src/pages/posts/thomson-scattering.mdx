@@ -1,0 +1,156 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Thomson Scattering"
+subtitle: "How free electrons bounce light, and why it made the early universe opaque"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-21'
+description: "An interactive visualization of Thomson scattering: watch a free electron shake in a light wave and re-radiate it, see why sideways-scattered light comes out polarized, and work out how opaque a cloud of electrons is, from the Sun's core to the universe before the cosmic microwave background."
+postColor: rgba(30, 22, 12, 1)
+slug: thomson-scattering
+imageDir: /images/thomson-scattering
+thumbnail: /images/thomson-scattering/thumbnail.webp
+keywords:
+  - thomson scattering
+  - thomson cross section
+  - electron scattering
+  - optical depth
+  - photon random walk
+  - cmb polarization
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import ThomsonScattering from "../../components/simulations/thomson-scattering/ThomsonScattering.jsx";
+
+<figure class="post-figure post-figure-md" id="simulation">
+  <ThomsonScattering client:visible />
+</figure>
+
+Light is a wave of electric and magnetic fields. When it passes a free
+electron, the electric field pushes the electron back and forth at the
+light's own frequency. A shaking charge is a tiny antenna, and it sends
+out light of its own in all directions. That re-radiated light is
+Thomson scattering. It is the simplest way light and matter interact,
+and it shaped the universe: for its first 380,000 years Thomson scattering
+kept the cosmos as opaque as the inside of a star.
+
+## What the electron does
+
+The animation shows light arriving from the left and an electron shaking
+in it. An oscillating charge radiates most strongly at right angles to its
+motion and not at all along it. Choose light polarized in the plane of the
+screen and the electron shakes up and down: an observer straight above or
+below sees nothing, because they are looking along its line of motion.
+Choose light polarized out of the screen and the electron shakes towards
+and away from you, so in the plane of the screen it radiates equally in
+every direction.
+
+Ordinary unpolarized light, like sunlight, is a mix of both. Averaged
+together, the scattered light is
+
+$$
+I(\theta) \propto \frac{1 + \cos^2\theta}{2}
+$$
+
+where <Katex tex="\theta" /> is the angle from the original direction. It's
+equally bright straight ahead and straight back, and half as bright
+sideways. And the sideways light is polarized. An observer at
+<Katex tex="90^\circ" /> only sees the part of the shaking that is side-on
+to them, so all the light reaching them vibrates in the same direction.
+In general the degree of polarization is
+
+$$
+\Pi = \frac{\sin^2\theta}{1 + \cos^2\theta}
+$$
+
+Two things don't happen. The scattered light keeps its colour: as long as
+the photon's energy is well below the electron's rest energy of 511 keV,
+the electron hands it back unchanged. (Above that, the electron recoils and
+it becomes [Compton scattering](/posts/compton-scattering).) And it treats
+every wavelength the same, unlike the scattering by air molecules that
+makes the sky blue.
+
+## How big is an electron, to light?
+
+The chance of a photon hitting an electron works as if the electron were a
+small target of a fixed area, the Thomson cross-section:
+
+$$
+\sigma_T = \frac{8\pi}{3}\,r_e^2 = 6.65 \times 10^{-29}~\text{m}^2
+$$
+
+<Katex tex="r_e = 2.8" /> femtometres is the classical electron radius, a
+length that comes out of the electron's charge and mass. Protons scatter
+too, but the effect depends on how easily the charge is shaken, so a
+proton, 1,836 times heavier, has a cross-section about 3.4 million times
+smaller. In an ionised gas, the electrons do nearly all the scattering.
+J. J. Thomson worked this out in 1906, and used the scattering of X-rays to
+make one of the first estimates of how many electrons an atom holds.
+
+## Through a cloud of electrons
+
+One electron is a tiny target, but there are a lot of them. Through a gas
+with <Katex tex="n_e" /> electrons per cubic metre, a photon travels on
+average a mean free path <Katex tex="\lambda = 1/(n_e \sigma_T)" /> before
+hitting one. The optical depth <Katex tex="\tau = n_e \sigma_T L" />
+counts how many mean free paths there are across a distance
+<Katex tex="L" />. Below 1, most light goes straight through. Far above 1,
+a photon bounces off in a new direction every mean free path and staggers
+out in a random walk, taking about <Katex tex="\tau^2" /> steps and a time
+of about <Katex tex="\tau L / c" />.
+
+The second panel works this out for real places:
+
+- **Inside the Sun.** At the core's density a photon travels only a
+  fraction of a millimetre between scatterings. The energy made in the
+  core takes something like a hundred thousand years to random-walk out,
+  instead of the two seconds a straight path would take.
+- **The solar corona.** So thin that only a few millionths of the Sun's
+  light is scattered towards us. That faint, polarized white glow is the
+  corona we see in a total eclipse.
+- **The early universe.** Until about 380,000 years after the Big Bang the
+  universe was hot enough to keep atoms ionised, and free electrons
+  scattered light everywhere. When it cooled enough for electrons to join
+  nuclei, the fog cleared, and the light that last scattered then reaches
+  us today as the cosmic microwave background. Its faint polarization
+  pattern, mapped by the WMAP and Planck satellites, is Thomson scattering
+  at work.
+- **Intergalactic gas today.** Across the whole observable universe the
+  thin gas between galaxies scatters only a fraction of a percent of
+  light. Including the denser past, Planck measured the total optical
+  depth since the first stars reionised the universe at about 0.05.
+
+Thomson scattering also sets the most famous speed limit in astrophysics.
+Radiation pushes on the electrons of infalling gas through this same
+cross-section, and above the [Eddington luminosity](/posts/eddington-luminosity-calculator)
+that push beats gravity. On Earth, fusion researchers fire lasers into
+their plasmas and read the electrons' temperature and density from the
+slightly Doppler-broadened Thomson-scattered light.
+
+<SimPostSchema
+  title="Thomson Scattering"
+  description="An interactive visualization of Thomson scattering: watch a free electron shake in a light wave and re-radiate it, see why sideways-scattered light comes out polarized, and work out how opaque a cloud of electrons is, from the Sun's core to the universe before the cosmic microwave background."
+  url="https://astrosyo.com/posts/thomson-scattering"
+  datePublished="2026-11-21"
+  authorName="Astrosyo"
+  keywords={["thomson scattering", "thomson cross section", "electron scattering", "optical depth", "photon random walk", "cmb polarization"]}
+  image="/images/thomson-scattering/thumbnail.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Thomson Scattering",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/thomson-scattering#simulation",
+    "description": "Interactive animation of a free electron scattering polarized or unpolarized light, with the angular pattern and polarization at any observer angle, and an optical-depth and photon random-walk calculator with real astrophysical presets."
+  }}
+/>
+
+<Changelog entries={["2026-11-21: Published."]} />
