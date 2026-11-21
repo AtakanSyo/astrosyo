@@ -1,0 +1,160 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Synchrotron Radiation"
+subtitle: "The lighthouse beam of an electron in a magnetic field"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-21'
+description: "An interactive visualization of synchrotron radiation: watch a fast electron spiral in a magnetic field and beam its light like a lighthouse, then see where its spectrum lands, from the Milky Way's radio glow to the Crab Nebula's X-rays."
+postColor: rgba(20, 16, 40, 1)
+slug: synchrotron-radiation
+imageDir: /images/synchrotron-radiation
+thumbnail: /images/synchrotron-radiation/thumbnail.webp
+keywords:
+  - synchrotron radiation
+  - synchrotron emission
+  - critical frequency
+  - relativistic beaming
+  - cyclotron radiation
+  - crab nebula
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import SynchrotronRadiation from "../../components/simulations/synchrotron-radiation/SynchrotronRadiation.jsx";
+
+<figure class="post-figure post-figure-md" id="simulation">
+  <SynchrotronRadiation client:visible />
+</figure>
+
+A magnetic field can't speed an electron up or slow it down, but it can
+bend its path. An electron moving across a field curves round into a
+circle, or a helix if it also drifts along the field. Anything charged
+that changes direction radiates, so a circling electron glows. When the
+electron is slow, that glow is gentle and comes out at one frequency, the
+rate it goes round. When the electron moves at nearly the speed of light,
+the glow becomes synchrotron radiation: a tight beam sweeping round like a
+lighthouse, with a spectrum that can stretch from radio waves to gamma
+rays.
+
+## Why a fast electron becomes a lighthouse
+
+At everyday speeds a circling electron radiates in a broad doughnut
+pattern, the same in front and behind. As it approaches the speed of
+light, relativity squeezes almost all of that radiation forward, into a
+cone of half-angle about <Katex tex="1/\gamma" /> around the direction it
+is moving, where <Katex tex="\gamma" /> is its Lorentz factor. A 5 GeV
+electron has <Katex tex="\gamma \approx 10{,}000" />, so its beam is only
+about 20 arcseconds wide.
+
+An observer off to the side only catches the beam for the brief moment it
+sweeps past, once per orbit. The flash is short for two reasons: the beam
+is narrow, and the electron is chasing its own light towards the observer,
+which squashes the flash in time by a further factor of about
+<Katex tex="\gamma^2" />. A flash about <Katex tex="1/\gamma^3" /> of an
+orbit long contains frequencies about <Katex tex="\gamma^3" /> times
+higher than the orbit itself. That is why a cosmic-ray electron that goes
+round once every few minutes can shine at gigahertz radio frequencies.
+
+The animation shows this: the beam sweeps past the observer on the right,
+and the trace along the bottom shows what they receive. Drag the electron
+energy down to <Katex tex="\gamma \approx 1" /> and the flashes melt into a
+smooth wave. That slow case is called cyclotron radiation.
+
+## The formulas
+
+The electron's basic frequency is set by the field:
+
+$$
+\nu_g = \frac{eB}{2\pi m_e} \approx 2.8~\text{MHz per gauss}
+$$
+
+A relativistic electron goes round more slowly than that, at
+<Katex tex="\nu_g/\gamma" />, but radiates up to the critical frequency
+
+$$
+\nu_c = \frac{3}{2}\,\gamma^2\,\nu_g\,\sin\alpha
+$$
+
+where <Katex tex="\alpha" /> is the pitch angle between the electron's
+path and the field. One electron's spectrum rises slowly, peaks at about
+<Katex tex="0.29\,\nu_c" />, and falls off sharply above
+<Katex tex="\nu_c" />. The power it radiates is
+
+$$
+P = 2\,\sigma_T\,c\,\beta^2\gamma^2\,\frac{B^2}{2\mu_0}\,\sin^2\alpha
+$$
+
+so the most energetic electrons in the strongest fields lose their energy
+fastest. Averaged over pitch angles the cooling time is about
+<Katex tex="7.7\times 10^{8}~\text{s} / (B_{\text{G}}^2\,\gamma)" />.
+
+## Where it shines
+
+- **The Milky Way's radio glow.** Cosmic-ray electrons with a few GeV of
+  energy, spiralling in the Galaxy's weak field of about 5 microgauss,
+  radiate at around a gigahertz. Most of the radio sky away from the
+  Galactic plane's hot gas is synchrotron light. Hannes Alfvén, Nicolai
+  Herlofson and Karl-Otto Kiepenheuer proposed this in 1950.
+- **The Crab Nebula.** Iosif Shklovsky suggested in 1953 that the
+  nebula's blue-white glow was synchrotron light, and the strong
+  polarization found the next year confirmed it. Its X-ray-emitting
+  electrons are so energetic that they radiate away their energy in less
+  than a century, which is why the Crab looks smaller in X-rays than in
+  visible light: the X-rays only come from near the pulsar that keeps
+  supplying fresh electrons.
+- **Jets.** The jet shooting out of the galaxy M87 is synchrotron light
+  from radio to X-rays, from electrons accelerated near its central black
+  hole.
+- **Jupiter.** Electrons trapped in Jupiter's radiation belts make it one
+  of the brightest radio sources in the sky at decimetre wavelengths.
+
+Synchrotron light also has two fingerprints that give it away. It is
+strongly polarized, at right angles to the magnetic field, so radio
+astronomers use it to map magnetic fields across galaxies. And because a
+whole population of electrons spans a wide range of energies, the
+individual spectra add up to a smooth power law, brightness falling with
+frequency roughly as <Katex tex="\nu^{-0.7}" />, not the thermal hump a
+hot object gives.
+
+The same electrons can also scatter their own synchrotron photons up to
+gamma-ray energies; see this site's
+[Compton and inverse Compton scattering](/posts/compton-scattering) story.
+
+## On Earth
+
+Synchrotron radiation was first seen on 24 April 1947, as a spot of light
+inside the glass vacuum tube of a 70 MeV electron synchrotron at General
+Electric's lab in Schenectady, New York, which gave it its name. For
+particle physicists it was a nuisance: energy lost by every electron on
+every turn. Today dozens of synchrotron light sources around the world
+are built to make it on purpose, bending electron beams of a few GeV in
+strong magnets to produce intense X-rays for studying proteins, materials
+and fossils.
+
+<SimPostSchema
+  title="Synchrotron Radiation"
+  description="An interactive visualization of synchrotron radiation: watch a fast electron spiral in a magnetic field and beam its light like a lighthouse, then see where its spectrum lands, from the Milky Way's radio glow to the Crab Nebula's X-rays."
+  url="https://astrosyo.com/posts/synchrotron-radiation"
+  datePublished="2026-11-21"
+  authorName="Astrosyo"
+  keywords={["synchrotron radiation", "synchrotron emission", "critical frequency", "relativistic beaming", "cyclotron radiation", "crab nebula"]}
+  image="/images/synchrotron-radiation/thumbnail.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Synchrotron Radiation",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/synchrotron-radiation#simulation",
+    "description": "Interactive animation of an electron circling in a magnetic field with its beamed radiation sweeping past an observer, the received pulse train, and the single-electron synchrotron spectrum, with adjustable field, electron energy and pitch angle."
+  }}
+/>
+
+<Changelog entries={["2026-11-21: Published."]} />
