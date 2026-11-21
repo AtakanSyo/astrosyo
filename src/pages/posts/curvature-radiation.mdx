@@ -1,0 +1,138 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Curvature Radiation"
+subtitle: "How pulsars shine by sliding particles along bent magnetic field lines"
+category: simulation
+writer: Astrosyo
+pubDate: '2026-11-21'
+description: "An interactive visualization of curvature radiation: electrons and positrons sliding along a pulsar's curved magnetic field lines, shedding gamma rays along each line's direction. Change the particle energy and the curvature and see where the spectrum lands."
+postColor: rgba(16, 18, 40, 1)
+slug: curvature-radiation
+imageDir: /images/curvature-radiation
+thumbnail: /images/curvature-radiation/thumbnail.webp
+keywords:
+  - curvature radiation
+  - pulsar emission
+  - pulsar gamma rays
+  - coherent curvature radiation
+  - fast radio bursts
+  - neutron star magnetosphere
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import CurvatureRadiation from "../../components/simulations/curvature-radiation/CurvatureRadiation.jsx";
+
+<figure class="post-figure post-figure-md" id="simulation">
+  <CurvatureRadiation client:visible />
+</figure>
+
+Curvature radiation is what you get when synchrotron radiation runs out of
+room. Around a pulsar the magnetic field is around a trillion times
+stronger than Earth's. In a field like that, any motion of an electron
+across the field is radiated away as synchrotron light in less than a
+trillionth of a second. What's left is motion along the field. The
+particles slide along the field lines like beads on a wire. But the field
+lines of a spinning neutron star are curved, and a particle following a
+curved path is still being accelerated sideways. So it still radiates,
+and this time the bend in its path comes from the shape of the field line
+rather than from circling round it.
+
+## Same physics, different curve
+
+A charge moving at nearly the speed of light radiates into a narrow cone,
+about <Katex tex="1/\gamma" /> wide, pointed along its direction of motion.
+For a synchrotron electron that direction keeps turning because it
+circles the field. For a curvature-radiating particle it turns because the
+field line itself bends. The maths is identical: replace the radius of the
+electron's circle with the radius of curvature of the field line,
+<Katex tex="\rho" />. The critical frequency becomes
+
+$$
+\nu_c = \frac{3}{4\pi}\,\gamma^3\,\frac{c}{\rho}
+$$
+
+and the spectrum has exactly the synchrotron shape, peaking at about
+<Katex tex="0.29\,\nu_c" />. The power each particle radiates is
+
+$$
+P = \frac{e^2 c\,\gamma^4}{6\pi\varepsilon_0\,\rho^2}
+$$
+
+The animation shows the geometry. Particles leave the neutron star's
+surface along an open field line from near the magnetic pole. At every
+point they shed photons along the line's current direction, so as the
+line curves, the photons fan out into a broad beam. The dashed circle is
+the circle that best matches the field line at that point; its radius is
+<Katex tex="\rho" />. As the star spins, that beam sweeps across the sky,
+and we see the star pulse.
+
+## Pulsar gamma rays
+
+Pulsars have huge electric fields along their field lines that push
+particles to enormous energies, but the <Katex tex="\gamma^4" /> in the
+power formula fights back. The faster a particle goes, the harder it
+radiates, until the energy it gains from the field each second equals what
+it loses. For pulsar conditions that happens near
+<Katex tex="\gamma \approx 10^7" />, particles carrying about 5 TeV each. On field
+lines curved over about a thousand kilometres, that puts the peak in gamma
+rays of hundreds of MeV to a few GeV. The Fermi gamma-ray space telescope
+has found hundreds of pulsars shining at exactly those energies, with
+spectra that cut off sharply at a few GeV, just as this picture predicts.
+Whether the gamma rays come from curvature radiation or from synchrotron
+radiation further out, near where the field lines open, is still being
+argued over; both leave a similar fingerprint.
+
+Many of those gamma rays don't escape. A gamma ray crossing a strong
+magnetic field can turn into an electron–positron pair, and those new
+particles slide along field lines and radiate gamma rays of their own. The
+cascade fills the pulsar's surroundings with pairs, the plasma that powers
+everything else the pulsar does.
+
+## Pulsar radio and fast radio bursts
+
+The same process at much lower energy, with <Katex tex="\gamma" /> of a few
+hundred, lands in the radio. But pulsar radio pulses are so intense that
+no collection of particles radiating independently could produce them.
+The leading explanation is coherent curvature radiation: bunches of
+particles sliding along a field line together, radiating in step like a
+single giant charge. A bunch of <Katex tex="N" /> particles radiating in
+step gives <Katex tex="N^2" /> times the power of one, not
+<Katex tex="N" /> times. The same mechanism, near magnetars with even
+stronger fields, is one of the main proposed explanations for fast radio
+bursts. In April 2020 a magnetar in our own galaxy, SGR 1935+2154, gave
+off a burst of this kind, the first ever seen from a known source, and
+coherent radiation from its magnetic field is one of the candidates still
+under debate.
+
+For the synchrotron version of this physics, see this site's
+[Synchrotron Radiation](/posts/synchrotron-radiation) story, and for how
+the same fast particles can also scatter light up to gamma rays, see
+[Compton and inverse Compton scattering](/posts/compton-scattering).
+
+<SimPostSchema
+  title="Curvature Radiation"
+  description="An interactive visualization of curvature radiation: electrons and positrons sliding along a pulsar's curved magnetic field lines, shedding gamma rays along each line's direction. Change the particle energy and the curvature and see where the spectrum lands."
+  url="https://astrosyo.com/posts/curvature-radiation"
+  datePublished="2026-11-21"
+  authorName="Astrosyo"
+  keywords={["curvature radiation", "pulsar emission", "pulsar gamma rays", "coherent curvature radiation", "fast radio bursts", "neutron star magnetosphere"]}
+  image="/images/curvature-radiation/thumbnail.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Curvature Radiation",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/curvature-radiation#simulation",
+    "description": "Interactive animation of particles sliding along a neutron star's dipole field lines and emitting curvature radiation along the line's tangent, with the osculating circle, adjustable Lorentz factor and radius of curvature, and the resulting spectrum."
+  }}
+/>
+
+<Changelog entries={["2026-11-21: Published."]} />
