@@ -3,9 +3,11 @@ import Layout from './Layout.astro';
 import '@fontsource/poiret-one';
 import '../styles/postsGlobal.css';
 import '../styles/reviewPost.css';
+import '../styles/reviewHero.css';
 import '../styles/reviewLight.css';
 import FeedbackCTA from '../components/FeedbackCTA.astro';
 import ScoreBadge from '../components/ScoreBadge.astro';
+import { getVendors } from '../utils/vendors.js';
 
 const { url } = Astro.props;
 
@@ -65,6 +67,42 @@ function parseScore(v: unknown): number | null {
 }
 
 const overallNum = parseScore(rating?.overall);
+
+// Small label above the title, e.g. "Hands-on review · Telescopes".
+const reviewType = Astro.props.frontmatter.reviewType;
+const kind = reviewType === 'hands-on' ? 'Hands-on review' : reviewType === 'research' ? 'Research review' : 'Review';
+const sub = Astro.props.frontmatter.subcategory;
+const eyebrow = sub ? `${kind} · ${String(sub).charAt(0).toUpperCase()}${String(sub).slice(1)}` : kind;
+
+const vendors = getVendors(Astro.props.frontmatter.affiliate ?? {});
+
+// Research reviews invite owners to send in a hands-on review: an email
+// pre-filled with the telescope's name and a short template.
+const CONTRIBUTE_EMAIL = 'astrosyo.contact@gmail.com';
+const scopeName = String(title).replace(/\s+(Review|Overview)$/i, '');
+const contributeHref =
+  `mailto:${CONTRIBUTE_EMAIL}` +
+  `?subject=${encodeURIComponent(`Hands-on review: ${scopeName}`)}` +
+  `&body=${encodeURIComponent(
+    [
+      `Telescope: ${scopeName}`,
+      'How long have you owned it?',
+      'Your name, as you would like to be credited:',
+      '',
+      'Scores out of 10',
+      'Optics:',
+      'Mount:',
+      'Accessories:',
+      '',
+      'What you like:',
+      'What you would change:',
+      '',
+      'Your review (as long or short as you like):',
+      '',
+      '',
+      'Photos: attach any you took of the telescope or through it.',
+    ].join('\n')
+  )}`;
 ---
 
 <Layout
@@ -83,45 +121,112 @@ const overallNum = parseScore(rating?.overall);
 
 <div class="centered_flex">
 
-  <h1 class="fade-up review-title">
-    {title}
-    {Astro.props.frontmatter.reviewType && (
-      <span class={`review-tag ${Astro.props.frontmatter.reviewType}`}>
-        {Astro.props.frontmatter.reviewType === "hands-on" ? "Hands-On" : "Research"}
-      </span>
-    )}
-  </h1>
-  {Astro.props.frontmatter.tagline && (
-    <p class="fade-up review-tagline">{Astro.props.frontmatter.tagline}</p>
-  )}
-
-<div class="review-post-starter">
-
-  <div class="review-post-starter-content">
-    <div class="centered_flex">
-    <img
-      src={cover_image}
-      class="post-starter-image"
-      alt={title + ' cover'}
-      fetchpriority="high"
-      loading="eager"
-      decoding="async"
-    />
-  </div>
-    <div class="review-meta centered_flex">
-    
-      <div class="main-rating-card rating-card centered_flex">
-        <ScoreBadge score={overallNum ?? undefined} size={96} />
-        <span class="category">Overall</span>
-      </div>
-      <p class="post-starter-description">{Astro.props.frontmatter.description}</p>
+  <!-- Full-width header. The cover photo is used twice: blurred and stretched
+       to fill the band (so any photo fits any screen shape), and sharp, with
+       its edges faded, beside the text. -->
+  <section class="review-hero">
+    <div class="review-hero-bg" aria-hidden="true">
+      {cover_image && <div class="review-hero-backdrop" style={`background-image: url('${cover_image}')`}></div>}
+      <div class="review-hero-scrim"></div>
     </div>
-  </div>
-</div>
+
+    {cover_image && (
+      <div class="review-hero-media">
+        <img src={cover_image} class="review-hero-glow" alt="" aria-hidden="true" decoding="async" />
+        <img
+          src={cover_image}
+          class="review-hero-image"
+          alt={title + ' cover'}
+          fetchpriority="high"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    )}
+
+    <div class="review-hero-content">
+      <p class="review-hero-eyebrow">{eyebrow}</p>
+      <h1 class="review-title">{title}</h1>
+      {Astro.props.frontmatter.tagline && (
+        <p class="review-tagline">{Astro.props.frontmatter.tagline}</p>
+      )}
+
+      <div class="review-hero-summary">
+        <div class="main-rating-card rating-card">
+          <ScoreBadge score={overallNum ?? undefined} size={84} />
+          <span class="category">Overall</span>
+        </div>
+        <p class="review-hero-desc">{description}</p>
+      </div>
+
+      <div class="review-hero-actions">
+        {vendors.length > 0 && (
+          <details class="review-hero-price">
+            <summary class="review-hero-btn review-hero-btn--primary">
+              Check price <span class="review-hero-caret" aria-hidden="true"></span>
+            </summary>
+            <ul class="review-hero-menu">
+              {vendors.map(({ name, region, link }) => (
+                <li>
+                  <a href={link} target="_blank" rel="noopener noreferrer sponsored nofollow">
+                    <span class="review-hero-menu-name">{name}</span>
+                    <span class="review-hero-menu-region">{region}</span>
+                    <span class="review-hero-menu-arrow" aria-hidden="true">↗</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        )}
+        <a class="review-hero-btn" href="#verdict" data-verdict-link>Jump to verdict</a>
+      </div>
+
+      {reviewType === 'research' && (
+        <p class="review-hero-contribute">
+          Own a {scopeName}?{' '}
+          <a href={contributeHref}>Send us your hands-on review <span aria-hidden="true">→</span></a>
+        </p>
+      )}
+    </div>
+  </section>
 
   <article class="post review-post centered_flex">
     <slot />
   </article>
+
+  <script is:inline>
+    // Point "Jump to verdict" at the review's closing section, whatever it's
+    // called; drop the button if there isn't one.
+    (function () {
+      var link = document.querySelector('[data-verdict-link]');
+      if (!link) return;
+      var heads = Array.prototype.slice.call(document.querySelectorAll('article.review-post h2')).reverse();
+      var target = heads.find(function (h) { return /conclusion|verdict|final|bottom line|summary/i.test(h.textContent); });
+      if (!target) { link.remove(); return; }
+      if (!target.id) target.id = 'verdict';
+      target.classList.add('review-anchor');
+      link.setAttribute('href', '#' + target.id);
+    })();
+
+    // Close the "Check price" menu on a click outside it, on Escape, and
+    // after a store is picked.
+    (function () {
+      var menu = document.querySelector('.review-hero-price');
+      if (!menu) return;
+      document.addEventListener('click', function (e) {
+        if (menu.open && !menu.contains(e.target)) menu.open = false;
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && menu.open) {
+          menu.open = false;
+          menu.querySelector('summary').focus();
+        }
+      });
+      menu.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () { menu.open = false; });
+      });
+    })();
+  </script>
 
   <FeedbackCTA />
 

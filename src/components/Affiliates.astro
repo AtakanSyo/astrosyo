@@ -7,20 +7,19 @@ export interface Props {
   };
 }
 
+import { getVendors } from '../utils/vendors.js';
+
 const { affiliate } = Astro.props as Props;
 
 const title = 'Available at These Vendors';
 
-// One row per store that has a link; region is where the store mainly sells.
-const vendors = [
-  { name: 'Amazon', region: 'Global', desc: 'Recommended for smaller purchases.', link: affiliate.amazon },
-  { name: 'HighPoint Scientific', region: 'US', desc: 'Great customer support & expert guidance.', link: affiliate.highpointscientific },
-  { name: 'AstroShop', region: 'EU', desc: 'Recommended for EU customers.', link: affiliate.astroshop },
-].filter((v) => v.link);
+// One row per store that has a link (the store list is shared with the
+// review header's "Check price" menu).
+const vendors = getVendors(affiliate);
 ---
 
 {vendors.length > 0 && (
-<section class="affiliate-section centered_flex">
+<section class="affiliate-section centered_flex review-anchor" id="where-to-buy">
 
   <h3 class="affiliate-section-title">{title}</h3>
 
