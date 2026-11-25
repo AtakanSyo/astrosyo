@@ -1,10 +1,8 @@
 ---
 import { calculatorSlugs } from '../config/calculatorSlugs.js';
 import Layout from '../layouts/Layout.astro';
-import '../styles/aprilIndex.css';
-import '../styles/simGlobal.css';
-import '../styles/cosmicStories.css';
-import PostCard from "../components/AprilPostCard.astro";
+import '@fontsource/poiret-one';
+import '../styles/storiesPage.css';
 
 const calculatorUrls = new Set(calculatorSlugs.map(slug => `/posts/${slug}`));
 
@@ -25,22 +23,116 @@ function hasCat(frontmatter: any, needle: string) {
 const simPosts = allPosts
   .filter(({ frontmatter, url }) => !frontmatter?.hidden && hasCat(frontmatter, 'simulation') && !calculatorUrls.has(url))
   .sort((a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime());
+
+// Groups for the filter chips. A story can set `storyType:` in its
+// frontmatter to one of these keys; otherwise it's sorted by its slug.
+const GROUPS = [
+  { key: 'solar', label: 'Solar System' },
+  { key: 'size', label: 'Size comparisons' },
+  { key: 'stars', label: 'Stars & galaxies' },
+  { key: 'physics', label: 'Physics' },
+  { key: 'history', label: 'History' },
+];
+
+function groupOf(url: string, frontmatter: any): string {
+  if (frontmatter.storyType && GROUPS.some((g) => g.key === frontmatter.storyType)) return frontmatter.storyType;
+  const slug = url.split('/').filter(Boolean).pop() ?? '';
+  if (/size-comparison/.test(slug)) return 'size';
+  if (/compton|synchrotron|curvature|thomson|diffusion|quantum|radiation|scattering/.test(slug)) return 'physics';
+  if (/perge|ancient|myth|history/.test(slug)) return 'history';
+  if (/star-system|type-system|single-planet-system|galaxy|andromeda|milky-way|nebula|black-hole/.test(slug)) return 'stars';
+  return 'solar';
+}
+
+const stories = simPosts.map(({ frontmatter, url }) => ({
+  url,
+  title: frontmatter.title ?? '',
+  description: frontmatter.subtitle || frontmatter.description || '',
+  thumbnail: frontmatter.thumbnail ?? '',
+  group: groupOf(url, frontmatter),
+  featured: Boolean(frontmatter.featured),
+}));
+
+// The hero shows a story marked `featured: true`, or the newest one.
+const hero = stories.find((s) => s.featured && s.thumbnail) ?? stories.find((s) => s.thumbnail) ?? stories[0];
+const counts = Object.fromEntries(GROUPS.map((g) => [g.key, stories.filter((s) => s.group === g.key).length]));
+const groupLabel = Object.fromEntries(GROUPS.map((g) => [g.key, g.label]));
 ---
 
-<Layout title="Stories">
-  <section class="sim-list">
-    <div class="intro page-intro">
-      <h1 class="fade-up">Stories</h1>
+<Layout title="Stories" description="Interactive stories and simulations: planets in 3D, true-scale size comparisons, colliding galaxies and the physics of light.">
+  <div class="stories-sky" aria-hidden="true"></div>
+
+  {hero && (
+    <section class="stories-hero">
+      <div class="stories-hero-bg" aria-hidden="true">
+        {hero.thumbnail && <div class="stories-hero-backdrop" style={`background-image: url('${hero.thumbnail}')`}></div>}
+        <div class="stories-hero-scrim"></div>
+      </div>
+
+      {hero.thumbnail && (
+        <a class="stories-hero-media" href={hero.url} tabindex="-1" aria-hidden="true">
+          <img src={hero.thumbnail} alt="" fetchpriority="high" decoding="async" />
+        </a>
+      )}
+
+      <div class="stories-hero-content">
+        <h1 class="stories-hero-eyebrow">Stories · {stories.length} interactive explorations</h1>
+        <p class="stories-hero-kicker">Newest story</p>
+        <h2 class="stories-hero-title"><a href={hero.url}>{hero.title}</a></h2>
+        {hero.description && <p class="stories-hero-desc">{hero.description}</p>}
+        <a class="stories-hero-btn" href={hero.url}>Explore the story <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  )}
+
+  <section class="stories-browse" aria-label="All stories">
+    <div class="stories-filters" role="toolbar" aria-label="Filter stories">
+      <button type="button" class="stories-chip is-on" data-filter="all" aria-pressed="true">
+        All <span class="stories-chip-count">{stories.length}</span>
+      </button>
+      {GROUPS.filter((g) => counts[g.key] > 0).map((g) => (
+        <button type="button" class="stories-chip" data-filter={g.key} aria-pressed="false">
+          {g.label} <span class="stories-chip-count">{counts[g.key]}</span>
+        </button>
+      ))}
     </div>
 
-    {simPosts.length === 0 ? (
-      <p class="empty">No simulation posts found.</p>
+    {stories.length === 0 ? (
+      <p class="empty">No stories found.</p>
     ) : (
-      <div class="april-post-grid">
-        {simPosts.map(({ frontmatter, url }) => (
-          <PostCard url={url} frontmatter={frontmatter} isP5={true} />
+      <ul class="stories-grid">
+        {stories.map((s) => (
+          <li class="story-card" data-group={s.group}>
+            <a href={s.url}>
+              {s.thumbnail && <img src={s.thumbnail} alt="" loading="lazy" decoding="async" />}
+              <span class="story-card-shade" aria-hidden="true"></span>
+              <span class="story-card-text">
+                <span class="story-card-group">{groupLabel[s.group]}</span>
+                <span class="story-card-title">{s.title}</span>
+              </span>
+            </a>
+          </li>
         ))}
-      </div>
+      </ul>
     )}
   </section>
+
+  <script>
+    // Filter chips: show one group at a time, with no page reload.
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.stories-chip'));
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.story-card'));
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const f = chip.dataset.filter;
+        chips.forEach((c) => {
+          const on = c === chip;
+          c.classList.toggle('is-on', on);
+          c.setAttribute('aria-pressed', String(on));
+        });
+        cards.forEach((card) => {
+          card.hidden = f !== 'all' && card.dataset.group !== f;
+        });
+      });
+    });
+  </script>
 </Layout>
