@@ -16,17 +16,17 @@ body:has(.review-hero) {
   position: relative;
   z-index: 5; /* keeps the price menu above the article when it drops below the band */
   isolation: isolate;
-  /* clip sideways only: the photo's glow must not widen the page, but the
-     price menu still needs to drop below the band */
+  /* clip sideways only: nothing in the band may widen the page, but the
+     price menu still needs to drop below it */
   overflow-x: clip;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
   margin-bottom: 2.5rem;
-  min-height: min(82vh, 780px);
+  min-height: min(90vh, 920px);
   padding: clamp(2rem, 6vh, 4.5rem) clamp(1.25rem, 6vw, 6rem);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
   align-items: center;
   gap: clamp(1.5rem, 4vw, 4rem);
   background: var(--hero-page);
@@ -65,47 +65,22 @@ body:has(.review-hero) {
   min-width: 0;
 }
 
-/* A blurred, enlarged copy right behind the photo, so the photo's own edge
-   colours carry on outward and its faded edges never show as a box. */
-.review-hero-glow {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: min(72vh, 660px);
-  transform: translate(-50%, -50%) scale(1.45);
-  filter: blur(42px) saturate(1.1);
-  opacity: 0.95;
-  pointer-events: none;
-}
 
-/* The box matches the rendered photo, so the fade lands on its real edges.
-   Only a thin band along each edge fades (two linear masks intersected),
-   so a telescope reaching into the photo's corners stays sharp; the
-   backdrop is the same photo blurred, so the faded edge melts into it. */
+/* The box matches the rendered photo, so the fade lands on its real edges. */
 .review-hero-image {
   position: relative;
   display: block;
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: min(72vh, 660px);
-  --edge: 12%;
-  -webkit-mask-image:
-    linear-gradient(to right, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(to right, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%);
-  mask-composite: intersect;
+  max-height: min(88vh, 860px);
+  -webkit-mask-image: radial-gradient(closest-side, #000 42%, rgba(0, 0, 0, 0.55) 72%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 42%, rgba(0, 0, 0, 0.55) 72%, transparent 100%);
 }
 
 .review-hero-content {
   position: relative;
-  z-index: 2; /* above the photo's glow, which can spread under the text */
+  z-index: 2; /* text always sits above the photo */
   grid-column: 1;
   grid-row: 1;
   max-width: 560px;
@@ -337,6 +312,39 @@ body:has(.review-hero) {
   scroll-margin-top: calc(var(--header-height, 52px) + 1.5rem);
 }
 
+/* ---- re-framed covers: zoomed into a window ----
+   Re-framed covers are square, with the telescope at about 45% of the frame
+   and generous gradient padding. Shown whole they'd look small, so they sit
+   in a square window, zoomed 1.55x: the telescope fills about 70% of the
+   window, the full-resolution image keeps its detail, and only the window's
+   outer edge fades into the backdrop (never the telescope). */
+.review-hero--framed .review-hero-media {
+  justify-self: center;
+  width: min(100%, 84vh, 860px);
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  --edge: 14%;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%);
+  mask-composite: intersect;
+}
+
+.review-hero--framed .review-hero-image {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+  transform: scale(1.55);
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
 /* ---- phones and narrow tablets: photo on top, text below on a fade ---- */
 @media (max-width: 760px) {
   .review-hero {
@@ -349,11 +357,17 @@ body:has(.review-hero) {
   .review-hero-media {
     grid-column: 1;
     grid-row: 1;
+    /* use the full screen width: run into the band's side padding */
+    margin: 0 -1.25rem;
   }
 
-  .review-hero-image,
-  .review-hero-glow {
-    max-height: 46vh;
+  .review-hero-image {
+    max-height: 58vh;
+  }
+
+  .review-hero--framed .review-hero-media {
+    width: min(100vw, 62vh);
+    justify-self: center;
   }
 
   .review-hero-content {
@@ -400,10 +414,6 @@ body:has(.review-light) .review-hero-image {
   -webkit-mask-image: none;
   mask-image: none;
   mix-blend-mode: multiply;
-}
-
-body:has(.review-light) .review-hero-glow {
-  display: none;
 }
 
 body:has(.review-light) .review-hero-scrim {

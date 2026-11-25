@@ -8,6 +8,7 @@ import '../styles/reviewLight.css';
 import FeedbackCTA from '../components/FeedbackCTA.astro';
 import ScoreBadge from '../components/ScoreBadge.astro';
 import { getVendors } from '../utils/vendors.js';
+import { coverFraming } from '../utils/coverFraming.js';
 
 const { url } = Astro.props;
 
@@ -68,6 +69,10 @@ function parseScore(v: unknown): number | null {
 
 const overallNum = parseScore(rating?.overall);
 
+// Re-framed covers (1600 x 1600 squares) are shown zoomed in so the
+// telescope fills the photo area; older covers keep the regular styling.
+const framing = await coverFraming(cover_image, Astro.props.frontmatter.coverFraming);
+
 // Small label above the title, e.g. "Hands-on review · Telescopes".
 const reviewType = Astro.props.frontmatter.reviewType;
 const kind = reviewType === 'hands-on' ? 'Hands-on review' : reviewType === 'research' ? 'Research review' : 'Review';
@@ -124,7 +129,7 @@ const contributeHref =
   <!-- Full-width header. The cover photo is used twice: blurred and stretched
        to fill the band (so any photo fits any screen shape), and sharp, with
        its edges faded, beside the text. -->
-  <section class="review-hero">
+  <section class={`review-hero${framing === 'framed' ? ' review-hero--framed' : ''}`}>
     <div class="review-hero-bg" aria-hidden="true">
       {cover_image && <div class="review-hero-backdrop" style={`background-image: url('${cover_image}')`}></div>}
       <div class="review-hero-scrim"></div>
@@ -132,7 +137,6 @@ const contributeHref =
 
     {cover_image && (
       <div class="review-hero-media">
-        <img src={cover_image} class="review-hero-glow" alt="" aria-hidden="true" decoding="async" />
         <img
           src={cover_image}
           class="review-hero-image"
