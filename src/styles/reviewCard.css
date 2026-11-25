@@ -56,39 +56,136 @@
   pointer-events: none;
 }
 
-/* Scoped to the telescope cards (not the review link cards in posts) so it
-   outranks the older .affiliate-btn rule in reviewLinkCards.css, which the
-   production build can load after this file. */
-.post-card--review:not(.review-link-card) .affiliate-btn {
-  flex: 1;
-  max-width: 33%;
-  text-align: center;
-  padding: 0.6rem;
-  /* same look as the vendor rows' "Check price" buttons in review posts */
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-radius: 12px;
-  box-shadow: none;
+/* "Check price" dropdown on the telescope cards: one button that unfolds a
+   small menu of stores downward, over the cards below. */
+.post-card--review {
+  overflow: visible;
+}
+
+.post-card--review:has(.card-price[open]) {
+  z-index: 30;
+}
+
+.card-price {
+  position: relative;
+  width: 100%;
+}
+
+.card-price-btn {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.9rem;
-  font-weight: 300;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
   line-height: 1.25;
-  color: #ffffff;
-  text-decoration: none;
+  color: rgba(255, 255, 255, 0.82);
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.post-card--review:not(.review-link-card) .affiliate-btn:hover {
-  background-color: rgba(255, 255, 255, 0.92);
-  border-color: transparent;
-  box-shadow: none;
-  color: #111;
-  transform: none;
+.card-price-btn::-webkit-details-marker {
+  display: none;
 }
 
-.post-card--review:not(.review-link-card) .affiliate-btn:focus-visible {
+.card-price-btn:hover,
+.card-price[open] .card-price-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.card-price-btn:focus-visible {
   outline: 2px solid rgb(var(--brand-color));
   outline-offset: 2px;
+}
+
+.card-price-caret {
+  width: 0.32rem;
+  height: 0.32rem;
+  border-right: 1.2px solid currentColor;
+  border-bottom: 1.2px solid currentColor;
+  opacity: 0.7;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.18s ease;
+}
+
+.card-price[open] .card-price-caret {
+  transform: translateY(1px) rotate(225deg);
+}
+
+.card-price-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  width: 14rem;
+  z-index: 30;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  border-radius: 12px;
+  /* same see-through black and blur as the site header */
+  background: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: saturate(1.8) blur(10px);
+  backdrop-filter: saturate(1.8) blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Opening animation (unrolls like a scroll, stores slide in one by one) is
+   played from the script in reviewCard.astro. */
+
+.card-price-menu li {
+  margin: 0;
+  padding: 0;
+}
+
+.card-price-menu a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.6rem 0.65rem;
+  border-radius: 8px;
+  color: #fff;
+  text-decoration: none;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 300;
+  line-height: 1.2;
+}
+
+.card-price-menu a:hover,
+.card-price-menu a:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.card-price-name {
+  flex: 1;
+  text-align: left;
+}
+
+.card-price-region {
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.card-price-arrow {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-price-caret { transition: none; }
 }
 
 /* Optional: align affiliate row with card spacing */
@@ -97,6 +194,128 @@
   gap: 0.5rem;
   flex-wrap: wrap;
   margin-top: 0.5rem;
+}
+
+/* Telescope type, a label beside the "Check price" button, always on one
+   row; narrow cards use a slightly more compact version (below). */
+.post-card--review {
+  container-type: inline-size;
+  height: auto;
+  align-self: start;
+}
+
+/* Every card is the same shape: a square photo with the title over it, and
+   a fixed-height row for the type and "Check price" underneath. */
+.post-card--review .post-card-link {
+  flex: none;
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+}
+
+/* The type label and "Check price" sit on the photo, along its bottom edge,
+   with the title just above them. */
+.post-card--review {
+  position: relative;
+}
+
+.post-card--review .affiliate-links {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  height: 3.25rem;
+  margin: 0;
+  padding: 0 0.6rem 0.2rem;
+}
+
+/* make room for the row under the title */
+.post-card--review .post-card-link--overlay .post-card-info {
+  padding-bottom: 3.25rem;
+}
+
+.post-card--review .post-card-link:not(.post-card-link--overlay) .post-card-info {
+  padding-bottom: 3.25rem;
+}
+
+/* frosted so the label and button read over any photo */
+.post-card--review .post-card-type,
+.post-card--review .card-price-btn {
+  background: rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.post-card--review .card-price-btn:hover,
+.post-card--review .card-price[open] .card-price-btn {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* The row already has a fixed height, so cards without store links don't
+   need the old spacer (it would squeeze the type label). */
+.post-card--review .affiliate-placeholder {
+  display: none;
+}
+
+.post-card--review .affiliate-links {
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.post-card--review .post-card-type {
+  flex: 0 1 auto;
+  padding: 0.55rem 0.7rem;
+  border-radius: 999px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.64rem;
+  font-weight: 400;
+  line-height: 1.95;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* The button is one fixed size, pushed to the right of the type label. */
+.post-card--review .card-price {
+  flex: 0 0 auto;
+  width: 8rem;
+  margin-left: auto;
+}
+
+.post-card--review .card-price-btn {
+  box-sizing: border-box;
+  height: 2.25rem;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+@container (max-width: 340px) {
+  /* Narrow cards: same side-by-side row, just a little more compact so the
+     longest types still fit next to the button. */
+  .post-card--review .affiliate-links {
+    gap: 0.4rem;
+  }
+
+  .post-card--review .post-card-type {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.56rem;
+    letter-spacing: 0.04em;
+  }
+
+  .post-card--review .card-price {
+    width: 6.25rem;
+  }
+
+  .post-card--review .card-price-btn {
+    gap: 0.35rem;
+    padding: 0 0.5rem;
+    font-size: 0.74rem;
+  }
 }
 
 /* Shared by the telescopes page cards and the homepage review cards */

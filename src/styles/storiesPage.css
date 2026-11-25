@@ -214,10 +214,8 @@ body:has(.stories-hero) {
   overflow: hidden;
   border-radius: 16px;
   background: #0b0c12;
-  border: 1px solid rgba(255, 255, 255, 0.08);
   color: #fff;
   text-decoration: none;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .story-card img {
@@ -258,16 +256,10 @@ body:has(.stories-hero) {
   line-height: 1.2;
 }
 
-.story-card a:hover,
+/* No border or hover effect; keyboard focus still shows an outline. */
 .story-card a:focus-visible {
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 10px 40px rgba(120, 150, 255, 0.12);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .story-card a {
-    transition: none;
-  }
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
 }
 
 /* ---- phones ---- */

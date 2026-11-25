@@ -229,6 +229,23 @@ const contributeHref =
       menu.querySelectorAll('a').forEach(function (a) {
         a.addEventListener('click', function () { menu.open = false; });
       });
+      // On every opening the menu unrolls from the top like a scroll and the
+      // stores slide in one by one.
+      menu.addEventListener('toggle', function () {
+        if (!menu.open) return;
+        var list = menu.querySelector('.review-hero-menu');
+        if (!list || !list.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        list.animate(
+          [{ clipPath: 'inset(0 0 100% 0 round 12px)' }, { clipPath: 'inset(0 0 0 0 round 12px)' }],
+          { duration: 380, easing: 'cubic-bezier(0.22, 0.8, 0.24, 1)' }
+        );
+        list.querySelectorAll('li').forEach(function (li, i) {
+          li.animate(
+            [{ opacity: 0, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'none' }],
+            { duration: 300, delay: 60 + i * 60, easing: 'ease-out', fill: 'backwards' }
+          );
+        });
+      });
     })();
   </script>
 

@@ -216,25 +216,16 @@ body:has(.review-hero) {
   padding: 0.35rem;
   list-style: none;
   border-radius: 12px;
-  background: rgba(18, 19, 24, 0.96);
+  /* same see-through black and blur as the site header */
+  background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  transform-origin: top left;
-  animation: review-hero-unfold 0.16s ease-out;
+  -webkit-backdrop-filter: saturate(1.8) blur(10px);
+  backdrop-filter: saturate(1.8) blur(10px);
 }
 
-@keyframes review-hero-unfold {
-  from {
-    opacity: 0;
-    transform: translateY(-6px) scaleY(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
+/* Opening animation (unrolls like a scroll, stores slide in one by one) is
+   played from the script in ReviewPostLayout.astro. */
 
 .review-hero-menu li {
   margin: 0;
@@ -275,9 +266,6 @@ body:has(.review-hero) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .review-hero-menu {
-    animation: none;
-  }
 
   .review-hero-caret {
     transition: none;

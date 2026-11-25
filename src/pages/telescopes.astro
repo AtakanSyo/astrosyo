@@ -95,11 +95,6 @@ function parseScore(v: number | string | undefined): number | null {
 	          const scoreRaw = rating?.overall;
 	          const scoreNum = parseScore(scoreRaw);
 	          const scoreText = scoreNum !== null ? scoreNum.toFixed(1) : 'N/A';
-          const affs = [
-            ['Amazon', affiliate.amazon],
-            ['HighPoint', affiliate.highpointscientific],
-            ['Astroshop', affiliate.astroshop],
-          ].filter(([, link]) => link);
 
 	          return (
 	            <ReviewCard
@@ -108,7 +103,8 @@ function parseScore(v: number | string | undefined): number | null {
 	              description={description}
 	              scoreText={scoreText}
 	              thumbnail={thumbnail}
-	              affiliates={affs}
+	              affiliate={affiliate}
+	              type={frontmatter.telescopeType}
 	            />
 	          );
 	        })}
@@ -126,11 +122,6 @@ function parseScore(v: number | string | undefined): number | null {
 	            const scoreRaw = rating?.overall;
 	            const scoreNum = parseScore(scoreRaw);
 	            const scoreText = scoreNum !== null ? scoreNum.toFixed(1) : 'N/A';
-            const affs = [
-              ['Amazon', affiliate.amazon],
-              ['HighPoint', affiliate.highpointscientific],
-              ['Astroshop', affiliate.astroshop],
-            ].filter(([, link]) => link);
 
 	            return (
 	              <ReviewCard
@@ -139,7 +130,8 @@ function parseScore(v: number | string | undefined): number | null {
 	                description={description}
 	                scoreText={scoreText}
 	                thumbnail={thumbnail}
-	                affiliates={affs}
+	                affiliate={affiliate}
+	              type={frontmatter.telescopeType}
 	              />
 	            );
 	          })}

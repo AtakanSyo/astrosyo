@@ -43,9 +43,15 @@ const variantClasses = [
 // Cards without a thumbnail (mostly calculators) get a soft wash of the post's colour.
 const tint = hasThumb ? null : cardTint(frontmatter.postColor);
 
+// Calculators keep the framed card look (border, background, hover); every
+// other card is plain.
+const slug = String(url).replace(/\/+$/, "").split("/").pop();
+const isCalculator = calculatorSlugs.includes(slug);
+
 const cardClass = [
   "april-post-card",
   variantClasses,
+  isCalculator && "april-post-card--calculator",
   !hasThumb && "april-post-card--no-thumb",
   tint && "april-post-card--tinted",
   extraClass
@@ -53,6 +59,7 @@ const cardClass = [
 const linkClass = ["april-post-card-link", hasThumb && "april-post-card-link--overlay"].filter(Boolean).join(" ");
 
 import { cardTint } from '../utils/cardTint.js';
+import { calculatorSlugs } from '../config/calculatorSlugs.js';
 import ScoreBadge from './ScoreBadge.astro';
 import '@fontsource/poiret-one';
 import '../styles/aprilCards.css';

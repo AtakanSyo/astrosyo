@@ -9,7 +9,9 @@
  * - description: string
  * - scoreText: string | number (e.g. 8.5)
  * - thumbnail: string (optional)
- * - affiliates: Array<[name: string, link: string]>
+ * - type: string (optional), the telescope type, shown as a label beside "Check price"
+ * - affiliate: the post's `affiliate` frontmatter ({ amazon, highpointscientific, ... }),
+ *   shown as a "Check price" dropdown
  * - ctaText: string (optional, defaults to "Read the review →")
  * - class: string (optional extra classes)
  */
@@ -20,16 +22,18 @@ const {
   description = "",
   scoreText,
   thumbnail = "",
-  affiliates = [],
+  type = "",
+  affiliate = {},
   ctaText = "Read review →",
   class: extraClass = "",
 } = Astro.props;
 
-const affs = Array.isArray(affiliates) ? affiliates : [];
+const vendors = getVendors(affiliate);
 const hasThumb = Boolean(thumbnail);
 const linkClass = ["post-card-link", hasThumb && "post-card-link--overlay"].filter(Boolean).join(" ");
 
 import ScoreBadge from './ScoreBadge.astro';
+import { getVendors } from '../utils/vendors.js';
 import '../styles/cards.css';
 import '../styles/reviewCard.css';
 ---
@@ -56,19 +60,72 @@ import '../styles/reviewCard.css';
   </div>
   </a>
   <div class="affiliate-links">
-    {affs.length > 0 ? (
-      affs.map(([name, link]) => (
-        <a
-          href={link}
-          class="affiliate-btn"
-          target="_blank"
-          rel="noopener noreferrer sponsored nofollow"
-        >
-          Check on {name}
-        </a>
-      ))
+    {type && <span class="post-card-type">{type}</span>}
+    {vendors.length > 0 ? (
+      <details class="card-price">
+        <summary class="card-price-btn">
+          Check price <span class="card-price-caret" aria-hidden="true"></span>
+        </summary>
+        <ul class="card-price-menu">
+          {vendors.map(({ name, region, link }) => (
+            <li>
+              <a href={link} target="_blank" rel="noopener noreferrer sponsored nofollow">
+                <span class="card-price-name">{name}</span>
+                <span class="card-price-region">{region}</span>
+                <span class="card-price-arrow" aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </details>
     ) : (
       <span class="affiliate-placeholder"></span>
     )}
-    </div>
+  </div>
 </div>
+
+<script>
+  // One open price menu at a time; close on an outside click, Escape, or
+  // after a store is picked.
+  const menus = () => document.querySelectorAll<HTMLDetailsElement>('details.card-price');
+
+  // Opening animation: the menu unrolls from the top like a scroll and the
+  // stores slide in one by one.
+  const unroll = (list: HTMLElement | null) => {
+    if (!list || !list.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    list.animate(
+      [{ clipPath: 'inset(0 0 100% 0 round 12px)' }, { clipPath: 'inset(0 0 0 0 round 12px)' }],
+      { duration: 380, easing: 'cubic-bezier(0.22, 0.8, 0.24, 1)' }
+    );
+    list.querySelectorAll('li').forEach((li, i) => {
+      li.animate(
+        [{ opacity: 0, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'none' }],
+        { duration: 300, delay: 60 + i * 60, easing: 'ease-out', fill: 'backwards' }
+      );
+    });
+  };
+  document.addEventListener('click', (e) => {
+    menus().forEach((m) => {
+      if (m.open && !m.contains(e.target as Node)) m.open = false;
+    });
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    menus().forEach((m) => {
+      if (m.open) {
+        m.open = false;
+        m.querySelector('summary')?.focus();
+      }
+    });
+  });
+  document.addEventListener('toggle', (e) => {
+    const t = e.target as HTMLDetailsElement;
+    if (!t.matches?.('details.card-price') || !t.open) return;
+    menus().forEach((m) => { if (m !== t) m.open = false; });
+    unroll(t.querySelector('.card-price-menu'));
+  }, true);
+  document.addEventListener('click', (e) => {
+    const a = (e.target as Element).closest?.('.card-price-menu a');
+    if (a) (a.closest('details') as HTMLDetailsElement).open = false;
+  });
+</script>
