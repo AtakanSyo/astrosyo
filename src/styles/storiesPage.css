@@ -89,15 +89,20 @@ body:has(.stories-hero) {
   color: #fff;
 }
 
-.stories-hero-eyebrow {
-  font-family: inherit;
-  font-size: 0.75rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
-  margin: 0 0 1.4rem;
+/* The page heading, kept for search engines and screen readers but not
+   shown. */
+.stories-hero-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
+
 
 .stories-hero-kicker {
   font-size: 0.8rem;
@@ -307,5 +312,38 @@ body:has(.stories-hero) {
 
   .story-card-group {
     font-size: 0.6rem;
+  }
+}
+
+/* ---- hero entrance: fades in on load, like the review header ----
+   The blurred backdrop comes up first, then the image and the text drift in
+   softly, a moment apart. */
+@keyframes stories-hero-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes stories-hero-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.stories-hero-bg {
+  animation: stories-hero-fade 0.9s ease-out backwards;
+}
+
+.stories-hero-media {
+  animation: stories-hero-rise 1s cubic-bezier(0.22, 0.8, 0.24, 1) 0.15s backwards;
+}
+
+.stories-hero-content {
+  animation: stories-hero-rise 1s cubic-bezier(0.22, 0.8, 0.24, 1) 0.3s backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stories-hero-bg,
+  .stories-hero-media,
+  .stories-hero-content {
+    animation: none;
   }
 }

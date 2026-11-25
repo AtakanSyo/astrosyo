@@ -488,3 +488,36 @@ body:has(.review-light) .review-hero-contribute a:hover,
 body:has(.review-light) .review-hero-contribute a:focus-visible {
   text-decoration-color: #111;
 }
+
+/* ---- entrance: the header fades in on load ----
+   The blurred backdrop comes up first, then the photo and the text drift in
+   softly, a moment apart. */
+@keyframes review-hero-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes review-hero-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.review-hero-bg {
+  animation: review-hero-fade 0.9s ease-out backwards;
+}
+
+.review-hero-media {
+  animation: review-hero-rise 1s cubic-bezier(0.22, 0.8, 0.24, 1) 0.15s backwards;
+}
+
+.review-hero-content {
+  animation: review-hero-rise 1s cubic-bezier(0.22, 0.8, 0.24, 1) 0.3s backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .review-hero-bg,
+  .review-hero-media,
+  .review-hero-content {
+    animation: none;
+  }
+}

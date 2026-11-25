@@ -210,6 +210,14 @@ const contributeHref =
       if (!target.id) target.id = 'verdict';
       target.classList.add('review-anchor');
       link.setAttribute('href', '#' + target.id);
+
+      // Glide down to it instead of jumping (instant for reduced motion).
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+        history.replaceState(null, '', '#' + target.id);
+      });
     })();
 
     // Close the "Check price" menu on a click outside it, on Escape, and

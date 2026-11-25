@@ -223,3 +223,15 @@ footer {
 }
 
 
+
+/* Images are not interactive anywhere on the site: no dragging them off the
+   page, no selection highlight, and no long-press "save / open image" menu
+   on phones. Clicks pass straight through, so cards and links that contain
+   an image still work. */
+img {
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
