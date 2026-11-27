@@ -1,0 +1,177 @@
+---
+layout: ../../layouts/simLayout.astro
+title: "Bremsstrahlung"
+subtitle: "The braking radiation behind X-ray machines, glowing galaxy clusters and solar flares"
+category: simulation
+storyType: physics
+writer: Astrosyo
+pubDate: '2026-11-27'
+description: "An interactive visualization of bremsstrahlung, the light an electron gives off when a nucleus swings it round: see why closer passes make harder X-rays, how an X-ray tube's spectrum works, and what colour hot gas glows, from the Orion Nebula to galaxy clusters and fusion reactors."
+postColor: rgba(14, 22, 34, 1)
+slug: bremsstrahlung
+imageDir: /images/bremsstrahlung
+thumbnail: /images/bremsstrahlung/thumbnail.webp
+keywords:
+  - bremsstrahlung
+  - braking radiation
+  - free-free emission
+  - thermal bremsstrahlung
+  - x-ray tube
+  - galaxy cluster x-rays
+lang: en
+---
+
+import SimPostSchema from "../../components/SimPostSchema.astro";
+import Changelog from "../../components/Changelog.astro";
+import Katex from "../../components/Katex.astro";
+import Bremsstrahlung from "../../components/simulations/bremsstrahlung/Bremsstrahlung.jsx";
+
+<figure class="post-figure post-figure-md" id="simulation">
+  <Bremsstrahlung client:visible />
+</figure>
+
+Every time a charged particle speeds up, slows down or changes direction, it
+gives off light. Bremsstrahlung, German for "braking radiation", is what
+happens when the thing doing the pushing is another charge: an electron
+flying past an atomic nucleus is pulled off course by its electric field, and
+the swerve shakes loose a photon. It is how a hospital makes X-rays, and it is
+how the hottest gas in the universe shines.
+
+## One swerve, one photon
+
+An accelerating charge radiates with a power set by how hard it is
+accelerated, the Larmor formula:
+
+$$
+P = \frac{q^2 a^2}{6\pi\varepsilon_0 c^3}
+$$
+
+An electron passing a nucleus feels the strongest pull at its point of
+closest approach, so that's where the light comes from. The first panel
+follows one electron through. Its photon's energy depends on how sharp the
+swing is: an encounter at distance <Katex tex="b" /> lasts about
+<Katex tex="b/v" />, and a pulse that short carries photons of roughly
+
+$$
+E_\gamma \approx \frac{\hbar v}{b}
+$$
+
+A near miss makes a hard X-ray; a distant pass, a soft one. Heavier nuclei
+pull harder: a nucleus with charge <Katex tex="Ze" /> bends the electron
+<Katex tex="Z" /> times as much, and since the power goes as the square of the
+acceleration, it shines <Katex tex="Z^2" /> times as bright. Tungsten
+(<Katex tex="Z = 74" />) outshines hydrogen more than five thousand times.
+
+The bend itself is usually small. An electron with a few tens of keV,
+passing a hydrogen nucleus at a typical distance, is deflected by well under
+a degree, so the animation exaggerates it. At these scales the electron is
+really a quantum wave about a picometre across, and the photon only
+sometimes appears, but the classical picture gets the essentials right.
+
+## The X-ray tube
+
+When Wilhelm Röntgen discovered X-rays in 1895, he was looking at
+bremsstrahlung from electrons crashing into the glass and metal of a
+discharge tube. A modern X-ray tube is the same idea: electrons are
+accelerated through a voltage <Katex tex="V" /> and slammed into a metal
+target, usually tungsten. Each electron swerves past many nuclei as it slows
+down, giving off a spray of photons with every energy up to its own. That
+makes a smooth spectrum that falls in a straight line, Kramers' law:
+
+$$
+\frac{dI}{dE} \propto Z\,(eV - E)
+$$
+
+and it stops dead at <Katex tex="E = eV" />, when one electron hands over all
+its energy at once. That edge, the Duane–Hunt limit, gives the shortest
+wavelength a tube can make:
+
+$$
+\lambda_\text{min} = \frac{hc}{eV}
+$$
+
+It depends only on the voltage, not on the target, which is how William
+Duane and Franklin Hunt used it in 1915 to measure Planck's constant.
+Bremsstrahlung is a very inefficient way to make light: only about
+<Katex tex="9\times10^{-10}\,ZV" /> of the electrons' energy comes out as
+X-rays, under 1% even for tungsten at 100 kV. The rest heats the target,
+which is why X-ray tubes use tungsten, with the highest melting point of any
+metal, and spin the target to spread the heat.
+
+The same inefficiency has a practical lesson: to block beta radiation, which
+is fast electrons, you use plastic or aluminium first, not lead. Lead's
+heavy nuclei would turn the electrons' energy into penetrating X-rays.
+
+## When the whole gas glows
+
+In a gas hot enough to strip electrons from their atoms, electrons are
+constantly swinging past ions, and the gas glows with thermal bremsstrahlung,
+also called free-free emission (the electron is free before and after). The
+light from a gas at temperature <Katex tex="T" /> peaks near photon energy
+<Katex tex="kT" /> and fades fast above it. The total power from each cubic
+metre is
+
+$$
+\varepsilon \approx 1.4 \times 10^{-40}\,\sqrt{T}\,n_e\,n_i~\text{W m}^{-3}
+$$
+
+with densities in particles per cubic metre. It goes as density squared,
+because it takes an electron and an ion meeting, and as <Katex tex="\sqrt{T}" />,
+because faster electrons meet more ions. The second panel shows real places:
+
+- **Galaxy clusters.** The space between the galaxies of a cluster is filled
+  with gas at tens of millions of degrees, holding several times more mass
+  than all the stars. X-ray telescopes see it as a huge, smooth glow of
+  bremsstrahlung. It is so thin that, outside the densest centres, it would
+  take longer than the age of the universe to cool.
+- **The Sun.** The million-degree corona glows in soft X-rays, and solar
+  flares heat loops of gas to tens of millions of degrees. In a flare,
+  electrons fired down the loops hit the denser gas below and light up the
+  loops' feet in hard X-ray bremsstrahlung.
+- **Star-forming nebulae.** At 10,000 K, gas like the Orion Nebula would
+  glow most in the infrared, but its bremsstrahlung is best seen in radio,
+  where it shines straight through the dust around it.
+- **Fusion reactors.** Bremsstrahlung is one of the main ways a fusion
+  plasma loses heat. Below about 50 million degrees, a deuterium–tritium
+  plasma radiates energy faster than fusion makes it, which sets how hot a
+  reactor has to run.
+
+## The same light, different pushes
+
+Bremsstrahlung is one member of a family. An electron bent by a magnetic
+field gives off [synchrotron radiation](/posts/synchrotron-radiation); one
+following a curved field line, [curvature radiation](/posts/curvature-radiation);
+one shaken by a light wave scatters it, [Thomson](/posts/thomson-scattering)
+or [Compton scattering](/posts/compton-scattering). The rule underneath is the
+same each time: accelerate a charge, and it shines.
+
+At very high energies, bremsstrahlung turns dramatic. A cosmic-ray electron
+hitting the upper atmosphere makes gamma rays, which make electron–positron
+pairs, which make more gamma rays: a particle shower. Even thunderstorms
+manage it: electrons accelerated in their electric fields give off flashes
+of gamma rays, which the Fermi space telescope catches from orbit.
+
+<SimPostSchema
+  title="Bremsstrahlung"
+  description="An interactive visualization of bremsstrahlung, the light an electron gives off when a nucleus swings it round: see why closer passes make harder X-rays, how an X-ray tube's spectrum works, and what colour hot gas glows, from the Orion Nebula to galaxy clusters and fusion reactors."
+  url="https://astrosyo.com/posts/bremsstrahlung"
+  datePublished="2026-11-27"
+  authorName="Astrosyo"
+  keywords={["bremsstrahlung", "braking radiation", "free-free emission", "thermal bremsstrahlung", "x-ray tube", "galaxy cluster x-rays"]}
+  image="/images/bremsstrahlung/thumbnail.webp"
+  articleSection="Astronomy"
+  isAccessibleForFree={true}
+  publisherName="Astrosyo"
+  publisherLogo="/images/shared/logo.webp"
+  hasPart={{
+    "@type": "SoftwareApplication",
+    "name": "Bremsstrahlung",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires modern browser",
+    "url": "https://astrosyo.com/posts/bremsstrahlung#simulation",
+    "description": "Interactive animation of an electron swinging past a nucleus and giving off a photon, with the X-ray tube spectrum and the Duane–Hunt limit, and a hot-gas panel showing the thermal bremsstrahlung spectrum, power and cooling time with real astrophysical presets."
+  }}
+/>
+
+<Changelog entries={["2026-11-27: Published."]} />
