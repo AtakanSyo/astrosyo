@@ -120,7 +120,12 @@ import '../styles/reviewCard.css';
   });
   document.addEventListener('toggle', (e) => {
     const t = e.target as HTMLDetailsElement;
-    if (!t.matches?.('details.card-price') || !t.open) return;
+    if (!t.matches?.('details.card-price')) return;
+    // Lift the card (and its Top 10 wrapper) above the others while its menu is open.
+    const card = t.closest('.post-card');
+    card?.classList.toggle('is-price-open', t.open);
+    t.closest('.top-ten-item')?.classList.toggle('is-price-open', t.open);
+    if (!t.open) return;
     menus().forEach((m) => { if (m !== t) m.open = false; });
     unroll(t.querySelector('.card-price-menu'));
   }, true);

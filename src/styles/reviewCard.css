@@ -62,8 +62,13 @@
   overflow: visible;
 }
 
-.post-card--review:has(.card-price[open]) {
-  z-index: 30;
+/* The card whose price menu is open sits above every other card (the class
+   is set by the script in reviewCard.astro; :has is a fallback). */
+.post-card--review.is-price-open,
+.post-card--review:has(.card-price[open]),
+.top-ten-item.is-price-open,
+.top-ten-item:has(.card-price[open]) {
+  z-index: 1000;
 }
 
 .card-price {
@@ -127,7 +132,7 @@
   top: calc(100% + 0.4rem);
   right: 0;
   width: 14rem;
-  z-index: 30;
+  z-index: 1000;
   margin: 0;
   padding: 0.3rem;
   list-style: none;
